@@ -1,0 +1,711 @@
+swagger: '2.0'
+info:
+  version: "0.0.1"
+  title: Interfere Server for Hybrid Intellectual System API Document
+  description: |
+    混合智能系统干预服务器API文档
+    
+    对于所有的PATCH请求，若payload中不包含某可选字段，则该字段不进行更新
+
+host: localhost:3030
+
+schemes:
+  - http
+produces:
+  - application/json
+basePath: /api/v1
+
+paths:
+  /aios_user:
+    get:
+      summary: 读取符合条件的 AIOS 用户列表
+      description: |
+        读取符合条件的 AIOS 用户列表
+      tags:
+        - AIOS 用户
+        - withCredential
+      produces:
+        - application/json
+      parameters:
+        - name: offset
+          in: query
+          description: |
+            从第几个用户开始读
+          default: 0
+          minimum: 0
+          type: integer
+          format: int32
+        - name: limit
+          in: query
+          description: |
+            读取数量
+          default: 10
+          maximum: 100
+          type: integer
+          format: int32
+        - name: sort
+          in: query
+          description: |
+            排序方式，取值为 last_active, id, name, 默认为 last_active ，表示按照最近活跃排序
+          default: "recent"
+          type: string
+        - name: filter
+          in: query
+          type: string
+          description: |
+            筛选属性，取值为 status:serving, status:offline, 默认为空，表示无筛选条件
+      responses:
+        200:
+          description: 符合条件的 AIOS 用户列表
+          schema:
+            $ref: '#/definitions/AIOSUserList'
+        400:
+          description: 读取错误
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: 用户未登录
+          schema:
+            $ref: '#/definitions/Error'
+  /aios_user/{auid}:
+    get:
+      summary: 获取 AIOS 用户信息
+      description: |
+        获取 AIOS 用户信息
+      tags:
+        - AIOS 用户
+        - withCredential
+      parameters:
+        - name: auid
+          in: path
+          description: |
+            AIOS 用户 id
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        200:
+          description: AIOS 用户信息
+          schema:
+            $ref: '#/definitions/AIOSUser'
+        400:
+          description: AIOS 用户信息获取失败
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: 用户未登录
+          schema:
+            $ref: '#/definitions/Error'
+    patch:
+      summary: 改变 AIOS 用户信息
+      description: |
+        改变 AIOS 用户信息
+      tags:
+        - AIOS 用户
+        - withCredential
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/_AIOSUser'
+        - name: auid
+          in: path
+          description: |
+            AIOS 用户 id
+          required: true
+          type: string
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: 状态改变成功
+          schema:
+            $ref: '#/definitions/AIOSUser'
+        400:
+          description: 状态改变失败
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: 用户未登录
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: 用户无权改变该 AIOS 用户信息
+          schema:
+            $ref: '#/definitions/Error'
+  /aios_user/{auid}/sessions:
+    get:
+      summary: 获取 AIOS 用户最近的会话列表
+      description: |
+        获取 AIOS 用户最近的会话列表
+      tags:
+        - AIOS 用户
+        - 会话
+        - withCredential
+      produces:
+        - application/json
+      parameters:
+        - name: auid
+          in: path
+          description: |
+            AIOS 用户 id
+          required: true
+          type: string
+      responses:
+        200:
+          description: AIOS 用户最近的会话列表
+          schema:
+            $ref: '#/definitions/SessionList'
+        400:
+          description: 会话列表获取失败
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: 用户未登录
+          schema:
+            $ref: '#/definitions/Error'
+  /session/{sid}:
+    get:
+      summary: 获取某一会话信息
+      description: |
+        获取某一会话信息
+      tags:
+        - 会话
+        - withCredential
+      produces:
+        - application/json
+      parameters:
+        - name: sid
+          in: path
+          description: |
+            会话 id
+          required: true
+          type: string
+      responses:
+        200:
+          description: 某一会话信息
+          schema:
+            $ref: '#/definitions/Session'
+        400:
+          description: 会话信息获取失败
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: 用户未登录
+          schema:
+            $ref: '#/definitions/Error'
+  /session/{sid}/messages:
+    get:
+      summary: 获取某一会话对应的消息列表
+      description: |
+        获取某一会话对应的消息列表，消息按照轮数升序排列
+      tags:
+        - 消息
+        - 会话
+        - withCredential
+      produces:
+        - application/json
+      parameters:
+        - name: sid
+          in: path
+          description: |
+            会话 id
+          required: true
+          type: string
+      responses:
+        200:
+          description: 某一会话对应的消息列表
+          schema:
+            $ref: '#/definitions/MessageList'
+        400:
+          description: 消息列表获取失败
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: 用户未登录
+          schema:
+            $ref: '#/definitions/Error'
+  /session/{sid}/message/{turn}:
+    get:
+      summary: 获取某一会话对应的某一条消息
+      description: |
+        获取某一会话中的某一条消息
+      tags:
+        - 消息
+        - 会话
+        - withCredential
+      produces:
+        - application/json
+      parameters:
+        - name: sid
+          in: path
+          description: |
+            会话 id
+          required: true
+          type: string
+        - name: turn
+          in: path
+          description: |
+            对话轮数
+          required: true
+          type: string
+      responses:
+        200:
+          description: 某一会话中的某一条消息
+          schema:
+            $ref: '#/definitions/Message'
+        400:
+          description: 消息获取失败
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: 用户未登录
+          schema:
+            $ref: '#/definitions/Error'
+  /session/{sid}/reply:
+    post:
+      summary: 向某一会话回复消息
+      description: |
+        向某一会话回复消息
+      tags:
+        - 消息
+        - 会话
+        - withCredential
+      produces:
+        - application/json
+      parameters:
+        - name: sid
+          in: path
+          description: |
+            会话 id
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/_Message'
+      responses:
+        200:
+          description: 消息回复成功，返回轮数
+          schema:
+            $ref: '#/definitions/ReplyResult'
+        400:
+          description: 消息回复失败
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: 用户未登录
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: 用户无权回复给该会话
+          schema:
+            $ref: '#/definitions/Error'
+  /session/{sid}/change_status:
+    post:
+      summary: 改变会话状态
+      description: |
+        干预师从界面操作来改变会话状态
+      tags:
+        - 会话
+        - 状态
+        - withCredential
+      produces:
+        - application/json
+      parameters:
+        - name: sid
+          in: path
+          description: |
+            会话 id
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ChangeStatus'
+      responses:
+        200:
+          description: 状态改变结果
+          schema:
+            $ref: '#/definitions/ChangeStatusResult'
+        400:
+          description: 状态改变失败
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: 用户未登录
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: 用户无权改变该会话状态
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  Status:
+    type: object
+    required:
+      - status
+    properties:
+      status:
+        type: integer
+        format: int32
+  _Error:
+    type: object
+    required:
+      - error
+    properties:
+      error:
+        type: string
+  Error:
+    type: object
+    allOf:
+      - $ref: '#/definitions/Status'
+      - $ref: '#/definitions/_Error'
+    example:
+      status: 1
+      error: 错误
+  _AIOSUser:
+    type: object
+    properties:
+      user:
+        type: string
+        description: |
+          AIOS 用户 ID ，若不存在则置空
+      deviceId:
+        type: string
+        description: |
+          AIOS 设备 ID
+      avatar:
+        description: AIOS 用户头像 URL
+        type: string
+      name:
+        description: AIOS 用户名称
+        type: string
+      status:
+        description: |
+          AIOS 用户状态，目前可以的取值为 `serving`, `offline`
+        type: string
+      last_active:
+        description: |
+          AIOS 用户最近活跃时间
+        type: string
+  AIOSUser:
+    type: object
+    allOf:
+      - $ref: '#/definitions/Status'
+      - type: object
+        title: Result
+        required:
+          - result
+        properties:
+          result:
+            $ref: '#/definitions/_AIOSUser'
+  _AIOSUserList:
+    type: object
+    required:
+      - count
+      - offset
+      - limit
+      - users
+    properties:
+      offset:
+        type: integer
+        format: int32
+        description: 在线 AIOS 用户列表的读取偏移
+      limit:
+        type: integer
+        format: int32
+        description: 在线 AIOS 用户列表的读取个数，最大为100
+        minimum: 0
+        maximum: 100
+      count:
+        description: 总在线 AIOS 用户数
+        type: integer
+        format: int32
+      users:
+        description: 在线 AIOS 用户列表
+        type: array
+        items:
+          $ref: '#/definitions/_AIOSUser'
+  AIOSUserList:
+    type: object
+    allOf:
+      - $ref: '#/definitions/Status'
+      - type: object
+        title: Result
+        required:
+          - result
+        properties:
+          result:
+            $ref: '#/definitions/_AIOSUserList'
+  _Session:
+    type: object
+    required:
+      - id
+      - turns
+    properties:
+      id:
+        description: 会话 id
+        type: string
+      turns:
+        description: 会话轮数
+        type: integer
+        format: int32
+  Session:
+    type: object
+    allOf:
+      - $ref: '#/definitions/Status'
+      - type: object
+        title: Result
+        required:
+          - result
+        properties:
+          result:
+            $ref: '#/definitions/_Session'
+  _SessionList:
+    type: object
+    required:
+      - count
+      - offset
+      - limit
+      - sessions
+    properties:
+      offset:
+        type: integer
+        format: int32
+        description: 会话列表
+      limit:
+        type: integer
+        format: int32
+        description: 会话列表读取个数，最大为100
+        minimum: 0
+        maximum: 100
+      count:
+        description: 总会话个数
+        type: integer
+        format: int32
+      sessions:
+        description: 会话列表
+        type: array
+        items:
+          $ref: '#/definitions/_Session'
+  SessionList:
+    type: object
+    allOf:
+      - $ref: '#/definitions/Status'
+      - type: object
+        title: Result
+        required:
+          - result
+        properties:
+          result:
+            $ref: '#/definitions/_SessionList'
+  _Message:
+    type: object
+    required:
+      - content
+      - session
+      - time
+    properties:
+      content:
+        $ref: '#/definitions/MessageContent'
+      session:
+        type: string
+        description: |
+          会话ID
+      specialist:
+        type: string
+        description: |
+          干预师ID，从干预服务器发出的或从干预服务器端获取的包含此字段
+      time:
+        type: string
+        format: datetime
+        description: |
+          消息发送时间
+      turn:
+        type: integer
+        format: int32
+        description: |
+          该消息所在的对话轮数，从 1 开始计数，从 AIOS 端主动发出的或从 AIOS 端获取的包含此字段
+      user:
+        type: string
+        description: |
+          用户 ID，在存在的情况下，从 AIOS 端主动发出的或从 AIOS 端获取的包含此字段
+      deviceId:
+        type: string
+        description: |
+          设备 ID，从 AIOS 端主动发出的或从 AIOS 端获取的包含此字段
+  Message:
+    type: object
+    allOf:
+      - $ref: '#/definitions/Status'
+      - type: object
+        title: Result
+        required:
+          - result
+        properties:
+          result:
+            $ref: '#/definitions/_Message'
+  MessageContent:
+    type: object
+    required:
+      - type
+      - sender
+      - data
+    properties:
+      sender:
+        type: string
+        description: |
+          发送方，可为 user/aios/interfere/auxiliary/specialist
+      type:
+        type: string
+        description: |
+          消息种类，若发送方为 user，则 type 取值为 audio/operation
+          若发送方为 aios/interfere/auxiliary/specialist，则 type 取值为 text/command/rich
+          若 type 为 audio ，则表示用户说了一句话， data 中包含语音文件资源地址、语音识别文字列表和领域
+          若 type 为 operation ，则表示用户发出了非语音操作， data 中为 operation 的表示
+          若 type 为 text ，则表示消息需要被 TTS 后播放给用户， data 中为回复文字
+          若 type 为 command ，则表示一个 AIOS 需要执行的命令， data 中为 command 的表示
+          若 type 为 rich ,则表示 data 中消息将被 AIOS 转发
+      data:
+        $ref: '#/definitions/MessageData'
+
+  MessageData:
+    type: object
+    description: |
+
+    properties:
+      audioUrl:
+        type: string
+        description: |
+          语音文件资源地址
+      transcriptions:
+        type: array
+        items:
+          type: string
+          description: |
+            语音识别文本
+        description: |
+          语音识别文本列表，按照置信度排序
+      domain:
+        type: string
+        description: |
+          领域
+
+  _MessageList:
+    type: object
+    required:
+      - count
+      - messages
+    properties:
+      count:
+        description: 消息个数
+        type: integer
+        format: int32
+      messages:
+        description: 会话列表
+        type: array
+        items:
+          $ref: '#/definitions/_Message'
+  MessageList:
+    type: object
+    allOf:
+      - $ref: '#/definitions/Status'
+      - type: object
+        title: Result
+        required:
+          - result
+        properties:
+          result:
+            $ref: '#/definitions/_MessageList'
+  _ReplyResult:
+    type: object
+    required:
+      - turn
+    properties:
+      turn:
+        description: 回复消息被分配到会话中的轮数
+        type: integer
+        format: int32
+  ReplyResult:
+    type: object
+    allOf:
+      - $ref: '#/definitions/Status'
+      - type: object
+        title: Result
+        required:
+          - result
+        properties:
+          result:
+            $ref: '#/definitions/_ReplyResult'
+  ChangeStatus:
+    type: object
+    required:
+      - status
+      - session
+      - reason
+      - time
+    properties:
+      status:
+        type: string
+        description: |
+          状态变化，包括
+          start 会话开始
+          end 会话结束
+          disconnect 会话意外断开
+          restore 会话重新恢复
+          guideStart 干预开始（此时可能还没有干预师接入）
+          guideEnd 干预结束
+      reason:
+        type: string
+        description: |
+          session 状态变化的原因的编码
+          “0001”表示用户发起了对话
+          “0101”表示客服发起了对话
+          “0999”表示其他原因开始的对话
+          “1001”表示用户正常结束了对话
+          “1101”表示客服正常结束了对话
+          “1201”表示辅助服务器结束了对话
+          “1301”表示AIOS结束了对话
+          “1401”表示干预服务器结束了对话
+          “1501”表示网络断开导致对话结束
+          “1601”表示对话太长时间没有响应导致对话结束
+          “2001”表示对话中断
+          “3001”表示对话恢复
+          “4001”干预开始
+          “5001”干预结束
+      session:
+        type: string
+        description: |
+          需要干预的会话的ID
+      time:
+        type: string
+        format: datetime
+        description: |
+          时间戳
+  _ChangeStatusResult:
+    type: object
+    required:
+      - turn
+    properties:
+      turn:
+        description: 回复消息被分配到会话中的轮数
+        type: integer
+        format: int32
+  ChangeStatusResult:
+    type: object
+    allOf:
+      - $ref: '#/definitions/Status'
+      - type: object
+        title: Result
+        required:
+          - result
+        properties:
+          result:
+            $ref: '#/definitions/_ChangeStatusResult'

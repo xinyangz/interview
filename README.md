@@ -1,3 +1,37 @@
+# Interview Platform
+## Setup
+请参见脚手架工程说明
+
+## API文档
+### 查看
+运行`npm run doc`查看API文档。或者在`WebStorm`中安装`Swagger Pluggin`，打开`api/swagger/swagger.yaml`，点击右上角浏览器图标查看。
+
+### 编辑
+运行`swagger project edit`编辑API文档。或者在`WebStrom`中安装`Swagger Pluggin`直接编辑`api/swagger/swagger.yaml`
+
+### 示例文档
+`api/swagger/`目录下有两份API示例文档`example_aios`和`example_petstore`，供参考
+
+### 依赖
+查看文档时，如果gulp报错，可能需要安装`gulp cli`:
+```
+npm install --global gulp-cli
+```
+如果http-server报错，请安装:
+```
+npm install --global http-server
+```
+编辑时，如果swagger报错，请安装:
+```
+npm install --global swagger
+```
+
+## 项目文档
+项目文档存储在docs目录下
+
+---
+以下为脚手架工程文档
+
 # React Slingshot!
 
 [![Build status: Linux](https://img.shields.io/travis/coryhouse/react-slingshot.svg?style=flat-square)](https://travis-ci.org/coryhouse/react-slingshot)

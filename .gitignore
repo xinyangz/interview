@@ -58,3 +58,5 @@ dist
 将删除 tools/
 将删除 webpack.config.dev.js
 将删除 webpack.config.prod.js
+/swagger-ui/swagger.yaml
+/swagger-ui/swagger.json
