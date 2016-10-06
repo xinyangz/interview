@@ -10,7 +10,7 @@ gulp.task('default', function() {
 gulp.task("swagger", function () {
   var doc = yaml.safeLoad(fs.readFileSync(path.join(__dirname, "./api/swagger/swagger.yaml")));
   fs.writeFileSync(
-    path.join(__dirname, "./swagger-ui/dist/swagger.json"),
+    path.join(__dirname, "./swagger-ui/swagger.json"),
     JSON.stringify(doc, null, " ")
   );
 });

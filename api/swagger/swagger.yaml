@@ -1,16 +1,16 @@
 swagger: '2.0'
 info:
   version: "0.0.1"
-  title: Interfere Server for Hybrid Intellectual System API Document
+  title: 在线面试平台API文档
   description: |
     混合智能系统干预服务器API文档
 
     对于所有的PATCH请求，若payload中不包含某可选字段，则该字段不进行更新
 
-host: localhost:3030
+host: localhost:3010
 
 schemes:
-  - http
+  - https
 produces:
   - application/json
 basePath: /api/v1
