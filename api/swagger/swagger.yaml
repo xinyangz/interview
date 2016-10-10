@@ -303,6 +303,7 @@ paths:
           description: "加密的密码"
           required: true
           type: "string"
+          format: "password"
         - name: "key"
           in: "query"
           description: "密钥"
