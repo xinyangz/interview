@@ -13,6 +13,8 @@ tags:
   description: "候选人相关API"
 - name: "room"
   description: "面试房间相关API"
+- name: "hr"
+  description: "HR用户相关API"
 schemes:
 - "https"
 paths:
@@ -36,6 +38,401 @@ paths:
           description: "用户未登录"
           schema:
             $ref: '#/definitions/Error'
+  /room/{room_id}:
+    get:
+      tags:
+            - "room"
+      summary: "获取面试房间信息"
+      description: |
+        获取面试房间信息
+      parameters:
+        - name: room_id
+          in: path
+          description: |
+            面试房间id
+          required: true
+          type: string
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "面试房间信息"
+          schema:
+            $ref: '#/definitions/Room'
+        400:
+          description: "面试房间信息获取失败"
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: "用户未登录"
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: "改变房间信息"
+      description: |
+        改变房间信息
+      tags:
+        - "room"
+      parameters:
+        - name: room_id
+          in: path
+          description: |
+            面试房间id
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: |
+            面试房间信息
+          required: true
+          schema:
+            $ref: '#/definitions/_Room'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: 状态改变成功
+          schema:
+            $ref: '#/definitions/Room'
+        400:
+          description: 状态改变失败
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: 用户未登录
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: 用户权限不足
+          schema:
+            $ref: '#/definitions/Error'
+  /candidate:
+    get:
+      summary: 读取全部候选人列表
+      description: |
+        读取全部候选人列表
+      tags:
+        - candidate
+      produces:
+        - application/json
+      parameters:
+        - name: offset
+          in: query
+          description: |
+            从第几个候选人开始读
+          default: 0
+          minimum: 0
+          type: integer
+          format: int32
+        - name: limit
+          in: query
+          description: |
+            读取数量
+          default: 10
+          maximum: 100
+          type: integer
+          format: int32
+        - name: username
+          in: query
+          description: |
+            管理这些候选人的HR的id
+          type: string
+          required: true
+      responses:
+        200:
+          description: "面试房间信息"
+          schema:
+            $ref: '#/definitions/Room'
+        400:
+          description: "面试房间信息获取失败"
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: "用户未登录"
+          schema:
+            $ref: '#/definitions/Error'
+  /candidate/{candidate_id}:
+    get:
+      tags:
+        - candidate
+      summary: "查询每个候选人的个人信息"
+      parameters:
+        - name: candidate_id
+          in: path
+          description: |
+            候选人 id
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        200:
+          description: 某位候选人个人信息
+          schema:
+            $ref: '#/definitions/Candidate'
+        400:
+          description: 候选人信息获取失败
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: 用户未登录
+          schema:
+            $ref: '#/definitions/Error'
+  /candidate/new:
+    post:
+      summary: "HR添加新的候选人信息"
+      operationId:
+      tags:
+        - candidate
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/_Candidate'
+        - name: infoFile
+          in: query
+          description: |
+            文件形式批量导入候选者信息
+          type: string
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: 添加新候选人信息成功
+          schema:
+            $ref: '#/definitions/Candidate'
+        400:
+          description: 添加新候选人信息失败
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: 用户未登录
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: 用户不具有合法权限
+          schema:
+            $ref: '#/definitions/Error'
+  /candidate/distribute:
+    post:
+      summary: 为候选人分配唯一房间
+      tags:
+        - candidate
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/_CandidateList'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: 分配房间成功
+          schema:
+            $ref: '#/definitions/CandidateList'
+        400:
+          description: 分配房间失败
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: 用户未登录
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: 用户无权为候选人分配面试房间
+          schema:
+            $ref: '#/definitions/Error'
+  /hr/register:
+    post:
+      tags:
+      - "hr"
+      summary: "创建HR账户"
+      description: "This can only be done by the register HR."
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Created user object"
+          required: true
+          schema:
+            $ref: "#/definitions/_HR"
+        - name: "key"
+          in: "query"
+          description: "密钥"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        200:
+          description: "创建HR用户成功"
+          schema:
+            $ref: "#/definitions/_HR"
+        400:
+          description: "注册失败"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: "存在同名用户"
+          schema:
+            $ref: "#/definitions/Error"
+  /hr/login:
+    get:
+      tags:
+        - "hr"
+      summary: "HR登陆"
+      description: ""
+      produces:
+        - "application/json"
+      parameters:
+        - name: "username"
+          in: "query"
+          description: "HR用户名"
+          required: true
+          type: "string"
+        - name: "password"
+          in: "query"
+          description: "加密的密码"
+          required: true
+          type: "string"
+        - name: "key"
+          in: "query"
+          description: "密钥"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        200:
+          description: "登陆成功"
+          schema:
+            type: "string"
+          headers:
+            X-Rate-Limit:
+              type: "integer"
+              format: "int32"
+              description: "calls per hour allowed by the user"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+        400:
+          description: "登录失败"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: "无效用户名或密码"
+          schema:
+            $ref: "#/definitions/Error"
+  /hr/logout:
+    get:
+      tags:
+        - "hr"
+      summary: "HR log out"
+      description: ""
+      produces:
+        - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "退出成功"
+        400:
+          description: "退出失败"
+          schema: "#/definitions/Error"
+        401:
+          description: "用户未登陆"
+          schema:
+            $ref: "#/definitions/Error"
+  /hr/{username}:
+    get:
+      tags:
+        - "hr"
+      summary: "获取HR用户信息"
+      description: "只有已登陆用户可以进行本操作"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "username"
+          in: "path"
+          description: "用户名"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "读取信息成功"
+          schema:
+            $ref: "#/definitions/_HR"
+        401:
+          description: "用户未登陆"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "用户名不存在"
+          schema:
+            $ref: "#/definitions/Error"
+    put:
+      tags:
+        - "hr"
+      summary: "更改HR用户信息"
+      description: "只有已登陆用户可以进行本操作"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "username"
+          in: "path"
+          description: "用户名"
+          required: true
+          type: "string"
+        - name: "body"
+          in: "body"
+          description: "更改后的信息"
+          required: true
+          schema:
+            $ref: "#/definitions/_HR"
+      responses:
+        200:
+          description: "更改信息成功，返回更改后的信息"
+          schema:
+            $ref: "#/definitions/_HR"
+        401:
+          description: "用户未登陆"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "用户名不存在"
+          schema:
+            $ref: "#/definitions/Error"
+    delete:
+      tags:
+        - "hr"
+      summary: "删除HR用户"
+      description: "只有已登陆用户可以进行本操作"
+      produces:
+              - "application/json"
+      parameters:
+        - name: "username"
+          in: "path"
+          description: "用户名"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "删除成功"
+        401:
+          description: "用户未登陆"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "用户名不存在"
+          schema:
+            $ref: "#/definitions/Error"
 
 definitions:
   Status:
@@ -60,8 +457,30 @@ definitions:
       - $ref: "#/definitions/_Error"
     example:
       status: "1"
-      error: "错误"
-
+      error: "错误信息"
+  _HR:
+    type: "object"
+    required:
+      - "username"
+      - "password"
+      - "email"
+    properties:
+      username:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      organization:
+        type: "string"
+      contact:
+        type: "string"
+    example:
+      username: "Tom"
+      email: "example@example.com"
+      password: "12345"
+      organization: "Example Company"
+      contact: "Example Contact"
   _Room:
     type: "object"
     properties:
@@ -80,7 +499,6 @@ definitions:
       logo:
         description: "面试房间企业logo Url"
         type: "string"
-
   Room:
     type: "object"
     allOf:
@@ -92,8 +510,7 @@ definitions:
         properties:
           result:
             $ref: "#/definitions/_Room"
-
-  _AIOSUserList:
+  _RoomList:
     type: "object"
     required:
       - "offset"
@@ -120,7 +537,6 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/_Room"
-
   RoomList:
     type: "object"
     allOf:
@@ -131,4 +547,76 @@ definitions:
           - "result"
         properties:
           result:
-            $ref: "#/definitions/_AIOSUserList"
+            $ref: "#/definitions/_RoomList"
+  _Candidate:
+    type: "object"
+    properties:
+      id:
+        description: "候选人id"
+        type: "string"
+      name:
+        description: "候选人姓名"
+        type: "string"
+      email:
+        description: "候选人邮箱"
+        type: "string"
+      phoneNumber:
+        description: "候选人手机号"
+        type: "string"
+      status:
+        description: "候选人状态"
+        default: "未面试"
+        type: "string"
+      roomNumber:
+        description: "候选人被分配的唯一的面试房间 id"
+        type: "string"
+        default: "0"
+  Candidate:
+    type: object
+    allOf:
+      - $ref: '#/definitions/Status'
+      - type: object
+        title: Result
+        required:
+          - result
+        properties:
+          result:
+            $ref: '#/definitions/_Candidates'
+  _CandidateList:
+    type: object
+    required:
+      - count
+      - offset
+      - limit
+      - candidates
+    properties:
+      offset:
+        type: integer
+        format: int32
+        description: 候选人列表的读取偏移
+      limit:
+        type: integer
+        format: int32
+        description: 候选人列表读取个数，上限100
+        minimun: 0
+        maximun: 100
+      count:
+        type: integer
+        format: int32
+        description: 候选人总人数
+      candidates:
+        description: 候选人列表
+        type: array
+        items:
+          $ref: '#/definitions/_Candidate'
+  CandidateList:
+    type: object
+    allOf:
+      - $ref: '#/definitons/Status'
+      - type: object
+        title: Result
+        required:
+          - result
+        properties:
+          result:
+            $ref: '#/definition/_CandidatesList'
