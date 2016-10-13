@@ -1,36 +1,67 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {Table} from 'react-bootstrap';
+import {Table, Modal, Button} from 'react-bootstrap';
+import {deleteRoom} from '../actions/roomsActions';
 
-const HRRoomTable = (props) => {
-  return(
-    <Table>
-      <tbody>
-        {props.rooms.map(room =>
-          <tr>
-            <td>
-              {room.name}
-            </td>
-            <td>
-              面试官: {room.interviewer} | {room.candidates.length}人
-            </td>
-            <td>
-              编辑 | 删除
-            </td>
-          </tr>
-        )}
+class HRRoomTable extends React.Component{
+  constructor(props) {
+    super(props);
+    this.state = {showModal: false, selectedRoom: null};
+    this.close = this.close.bind(this);
+    this.open = this.open.bind(this);
+    this.onDeleteRoomClick = this.onDeleteRoomClick.bind(this);
+  }
 
-      </tbody>
-    </Table>
+  close() {
+    this.setState({showModal: false});
+  }
 
+  open(room_id) {
+    this.setState({showModal: true, selectedRoom: room_id});
+  }
 
-  );
+  onDeleteRoomClick() {
+    this.props.deleteRoom(this.state.selectedRoom);
+    this.close();
+  }
 
-};
+  render() {
+    return(
+      <div>
+        <Table>
+          <tbody>
+            {this.props.rooms.map(room =>
+              <tr key={room.id}>
+                <td>
+                  {room.name}
+                </td>
+                <td>
+                  面试官: {room.interviewer} | {room.candidates.length}人
+                </td>
+                <td>
+                  <a onClick={() => alert('Edit Room Clicked')}>编辑</a> | <a onClick={() => this.open(room.id)}>删除</a>
+                </td>
+              </tr>)}
+          </tbody>
+        </Table>
+
+        <Modal show={this.state.showModal} onHide={this.close}>
+          <Modal.Header closeButton>
+            <Modal.Title>确认删除房间？</Modal.Title>
+          </Modal.Header>
+          <Modal.Footer>
+            <Button onClick={this.close}>取消</Button>
+            <Button bsStyle="primary" onClick={this.onDeleteRoomClick}>确认</Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+    );
+  }
+}
 
 HRRoomTable.propTypes = {
-  rooms: PropTypes.arrayOf(PropTypes.object).isRequired
+  rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
+  deleteRoom: PropTypes.func
 };
 
 function mapStateToProps(state) {
@@ -39,4 +70,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(HRRoomTable);
+export default connect(mapStateToProps, {deleteRoom})(HRRoomTable);
