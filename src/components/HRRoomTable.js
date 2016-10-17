@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {Table, Modal, Button} from 'react-bootstrap';
 import {deleteRoom} from '../actions/roomsActions';
+import '../styles/hrroomtable.css';
 
 class HRRoomTable extends React.Component{
   constructor(props) {
@@ -33,13 +34,14 @@ class HRRoomTable extends React.Component{
             {this.props.rooms.map(room =>
               <tr key={room.id}>
                 <td>
-                  {room.name}
+                  <a className="room-name" onClick={() => alert('Room title clicked!')}>{room.name}</a>
                 </td>
                 <td>
                   面试官: {room.interviewer} | {room.candidates.length}人
                 </td>
                 <td>
-                  <a onClick={() => alert('Edit Room Clicked')}>编辑</a> | <a onClick={() => this.open(room.id)}>删除</a>
+                  <a className="link" onClick={() => alert('Edit Room Clicked')}>编辑</a> | <a className="link"
+                  onClick={() => this.open(room.id)}>删除</a>
                 </td>
               </tr>)}
           </tbody>
