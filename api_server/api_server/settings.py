@@ -49,6 +49,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+REST_FRAMEWORK = {
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+}
+
 ROOT_URLCONF = 'api_server.urls'
 
 TEMPLATES = [
@@ -113,3 +117,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Database config
+DB_NAME = 'interview'
+
+DB_PORT = 27017
