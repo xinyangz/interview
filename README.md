@@ -2,6 +2,16 @@
 ## Setup
 请参见脚手架工程说明
 
+## Server Stub
+
+工程添加了server stub用于模拟服务器，以便前端开发。stub使用swagger-codegen生成，并添加了延时，在调用时会有500ms相应延时。
+server stub的url是`http://localhost:3030`，前端进行异步调用时，请使用这个地址。
+在运行时，也可以在浏览器中打开`http://localhost:3030/docs`以查看及试用api。
+
+请注意为了方便起见，**server stub使用的是http协议，而非https协议**。
+
+如果需要修改服务器返回的数据，请到`./stub/controllers`目录下修改相应文件。
+
 ## API文档
 ### 查看
 运行`npm run doc`查看API文档。或者在`WebStorm`中安装`Swagger Pluggin`，打开`api/swagger/swagger.yaml`，点击右上角浏览器图标查看。
