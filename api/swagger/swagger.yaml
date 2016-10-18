@@ -362,12 +362,6 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/User"
-        - name: "key"
-          in: "query"
-          description: "加密公钥"
-          required: true
-          type: "integer"
-          format: "int64"
       responses:
         200:
           description: "创建用户成功"
@@ -401,12 +395,6 @@ paths:
           required: true
           type: "string"
           format: "password"
-        - name: "key"
-          in: "query"
-          description: "加密公钥"
-          required: true
-          type: "integer"
-          format: "int64"
       responses:
         200:
           description: "登陆成功"
@@ -884,7 +872,7 @@ definitions:
         items:
           type: "string"
         example: ['200', '201']
-  _RoomList:
+  RoomList:
     type: "object"
     required:
       - "offset"
@@ -914,16 +902,6 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/Room"
-  RoomList:
-    type: "object"
-    allOf:
-      - type: "object"
-        title: "Result"
-        required:
-          - "result"
-        properties:
-          result:
-            $ref: "#/definitions/_RoomList"
   Candidate:
     type: "object"
     required:
