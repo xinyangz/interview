@@ -209,10 +209,7 @@
     ],
     "responses": {
      "200": {
-      "description": "删除房间成功",
-      "schema": {
-       "$ref": "#/definitions/Room"
-      }
+      "description": "删除房间成功"
      },
      "400": {
       "description": "删除房间失败",
@@ -960,10 +957,7 @@
     ],
     "responses": {
      "200": {
-      "description": "删除成功",
-      "schema": {
-       "$ref": "#/definitions/Report"
-      }
+      "description": "删除成功"
      },
      "403": {
       "description": "用户无访问权限",
@@ -1110,7 +1104,7 @@
     }
    }
   },
-  "/problem/{room_id}": {
+  "/problem/room/{room_id}": {
    "get": {
     "summary": "获取房间内面试题目",
     "tags": [
@@ -1291,7 +1285,7 @@
     }
    },
    "put": {
-    "description": "更改面试题",
+    "summary": "更改面试题",
     "tags": [
      "problem"
     ],
@@ -1353,7 +1347,7 @@
     }
    },
    "delete": {
-    "description": "删除面试题",
+    "summary": "删除面试题",
     "tags": [
      "problem"
     ],

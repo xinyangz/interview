@@ -141,8 +141,6 @@ paths:
       responses:
         200:
           description: 删除房间成功
-          schema:
-            $ref: '#/definitions/Room'
         400:
           description: 删除房间失败
           schema:
@@ -650,8 +648,6 @@ paths:
       responses:
         200:
           description: "删除成功"
-          schema:
-            $ref: '#/definitions/Report'
         403:
           description: "用户无访问权限"
           schema:
@@ -751,7 +747,7 @@ paths:
           description: "面试者id不存在"
           schema:
             $ref: "#/definitions/Error"
-  /problem/{room_id}:
+  /problem/room/{room_id}:
     get:
       summary: 获取房间内面试题目
       tags:
@@ -875,7 +871,7 @@ paths:
           schema:
             $ref: "#/definitions/Error"
     put:
-      description: 更改面试题
+      summary: 更改面试题
       tags:
         - problem
       parameters:
@@ -916,7 +912,7 @@ paths:
           schema:
             $ref: "#/definitions/Error"
     delete:
-      description: 删除面试题
+      summary: 删除面试题
       tags:
         - problem
       parameters:
