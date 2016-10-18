@@ -183,6 +183,56 @@
       }
      }
     }
+   },
+   "delete": {
+    "summary": "删除房间",
+    "tags": [
+     "room"
+    ],
+    "parameters": [
+     {
+      "name": "room_id",
+      "in": "path",
+      "description": "面试房间id\n",
+      "required": true,
+      "type": "string"
+     },
+     {
+      "name": "token",
+      "in": "query",
+      "type": "string",
+      "required": true
+     }
+    ],
+    "produces": [
+     "application/json"
+    ],
+    "responses": {
+     "200": {
+      "description": "删除房间成功",
+      "schema": {
+       "$ref": "#/definitions/Room"
+      }
+     },
+     "400": {
+      "description": "删除房间失败",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     },
+     "403": {
+      "description": "用户无访问权限",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     },
+     "404": {
+      "description": "房间不存在",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     }
+    }
    }
   },
   "/candidate": {
@@ -884,6 +934,50 @@
       }
      }
     }
+   },
+   "delete": {
+    "tags": [
+     "report"
+    ],
+    "summary": "删除面试者面试报告",
+    "parameters": [
+     {
+      "name": "candidate_id",
+      "in": "path",
+      "description": "面试者id",
+      "type": "string",
+      "required": true
+     },
+     {
+      "name": "token",
+      "in": "query",
+      "required": true,
+      "type": "string"
+     }
+    ],
+    "produces": [
+     "application/json"
+    ],
+    "responses": {
+     "200": {
+      "description": "删除成功",
+      "schema": {
+       "$ref": "#/definitions/Report"
+      }
+     },
+     "403": {
+      "description": "用户无访问权限",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     },
+     "404": {
+      "description": "面试者id不存在",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     }
+    }
    }
   },
   "/chat/{candidate_id}": {
@@ -1137,6 +1231,171 @@
      },
      "404": {
       "description": "房间id不存在",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     }
+    }
+   }
+  },
+  "/problem/{problem_id}": {
+   "get": {
+    "summary": "获取面试题目",
+    "description": "由面试题id获取面试题目",
+    "tags": [
+     "problem"
+    ],
+    "produces": [
+     "application/json"
+    ],
+    "parameters": [
+     {
+      "name": "problem_id",
+      "in": "path",
+      "description": "面试题id",
+      "type": "string",
+      "required": true
+     },
+     {
+      "name": "token",
+      "in": "query",
+      "type": "string",
+      "required": true
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "面试题获取成功",
+      "schema": {
+       "$ref": "#/definitions/Problem"
+      }
+     },
+     "400": {
+      "description": "面试题获取失败",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     },
+     "403": {
+      "description": "用户无访问权限",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     },
+     "404": {
+      "description": "面试题id不存在",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     }
+    }
+   },
+   "put": {
+    "description": "更改面试题",
+    "tags": [
+     "problem"
+    ],
+    "parameters": [
+     {
+      "name": "problem_id",
+      "in": "path",
+      "description": "面试题id",
+      "type": "string",
+      "required": true
+     },
+     {
+      "name": "problem",
+      "in": "body",
+      "description": "更改后的题目",
+      "schema": {
+       "$ref": "#/definitions/Problem"
+      },
+      "required": true
+     },
+     {
+      "name": "token",
+      "in": "query",
+      "type": "string",
+      "required": true
+     }
+    ],
+    "consumes": [
+     "application/json"
+    ],
+    "produces": [
+     "application/json"
+    ],
+    "responses": {
+     "200": {
+      "description": "面试题更改成功,返回更改后的面试题",
+      "schema": {
+       "$ref": "#/definitions/Problem"
+      }
+     },
+     "400": {
+      "description": "面试题更改失败",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     },
+     "403": {
+      "description": "用户无访问权限",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     },
+     "404": {
+      "description": "面试题id不存在",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     }
+    }
+   },
+   "delete": {
+    "description": "删除面试题",
+    "tags": [
+     "problem"
+    ],
+    "parameters": [
+     {
+      "name": "problem_id",
+      "in": "path",
+      "description": "面试题id",
+      "type": "string",
+      "required": true
+     },
+     {
+      "name": "token",
+      "in": "query",
+      "type": "string",
+      "required": true
+     }
+    ],
+    "consumes": [
+     "application/json"
+    ],
+    "produces": [
+     "application/json"
+    ],
+    "responses": {
+     "200": {
+      "description": "删除面试题成功"
+     },
+     "400": {
+      "description": "面试题删除失败",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     },
+     "403": {
+      "description": "用户无访问权限",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     },
+     "404": {
+      "description": "面试题id不存在",
       "schema": {
        "$ref": "#/definitions/Error"
       }
