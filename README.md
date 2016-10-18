@@ -1,10 +1,12 @@
 # Interview Platform
 
-最新更新：
+**最新更新:**
+
+API已更新
+
+以往更新：
 
 [10.10会议记录](docs/meeting/meeting_1_161010.md)
-
-API尚未更新
 
 请管理平台组查看[迭代开发计划](docs/迭代开发计划.xlsx)领任务
 
