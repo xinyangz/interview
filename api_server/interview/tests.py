@@ -8,6 +8,16 @@ import string
 
 
 class UserRegisterTestCase(APISimpleTestCase):
+    # setup initial data
+    user_data = {
+        'username': 'x',
+        'type': 'hr',
+        'email': 'example@example.com',
+        'password': '12345',
+        'organization': 'Example Company',
+        'contact': 'Example Contact'
+    }
+
     @classmethod
     def setUpClass(cls):
         super(UserRegisterTestCase, cls).setUpClass()
@@ -25,6 +35,7 @@ class UserRegisterTestCase(APISimpleTestCase):
     @classmethod
     def tearDownClass(cls):
         super(UserRegisterTestCase, cls).tearDownClass()
+        # drop test database
         db_client = pymongo.MongoClient(port=settings.DB_PORT)
         db_client.drop_database(settings.DB_NAME)
 
@@ -34,67 +45,44 @@ class UserRegisterTestCase(APISimpleTestCase):
         return response
 
     def test_success_full(self):
-        user_data = {
-            "username": "Tom",
-            "type": "hr",
-            "email": "example@example.com",
-            "password": "12345",
-            "organization": "Example Company",
-            "contact": "Example Contact"
-        }
-        response = self.get_post_response(user_data)
+        self.user_data['username'] += 'x'
+        response = self.get_post_response(self.user_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, user_data)
+        self.assertEqual(response.data, self.user_data)
 
     def test_success_no_optional(self):
-        user_data = {
-            "username": "Tom2",
-            "type": "hr",
-            "email": "example@example.com",
-            "password": "12345"
-        }
+        self.user_data['username'] += 'x'
+        user_data = self.user_data.copy()
+        del user_data['organization']
+        del user_data['contact']
         response = self.get_post_response(user_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, user_data)
 
     def test_lack_info(self):
-        user_data = {
-            "username": "Tom3",
-            "email": "example@example.com",
-            "password": "12345"
-        }
+        self.user_data['username'] += 'x'
+        user_data = self.user_data.copy()
+        del user_data['email']
         response = self.get_post_response(user_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_extra_info(self):
-        user_data = {
-            "username": "Tom4",
-            "type": "hr",
-            "email": "example@example.com",
-            "password": "12345",
-            "test": "hello"
-        }
+        self.user_data['username'] += 'x'
+        user_data = self.user_data.copy()
+        user_data['extra'] = 'hello'
         response = self.get_post_response(user_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_wrong_type(self):
-        user_data = {
-            "username": "Tom5",
-            "type": "what",
-            "email": "example@example.com",
-            "password": "12345"
-        }
+        self.user_data['username'] += 'x'
+        user_data = self.user_data.copy()
+        user_data['type'] = 'what'
         response = self.get_post_response(user_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_name_conflict(self):
-        user_data = {
-            "username": "Tom6",
-            "type": "hr",
-            "email": "example@example.com",
-            "password": "12345"
-        }
-        response = self.get_post_response(user_data)
+        self.user_data['username'] += 'x'
+        response = self.get_post_response(self.user_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.get_post_response(user_data)
+        response = self.get_post_response(self.user_data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

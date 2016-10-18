@@ -56,5 +56,4 @@ def user_register(request):
     # insert
     original_dict = data_dict.copy()
     db.users.insert_one(data_dict)
-    print(data_dict)
     return Response(original_dict, status=status.HTTP_200_OK)
