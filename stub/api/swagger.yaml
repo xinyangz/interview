@@ -1,0 +1,1137 @@
+---
+swagger: "2.0"
+info:
+  description: "在线面试平台API文档"
+  version: "0.0.1"
+  title: "Interview Platform API Documents"
+host: "localhost:3030"
+basePath: "/v1"
+tags:
+- name: "user"
+  description: "平台用户相关API"
+- name: "candidate"
+  description: "候选人相关API"
+- name: "room"
+  description: "面试房间相关API"
+- name: "report"
+  description: "面试报告相关API"
+- name: "chat"
+  description: "聊天数据相关API"
+- name: "problem"
+  description: "面试题相关API"
+schemes:
+- "http"
+paths:
+  /candidate:
+    get:
+      tags:
+      - "candidate"
+      summary: "读取全部候选人列表"
+      description: "读取全部候选人列表\n"
+      operationId: "candidateGET"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "从第几个候选人开始读\n"
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+        format: "int32"
+      - name: "limit"
+        in: "query"
+        description: "读取数量\n"
+        required: false
+        type: "integer"
+        default: 10
+        maximum: 100
+        format: "int32"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "候选人列表"
+          schema:
+            $ref: "#/definitions/CandidateList"
+        400:
+          description: "候选人列表获取失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Candidate"
+    post:
+      tags:
+      - "candidate"
+      summary: "添加候选人"
+      operationId: "candidatePOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "candidate"
+        description: "添加的候选人信息\n"
+        required: true
+        schema:
+          $ref: "#/definitions/Candidate"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "添加候选人成功,返回候选人信息"
+          schema:
+            $ref: "#/definitions/Candidate"
+        400:
+          description: "添加候选人失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Candidate"
+  /candidate/{candidate_id}:
+    get:
+      tags:
+      - "candidate"
+      summary: "查询候选人信息"
+      operationId: "candidateCandidate_idGET"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "candidate_id"
+        in: "path"
+        description: "候选人 id\n"
+        required: true
+        type: "string"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "候选人信息"
+          schema:
+            $ref: "#/definitions/Candidate"
+        400:
+          description: "候选人信息获取失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "候选人不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Candidate"
+    put:
+      tags:
+      - "candidate"
+      summary: "更改候选人信息"
+      operationId: "candidateCandidate_idPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "candidate_id"
+        in: "path"
+        description: "候选人 id\n"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "candidate"
+        description: "更改后的候选人信息\n"
+        required: true
+        schema:
+          $ref: "#/definitions/Candidate"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "候选人信息更改成功,返回更改后的信息"
+          schema:
+            $ref: "#/definitions/Candidate"
+        400:
+          description: "候选人信息更改失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "候选人不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Candidate"
+    delete:
+      tags:
+      - "candidate"
+      summary: "删除候选人"
+      operationId: "candidateCandidate_idDELETE"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "candidate_id"
+        in: "path"
+        description: "候选人 id\n"
+        required: true
+        type: "string"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "候选人删除成功"
+        400:
+          description: "候选人删除失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "候选人不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Candidate"
+  /candidate/{candidate_id}/status:
+    put:
+      tags:
+      - "candidate"
+      summary: "改变候选人面试状态"
+      operationId: "candidateCandidate_idStatusPUT"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "candidate_id"
+        in: "path"
+        description: "候选人 id\n"
+        required: true
+        type: "string"
+      - name: "status"
+        in: "query"
+        description: "候选人新的面试状态\n"
+        required: true
+        type: "string"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "面试状态更改成功"
+          schema:
+            $ref: "#/definitions/Candidate"
+        400:
+          description: "候选人删除失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "候选人不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Candidate"
+  /chat/{candidate_id}:
+    get:
+      tags:
+      - "chat"
+      summary: "获取面试者聊天记录"
+      description: "获取面试者聊天记录，按时间逆序排列\n"
+      operationId: "chatCandidate_idGET"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "candidate_id"
+        in: "path"
+        description: "面试者id"
+        required: true
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "偏移\n"
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+        format: "int32"
+      - name: "limit"
+        in: "query"
+        description: "读取数量\n"
+        required: false
+        type: "integer"
+        default: 10
+        maximum: 20
+        format: "int32"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "面试记录列表"
+          schema:
+            $ref: "#/definitions/ChatList"
+        400:
+          description: "面试记录获取失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "面试者id不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Chat"
+    post:
+      tags:
+      - "chat"
+      summary: "添加聊天记录"
+      operationId: "chatCandidate_idPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "candidate_id"
+        in: "path"
+        description: "面试者id"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "chat"
+        description: "聊天记录"
+        required: true
+        schema:
+          $ref: "#/definitions/Chat"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "聊天记录添加成功"
+        400:
+          description: "聊天记录添加失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "面试者id不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Chat"
+  /problem/{room_id}:
+    get:
+      tags:
+      - "problem"
+      summary: "获取房间内面试题目"
+      operationId: "problemRoom_idGET"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "room_id"
+        in: "path"
+        description: "房间id"
+        required: true
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "偏移\n"
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+        format: "int32"
+      - name: "limit"
+        in: "query"
+        description: "读取数量\n"
+        required: false
+        type: "integer"
+        default: 10
+        maximum: 20
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "面试题列表"
+          schema:
+            $ref: "#/definitions/ProblemList"
+        400:
+          description: "面试题获取失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "房间id不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Problem"
+    post:
+      tags:
+      - "problem"
+      summary: "添加面试题"
+      operationId: "problemRoom_idPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "room_id"
+        in: "path"
+        description: "房间id"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "problem"
+        description: "添加的题目"
+        required: true
+        schema:
+          $ref: "#/definitions/Problem"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "面试题添加成功"
+        400:
+          description: "面试题添加失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "房间id不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Problem"
+  /report/{candidate_id}:
+    get:
+      tags:
+      - "report"
+      summary: "获取面试者面试报告"
+      operationId: "reportCandidate_idGET"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "candidate_id"
+        in: "path"
+        description: "面试者id"
+        required: true
+        type: "string"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "面试报告获取成功"
+          schema:
+            $ref: "#/definitions/Report"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "面试者id不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Report"
+    put:
+      tags:
+      - "report"
+      summary: "更改面试者面试报告"
+      operationId: "reportCandidate_idPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "candidate_id"
+        in: "path"
+        description: "面试者id"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "text"
+        description: "新的报告文本"
+        required: true
+        schema:
+          $ref: "#/definitions/Report"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "面试报告更改成功"
+          schema:
+            $ref: "#/definitions/Report"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "面试者id不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Report"
+  /room:
+    get:
+      tags:
+      - "room"
+      summary: "获取所有面试房间"
+      operationId: "roomGET"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "符合条件的面试房间列表"
+          schema:
+            $ref: "#/definitions/RoomList"
+        400:
+          description: "读取错误"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Room"
+  /room/{room_id}:
+    get:
+      tags:
+      - "room"
+      summary: "获取面试房间信息"
+      operationId: "roomRoom_idGET"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "room_id"
+        in: "path"
+        description: "面试房间id"
+        required: true
+        type: "string"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "面试房间信息"
+          schema:
+            $ref: "#/definitions/Room"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "房间不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Room"
+    put:
+      tags:
+      - "room"
+      summary: "更改房间信息"
+      description: "更改房间信息"
+      operationId: "roomRoom_idPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "room_id"
+        in: "path"
+        description: "面试房间id\n"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "面试房间信息\n"
+        required: true
+        schema:
+          $ref: "#/definitions/Room"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "房间信息更改成功,返回更改后的信息"
+          schema:
+            $ref: "#/definitions/Room"
+        400:
+          description: "房间信息更改失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "房间不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Room"
+  /user/login:
+    get:
+      tags:
+      - "user"
+      summary: "用户登陆"
+      description: ""
+      operationId: "userLoginGET"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "query"
+        description: "用户名"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "query"
+        description: "密码"
+        required: true
+        type: "string"
+        format: "password"
+      responses:
+        200:
+          description: "登陆成功"
+          schema:
+            $ref: "#/definitions/LoginInfo"
+          headers:
+            X-Rate-Limit:
+              type: "integer"
+              format: "int32"
+              description: "calls per hour allowed by the user"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+        400:
+          description: "无效用户名或密码"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "User"
+  /user/logout:
+    get:
+      tags:
+      - "user"
+      summary: "HR log out"
+      description: ""
+      operationId: "userLogoutGET"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "退出成功"
+        403:
+          description: "用户未登陆"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "User"
+  /user/register:
+    post:
+      tags:
+      - "user"
+      summary: "创建账户"
+      operationId: "userRegisterPOST"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created user object"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "创建用户成功"
+          schema:
+            $ref: "#/definitions/User"
+        400:
+          description: "注册失败"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: "存在同名用户"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "User"
+  /user/{username}:
+    get:
+      tags:
+      - "user"
+      summary: "获取用户信息"
+      description: "只有HR和面试官用户可以进行本操作"
+      operationId: "userUsernameGET"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "用户名"
+        required: true
+        type: "string"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "读取信息成功"
+          schema:
+            $ref: "#/definitions/User"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "用户不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "User"
+    put:
+      tags:
+      - "user"
+      summary: "更改用户信息"
+      description: "只有HR和面试官用户可以进行本操作"
+      operationId: "userUsernamePUT"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "用户名"
+        required: true
+        type: "string"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "更改后的信息"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "更改信息成功，返回更改后的信息"
+          schema:
+            $ref: "#/definitions/User"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "用户不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "User"
+    delete:
+      tags:
+      - "user"
+      summary: "删除用户"
+      description: "只有HR和面试官用户可以进行本操作"
+      operationId: "userUsernameDELETE"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "用户名"
+        required: true
+        type: "string"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "删除成功"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "用户名不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "User"
+definitions:
+  Status:
+    type: "object"
+    required:
+    - "status"
+    properties:
+      status:
+        type: "integer"
+        format: "int32"
+  _Error:
+    type: "object"
+    required:
+    - "error"
+    properties:
+      error:
+        type: "string"
+  Error:
+    allOf:
+    - $ref: "#/definitions/Status"
+    - $ref: "#/definitions/_Error"
+  User:
+    type: "object"
+    required:
+    - "email"
+    - "type"
+    - "username"
+    properties:
+      username:
+        type: "string"
+      type:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      organization:
+        type: "string"
+      contact:
+        type: "string"
+    example:
+      username: "Tom"
+      type: "hr"
+      email: "example@example.com"
+      password: "12345"
+      organization: "Example Company"
+      contact: "Example Contact"
+  LoginInfo:
+    type: "object"
+    properties:
+      user:
+        $ref: "#/definitions/User"
+      token:
+        type: "string"
+        example: "123456"
+  Room:
+    type: "object"
+    required:
+    - "candidates"
+    - "id"
+    - "interviewer"
+    - "name"
+    - "problems"
+    properties:
+      id:
+        type: "string"
+        example: "1001"
+        description: "面试房间ID"
+      name:
+        type: "string"
+        example: "计蒜课秋招（前端）"
+        description: "面试房间名称"
+      logo:
+        type: "string"
+        example: "http://example.com/examplepage"
+        description: "面试房间企业logo Url"
+      interviewer:
+        type: "string"
+        description: "面试官ID，若不存在则置空"
+      candidates:
+        type: "array"
+        description: "候选人ID列表"
+        items:
+          type: "string"
+      problems:
+        type: "array"
+        description: "面试题ID列表"
+        items:
+          type: "string"
+  RoomList:
+    type: "object"
+    required:
+    - "count"
+    - "limit"
+    - "offset"
+    properties:
+      offset:
+        type: "integer"
+        format: "int32"
+        example: 0
+        description: "面试房间列表的读取偏移"
+      limit:
+        type: "integer"
+        format: "int32"
+        example: 20
+        description: "面试房间列表的读取个数，最大为100"
+        minimum: 0
+        maximum: 0
+      count:
+        type: "integer"
+        format: "int32"
+        example: 1
+        description: "总面试房间数"
+      rooms:
+        type: "array"
+        description: "面试房间列表"
+        items:
+          $ref: "#/definitions/Room"
+  Candidate:
+    type: "object"
+    required:
+    - "email"
+    - "id"
+    - "name"
+    - "status"
+    properties:
+      id:
+        type: "string"
+        example: "3001"
+        description: "候选人id"
+      name:
+        type: "string"
+        example: "Mike"
+        description: "候选人姓名"
+      email:
+        type: "string"
+        example: "example@example.com"
+        description: "候选人邮箱"
+      phone:
+        type: "string"
+        example: "1300000000"
+        description: "候选人手机号"
+      status:
+        type: "string"
+        description: "候选人状态"
+        default: "未面试"
+      roomId:
+        type: "string"
+        example: "1001"
+        description: "候选人被分配的唯一的面试房间 id"
+      record:
+        $ref: "#/definitions/Candidate_record"
+  CandidateList:
+    type: "object"
+    required:
+    - "candidates"
+    - "count"
+    - "limit"
+    - "offset"
+    properties:
+      offset:
+        type: "integer"
+        format: "int32"
+        description: "候选人列表的读取偏移"
+      limit:
+        type: "integer"
+        format: "int32"
+        description: "候选人列表读取个数，上限100"
+        minimum: 0
+        maximum: 100
+      count:
+        type: "integer"
+        format: "int32"
+        description: "候选人总人数"
+      candidates:
+        type: "array"
+        description: "候选人列表"
+        items:
+          $ref: "#/definitions/Candidate"
+  Report:
+    type: "object"
+    required:
+    - "id"
+    - "text"
+    properties:
+      id:
+        type: "string"
+        example: "7001"
+        description: "报告id"
+      roomId:
+        type: "string"
+        example: "101"
+        description: "报告所属面试者id"
+      text:
+        type: "string"
+        description: "报告文本"
+  Chat:
+    type: "object"
+    required:
+    - "candidateId"
+    - "sender"
+    - "text"
+    - "time"
+    properties:
+      id:
+        type: "string"
+        example: "10001"
+      candidateId:
+        type: "string"
+        example: "101"
+        description: "聊天所属面试者id"
+      time:
+        type: "string"
+        format: "date-time"
+        example: "2016-01-20T13:30:00Z"
+        description: "聊天项时间,按RFC3339规范"
+      text:
+        type: "string"
+        description: "聊天文本"
+      sender:
+        type: "boolean"
+        description: "消息发送方,false代表面试官,true代表面试者"
+  ChatList:
+    type: "object"
+    required:
+    - "chats"
+    - "limit"
+    - "offset"
+    properties:
+      offset:
+        type: "integer"
+        format: "int32"
+        description: "读取偏移"
+      limit:
+        type: "integer"
+        format: "int32"
+        description: "读取个数"
+        minimum: 0
+        maximum: 20
+      chats:
+        type: "array"
+        description: "聊天记录列表"
+        items:
+          $ref: "#/definitions/Chat"
+  ProblemContent:
+    type: "object"
+    required:
+    - "description"
+    - "title"
+    properties:
+      title:
+        type: "string"
+        example: "题目1"
+        description: "题目标题"
+      description:
+        type: "string"
+        example: "这是一个面试题样例"
+        description: "题目描述"
+      option:
+        type: "array"
+        description: "选择题选项"
+        items:
+          type: "string"
+          example: "选项1"
+      sampleInput:
+        type: "string"
+        example: "1 2"
+        description: "编程题样例输入"
+      sampleOutput:
+        type: "string"
+        example: "-1"
+        description: "编程题样例输出"
+  Problem:
+    type: "object"
+    required:
+    - "id"
+    - "roomId"
+    - "type"
+    properties:
+      id:
+        type: "string"
+        example: "3901"
+        description: "题目id"
+      roomId:
+        type: "string"
+        example: "1001"
+        description: "题目所属房间id"
+      type:
+        type: "string"
+        example: "choice"
+        description: "题目类型(choice, blank, answer, code)"
+  ProblemList:
+    type: "object"
+    required:
+    - "limit"
+    - "offset"
+    - "problems"
+    properties:
+      offset:
+        type: "integer"
+        format: "int32"
+        description: "读取偏移"
+      limit:
+        type: "integer"
+        format: "int32"
+        description: "读取个数"
+        minimum: 0
+        maximum: 20
+      problems:
+        type: "array"
+        description: "面试题列表"
+        items:
+          $ref: "#/definitions/Problem"
+  Candidate_record:
+    properties:
+      video:
+        type: "string"
+        description: "视频记录"
+      board:
+        type: "string"
+        description: "白板"
+      chat:
+        type: "string"
+        description: "聊天文件"
+      code:
+        type: "string"
+        description: "代码"
+      report:
+        type: "string"
+        description: "报告"
+    description: "面试记录文件"
