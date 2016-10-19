@@ -1,4 +1,4 @@
-import React from 'react';
+?import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 import {Navbar, Nav, NavItem} from 'react-bootstrap';
 import '../styles/changeuserinfo.css';
@@ -22,7 +22,7 @@ CIHeadline = React.createClass({
             <header  style = {{ background: '#3498db'}}>
                 <Navbar fixedTop>
                     <Navbar.Header>
-                       杩斿洖
+                        返回
                     </Navbar.Header>
                 </Navbar>
             </header>
@@ -37,9 +37,8 @@ ChangedInfo = React.createClass({
             userEmail : "请输入您的邮箱",
             pass  : "请输入您的密码",
             confirmPass : "请确认您的密码",
-            orgName : "机构名称",
-            userName : "联系人姓名",
-            caf : "请输入右侧验证码"
+            orgName : "请输入您的机构名称",
+            userName : "请输入联系人姓名",
         };
     },
 
@@ -63,32 +62,50 @@ ChangedInfo = React.createClass({
         this.setState({userName: e.target.value});
     },
 
+    checkInfo : function() {
+        if((this.state.email == null) || (this.state.pass == null) || (this.state.confirmPass == null)
+            || (this.state.orgName == null) || (this.state.userName == null)) {
+            alert("请完善您的信息fuck0");
+            return false;
+        }
+        if(this.state.pass != this.state.confirmPass) {
+            alert("密码不一致Fuck1");
+            return false;
+        }
+    },
+
+    handleClick : function() {
+        if(this.checkInfo()) {
+
+        }
+    },
+
     render : function () {
         return (
             <div className = "changeUserInfo">
-                <div><label style = {{color: '#BEBEBE'}}>鍒涘缓涓昏?冩柟璐﹀彿</label></div>
-                <div><label>宸ヤ綔閭锛?</label></div>
+                <div><label style = {{color: '#BEBEBE'}}>修改用户信息</label></div>
+                <div><label>工作邮箱:</label></div>
                 <div><input id="email" name="email" type="email"
                             value = {this.state.userEmail} onChange={this.emailChange}
                             style = {{width: '500px', borderRadius: '10px', height: '40px'}}/></div>
-                <div><label>淇敼瀵嗙爜锛?</label></div>
-                <div><input id="pass" name="password" type="password"
+                <div><label>修改密码:</label></div>
+                <div><input id="pass" name="password" type="text"
                             value = {this.state.pass} onChange={this.passChange}
                             style = {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
-                <div><label>纭瀵嗙爜锛?</label></div>
-                <div><input id="confirmPass" name="confirmPassword" type="password"
+                <div><label>确认密码:</label></div>
+                <div><input id="confirmPass" name="confirmPassword" type="text"
                             value = {this.state.confirmPass} onChange={this.confirmPassChange}
                             style = {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
-                <div><label>鏈烘瀯鍚嶇О锛?</label></div>
+                <div><label>机构名称:</label></div>
                 <div><input id="orgName" name="orgName" type="text"
                             value = {this.state.orgName} onChange={this.orgNameChange}
                             style = {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
-                <div><label>鑱旂郴浜哄鍚嶏細</label></div>
+                <div><label>联系人姓名:</label></div>
                 <div><input id="userName" name="userName" type="text"
                             value = {this.state.userName} onChange={this.userNameChange}
                             style = {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
                 <div><button type="submit"
-                             style ={{backgroundColor: '#00CC50', borderRadius: '15px', width: '500px', height: '40px' }}>鎻愪氦淇敼</button></div>
+                             style ={{backgroundColor: '#00CC50', borderRadius: '15px', width: '500px', height: '40px' }}>提交修改</button></div>
             </div>
         )
     }
