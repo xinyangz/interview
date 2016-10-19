@@ -118,7 +118,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# Database config
+# Database configuration
+
 DB_NAME = 'interview'
 
 DB_PORT = 27017
