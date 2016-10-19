@@ -38,7 +38,7 @@ def user_login(request):
             )
 
     client = pymongo.MongoClient()
-    db = client['interview']
+    db = client[settings.DB_NAME]
 
     cursor = db.users.find({'username': user_data['username']})
     if cursor.count() == 0:
@@ -53,12 +53,13 @@ def user_login(request):
         return Response(
             {
                 'status': '30',
-                'error': 'Multiple records with the same username.'
+                'error': 'Multiple records with the same user name.'
             },
             status.HTTP_400_BAD_REQUEST
         )
     else:
         for item in cursor:
+            # Generate unique token for user
             if item['password'] == user_data['password']:
                 user_part = {
                     'username': item['username'],
@@ -92,7 +93,7 @@ def user_login(request):
                 return Response(
                     {
                         'status': '30',
-                        'error': 'Invalid username or password,'
+                        'error': 'Invalid password.'
                     },
                     status.HTTP_400_BAD_REQUEST
                 )
@@ -114,7 +115,7 @@ def user_logout(request):
             )
 
     client = pymongo.MongoClient()
-    db = client['interview']
+    db = client[settings.DB_NAME]
 
     cursor = db.users.find({'token': user_data['token']})
 
