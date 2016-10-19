@@ -4,9 +4,9 @@ from rest_framework.response import Response
 
 
 @api_view(['GET'])
-def test(request):
+def test(request, **kwargs):
     """
     Test
     """
     if request.method == 'GET':
-        return Response({'key': 'value'})
+        return Response({'version': kwargs['version']})

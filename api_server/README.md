@@ -16,6 +16,8 @@
 
 1. Start development server.
     
-    `python manage.py runserver 8000`
+    ```
+    python manage.py runserver 8000
+    ```
 
-2. Open http://127.0.0.1:8000/test/ in browser to visit the test api. 
+2. Open http://127.0.0.1:8000/v1/test/ in a browser to visit the test api. 
