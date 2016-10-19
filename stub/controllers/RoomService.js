@@ -8,24 +8,16 @@ exports.roomGET = function(args, res, next) {
     var examples = {};
   examples['application/json'] = {
   "rooms" : [ {
-    "interviewer" : "Jason Yip",
-    "candidates" : [],
+    "interviewer" : "aeiou",
+    "candidates" : [ "aeiou" ],
     "name" : "计蒜课秋招（前端）",
     "logo" : "http://example.com/examplepage",
-    "id" : "101",
-    "problems" : [ "1001", "1002", "1003" ]
-  },
-  {
-    "interviewer" : "Jiang Ma",
-    "candidates" : [ "1", "2", "3", "4", "5", "6" ],
-    "name" : "计蒜课秋招（后端）",
-    "logo" : "http://example.com/examplepage",
-    "id" : "102",
-    "problems" : [ "1011", "1012", "1013", "1014" ]
+    "id" : "1001",
+    "problems" : [ "aeiou" ]
   } ],
   "offset" : 0,
   "limit" : 20,
-  "count" : 2
+  "count" : 1
 };
   if(Object.keys(examples).length > 0) {
     res.setHeader('Content-Type', 'application/json');
@@ -34,7 +26,17 @@ exports.roomGET = function(args, res, next) {
   else {
     res.end();
   }
+  
+}
 
+exports.roomRoom_idDELETE = function(args, res, next) {
+  /**
+   * parameters expected in the args:
+  * room_id (String)
+  * token (String)
+  **/
+  // no response value expected for this operation
+  res.end();
 }
 
 exports.roomRoom_idGET = function(args, res, next) {
@@ -45,13 +47,13 @@ exports.roomRoom_idGET = function(args, res, next) {
   **/
     var examples = {};
   examples['application/json'] = {
-    "interviewer" : "Jason Yip",
-    "candidates" : [],
-    "name" : "计蒜课秋招（前端）",
-    "logo" : "http://example.com/examplepage",
-    "id" : "101",
-    "problems" : [ "1001", "1002", "1003" ]
-  };
+  "interviewer" : "aeiou",
+  "candidates" : [ "aeiou" ],
+  "name" : "计蒜课秋招（前端）",
+  "logo" : "http://example.com/examplepage",
+  "id" : "1001",
+  "problems" : [ "aeiou" ]
+};
   if(Object.keys(examples).length > 0) {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(examples[Object.keys(examples)[0]] || {}, null, 2));
@@ -59,7 +61,7 @@ exports.roomRoom_idGET = function(args, res, next) {
   else {
     res.end();
   }
-
+  
 }
 
 exports.roomRoom_idPUT = function(args, res, next) {
@@ -71,13 +73,13 @@ exports.roomRoom_idPUT = function(args, res, next) {
   **/
     var examples = {};
   examples['application/json'] = {
-    "interviewer" : "Jason Yip",
-    "candidates" : [],
-    "name" : "计蒜课秋招（前端）",
-    "logo" : "http://example.com/examplepage",
-    "id" : "101",
-    "problems" : [ "1001", "1002", "1003" ]
-  };
+  "interviewer" : "aeiou",
+  "candidates" : [ "aeiou" ],
+  "name" : "计蒜课秋招（前端）",
+  "logo" : "http://example.com/examplepage",
+  "id" : "1001",
+  "problems" : [ "aeiou" ]
+};
   if(Object.keys(examples).length > 0) {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(examples[Object.keys(examples)[0]] || {}, null, 2));
@@ -85,5 +87,6 @@ exports.roomRoom_idPUT = function(args, res, next) {
   else {
     res.end();
   }
-
+  
 }
+
