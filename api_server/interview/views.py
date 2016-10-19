@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.conf import settings
 import pymongo
 import datetime
 import uuid
@@ -16,7 +17,7 @@ def test(request):
 '''
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def user_login(request):
     '''
     'username': 'elder',
@@ -29,6 +30,15 @@ def user_login(request):
 
     for key in required_keys:
         if key not in user_data:
+            return Response(
+                {
+                    'status': '30',
+                    'error': 'Key error'
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+    for key in user_data:
+        if key not in required_keys:
             return Response(
                 {
                     'status': '30',
@@ -80,8 +90,7 @@ def user_login(request):
                             'token': str(token),
                             'last_login': datetime.datetime.now()
                         }
-                    },
-                    {'upsert': 'false'}
+                    }
                 )
                 return Response(
                     {
@@ -99,13 +108,22 @@ def user_login(request):
                 )
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def user_logout(request):
     required_keys = ['token']
     user_data = request.data
 
     for key in required_keys:
         if key not in user_data:
+            return Response(
+                {
+                    'status': '30',
+                    'error': 'Key error'
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+    for key in user_data:
+        if key not in required_keys:
             return Response(
                 {
                     'status': '30',
@@ -123,7 +141,7 @@ def user_logout(request):
         return Response(
             {
                 'status': '403',
-                'error': '用户未登陆'
+                'error': 'User has not logged in.'
             },
             status.HTTP_403_FORBIDDEN
         )
@@ -137,14 +155,11 @@ def user_logout(request):
                         'token': '',
                         'last_login': datetime.datetime(1970, 1, 1, 0, 0, 0)
                     }
-                },
-                {'upsert': 'false'}
+                }
             )
             return Response(
                 {
                     'status': '200'
-                }
-                , status.HTTP_200_OK
+                },
+                status.HTTP_200_OK
             )
-
-
