@@ -104,11 +104,11 @@ RegisterInfo = React.createClass({
                             value = {this.state.userEmail} onChange={this.emailChange}
                             style= {{width: '500px', borderRadius: '10px', height: '40px'}}/></div>
                 <div><label>密码：</label></div>
-                <div><input id="pass" name="password" type="text"
+                <div><input id="pass" name="password" type="password"
                             value = {this.state.pass} onChange={this.passChange}
                             style= {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
                 <div><label>确认密码：</label></div>
-                <div><input id="confirmPass" name="confirmPassword" type="text"
+                <div><input id="confirmPass" name="confirmPassword" type="password"
                             value = {this.state.confirmPass} onChange={this.confirmPassChange}
                             style= {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
                 <div><label>机构名称：</label></div>
@@ -124,7 +124,7 @@ RegisterInfo = React.createClass({
                             value = {this.state.caf} onChange={this.cafChange}
                             style= {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
                 <div><button type="submit" onClick = {this.handleClick}
-                             style={{backgroundColor: '#00CC50', color : '#FFFFFF', borderRadius: '15px', width: '500px', height: '40px' }}>ע��</button></div>
+                             style={{backgroundColor: '#00CC50', color : '#FFFFFF', borderRadius: '15px', width: '500px', height: '40px' }}>注册</button></div>
             </div>
         )
     }

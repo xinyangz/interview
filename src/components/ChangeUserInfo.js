@@ -84,11 +84,11 @@ ChangedInfo = React.createClass({
                             value = {this.state.userEmail} onChange={this.emailChange}
                             style = {{width: '500px', borderRadius: '10px', height: '40px'}}/></div>
                 <div><label>密码：</label></div>
-                <div><input id="pass" name="password" type="text"
+                <div><input id="pass" name="password" type="password"
                             value = {this.state.pass} onChange={this.passChange}
                             style = {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
                 <div><label>确认密码：</label></div>
-                <div><input id="confirmPass" name="confirmPassword" type="text"
+                <div><input id="confirmPass" name="confirmPassword" type="password"
                             value = {this.state.confirmPass} onChange={this.confirmPassChange}
                             style = {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
                 <div><label>机构名称：</label></div>
@@ -100,7 +100,7 @@ ChangedInfo = React.createClass({
                             value = {this.state.userName} onChange={this.userNameChange}
                             style = {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
                 <div><button type="submit"
-                             style ={{backgroundColor: '#00CC50', borderRadius: '15px', width: '500px', height: '40px' }}>�ύ�޸�</button></div>
+                             style ={{backgroundColor: '#00CC50', borderRadius: '15px', width: '500px', height: '40px' }}>提交</button></div>
             </div>
         )
     }
