@@ -6,11 +6,17 @@ import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 import routes from './routes';
 import configureStore from './store/configureStore';
+import {loadAllRooms} from './actions/roomsActions';
 require('./favicon.ico'); // Tell webpack to load favicon.ico
 import './styles/styles.scss'; // Yep, that's right. You can import SASS/CSS files too! Webpack will run the associated loader and plug this into the page.
 import { syncHistoryWithStore } from 'react-router-redux';
+import axios from 'axios';
+
+axios.defaults.baseURL = 'http://localhost:3030/v1';
 
 const store = configureStore();
+
+store.dispatch(loadAllRooms());
 
 // Create an enhanced history that syncs navigation events with the store
 const history = syncHistoryWithStore(browserHistory, store);

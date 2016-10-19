@@ -8,12 +8,26 @@ exports.roomGET = function(args, res, next) {
     var examples = {};
   examples['application/json'] = {
   "rooms" : [ {
-    "interviewer" : "aeiou",
-    "candidates" : [ "aeiou" ],
+    "interviewer" : "Jason Yip",
+    "candidates" : [ "1", "2" ],
     "name" : "计蒜课秋招（前端）",
     "logo" : "http://example.com/examplepage",
     "id" : "1001",
-    "problems" : [ "aeiou" ]
+    "problems" : [ "2001", "2002" ]
+  }, {
+    "interviewer" : "Jiang Ma",
+    "candidates" : [],
+    "name" : "计蒜课秋招（后端）",
+    "logo" : "http://example.com/examplepage",
+    "id" : "1002",
+    "problems" : [ "2011", "2012", "2013" ]
+  }, {
+    "interviewer" : "Mo Ha",
+    "candidates" : [ "5", "6", "7", "8", "9" ],
+    "name" : "计蒜课秋招（测试）",
+    "logo" : "http://example.com/examplepage",
+    "id" : "1003",
+    "problems" : [ "2021", "2022", "2023", "2024" ]
   } ],
   "offset" : 0,
   "limit" : 20,
@@ -26,7 +40,7 @@ exports.roomGET = function(args, res, next) {
   else {
     res.end();
   }
-  
+
 }
 
 exports.roomRoom_idDELETE = function(args, res, next) {
@@ -61,7 +75,7 @@ exports.roomRoom_idGET = function(args, res, next) {
   else {
     res.end();
   }
-  
+
 }
 
 exports.roomRoom_idPUT = function(args, res, next) {
@@ -87,6 +101,6 @@ exports.roomRoom_idPUT = function(args, res, next) {
   else {
     res.end();
   }
-  
+
 }
 
