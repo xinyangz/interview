@@ -1,0 +1,15 @@
+td {
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+
+.room-name {
+  color: #337ab7;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.link {
+  cursor: pointer;
+}
