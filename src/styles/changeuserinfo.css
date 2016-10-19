@@ -1,0 +1,11 @@
+.changeUserInfo {
+    font:normal 15px/1.5 Arial, Helvetica, Free Sans, sans-serif;
+    color: #222;
+    padding:30px 5% 30px 15%;
+    width:765px;
+    margin-top:10px;
+    vertical-align:middle;
+    border:1px solid #ccc;
+    border-radius:3px;
+    box-shadow:0 0 2px rgba(0,0,0,.2);
+}
