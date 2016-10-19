@@ -1,4 +1,4 @@
-?import React from 'react';
+import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 import {Navbar, Nav, NavItem} from 'react-bootstrap';
 import '../styles/changeuserinfo.css';
@@ -22,7 +22,7 @@ CIHeadline = React.createClass({
             <header  style = {{ background: '#3498db'}}>
                 <Navbar fixedTop>
                     <Navbar.Header>
-                        ·µ»Ø
+                        è¿”å›
                     </Navbar.Header>
                 </Navbar>
             </header>
@@ -34,11 +34,11 @@ var ChangedInfo;
 ChangedInfo = React.createClass({
     getInitialState : function() {
         return {
-            userEmail : "ÇëÊäÈëÄúµÄÓÊÏä",
-            pass  : "ÇëÊäÈëÄúµÄÃÜÂë",
-            confirmPass : "ÇëÈ·ÈÏÄúµÄÃÜÂë",
-            orgName : "ÇëÊäÈëÄúµÄ»ú¹¹Ãû³Æ",
-            userName : "ÇëÊäÈëÁªÏµÈËĞÕÃû",
+          userEmail : "è¯·è¾“å…¥æ‚¨çš„é‚®ç®±",
+          pass  : "è¯·è¾“å…¥æ‚¨çš„å¯†ç ",
+          confirmPass : "è¯·ç¡®è®¤æ‚¨çš„å¯†ç ",
+          orgName : "è¯·è¾“å…¥æ‚¨çš„æœºæ„åç§°",
+          userName : "è¯·è¾“å…¥æ‚¨çš„ç”¨æˆ·å",
         };
     },
 
@@ -63,13 +63,8 @@ ChangedInfo = React.createClass({
     },
 
     checkInfo : function() {
-        if((this.state.email == null) || (this.state.pass == null) || (this.state.confirmPass == null)
-            || (this.state.orgName == null) || (this.state.userName == null)) {
-            alert("ÇëÍêÉÆÄúµÄĞÅÏ¢fuck0");
-            return false;
-        }
         if(this.state.pass != this.state.confirmPass) {
-            alert("ÃÜÂë²»Ò»ÖÂFuck1");
+            alert("å¯†ç ä¸ä¸€è‡´");
             return false;
         }
     },
@@ -83,29 +78,29 @@ ChangedInfo = React.createClass({
     render : function () {
         return (
             <div className = "changeUserInfo">
-                <div><label style = {{color: '#BEBEBE'}}>ĞŞ¸ÄÓÃ»§ĞÅÏ¢</label></div>
-                <div><label>¹¤×÷ÓÊÏä:</label></div>
+                <div><label style = {{color: '#BEBEBE'}}>ä¿®æ”¹ç”¨æˆ·ä¿¡æ¯</label></div>
+                <div><label>å·¥ä½œé‚®ç®±ï¼š</label></div>
                 <div><input id="email" name="email" type="email"
                             value = {this.state.userEmail} onChange={this.emailChange}
                             style = {{width: '500px', borderRadius: '10px', height: '40px'}}/></div>
-                <div><label>ĞŞ¸ÄÃÜÂë:</label></div>
+                <div><label>å¯†ç ï¼š</label></div>
                 <div><input id="pass" name="password" type="text"
                             value = {this.state.pass} onChange={this.passChange}
                             style = {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
-                <div><label>È·ÈÏÃÜÂë:</label></div>
+                <div><label>ç¡®è®¤å¯†ç ï¼š</label></div>
                 <div><input id="confirmPass" name="confirmPassword" type="text"
                             value = {this.state.confirmPass} onChange={this.confirmPassChange}
                             style = {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
-                <div><label>»ú¹¹Ãû³Æ:</label></div>
+                <div><label>æœºæ„åç§°ï¼š</label></div>
                 <div><input id="orgName" name="orgName" type="text"
                             value = {this.state.orgName} onChange={this.orgNameChange}
                             style = {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
-                <div><label>ÁªÏµÈËĞÕÃû:</label></div>
+                <div><label>è”ç³»äººå§“åï¼š</label></div>
                 <div><input id="userName" name="userName" type="text"
                             value = {this.state.userName} onChange={this.userNameChange}
                             style = {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
                 <div><button type="submit"
-                             style ={{backgroundColor: '#00CC50', borderRadius: '15px', width: '500px', height: '40px' }}>Ìá½»ĞŞ¸Ä</button></div>
+                             style ={{backgroundColor: '#00CC50', borderRadius: '15px', width: '500px', height: '40px' }}>ï¿½á½»ï¿½Ş¸ï¿½</button></div>
             </div>
         )
     }

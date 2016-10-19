@@ -1,6 +1,3 @@
-?/**
- * Created by Ñ¦¿­í‘ on 2016/10/19.
- */
 import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 import {Navbar, Nav, NavItem} from 'react-bootstrap';
@@ -32,8 +29,8 @@ HeadLine = React.createClass({
                     </Navbar.Header>
 
                     <Nav pullRight>
-                        <NavItem eventKey={1}>µÇÂ½</NavItem>
-                        <NavItem eventKey={2}>×¢²á</NavItem>
+                        <NavItem eventKey={1}>ç™»å½•</NavItem>
+                        <NavItem eventKey={2}>æ³¨å†Œ</NavItem>
                     </Nav>
                 </Navbar>
             </header>
@@ -45,12 +42,12 @@ var RegisterInfo;
 RegisterInfo = React.createClass({
     getInitialState : function() {
         return {
-            userEmail : "ÇëÊäÈëÄúµÄÓÊÏä",
-            pass  : "ÇëÊäÈëÄúµÄÃÜÂë",
-            confirmPass : "ÇëÈ·ÈÏÄúµÄÃÜÂë",
-            orgName : "ÇëÊäÈëÄúµÄ»ú¹¹Ãû³Æ",
-            userName : "ÇëÊäÈëÄúµÄÁªÏµÈËĞÕÃû",
-            caf : "ÇëÊäÈëÓÒ²àµÄÑéÖ¤Âë"
+            userEmail : "è¯·è¾“å…¥æ‚¨çš„é‚®ç®±",
+            pass  : "è¯·è¾“å…¥æ‚¨çš„å¯†ç ",
+            confirmPass : "è¯·ç¡®è®¤æ‚¨çš„å¯†ç ",
+            orgName : "è¯·è¾“å…¥æ‚¨çš„æœºæ„åç§°",
+            userName : "è¯·è¾“å…¥æ‚¨çš„ç”¨æˆ·å",
+            caf : "è¯·è¾“å…¥å³ä¾§çš„éªŒè¯ç "
         };
     },
 
@@ -83,11 +80,11 @@ RegisterInfo = React.createClass({
     checkInfo : function() {
         if((this.state.email == null) || (this.state.pass == null) || (this.state.confirmPass == null)
             || (this.state.orgName == null) || (this.state.userName == null) || (this.state.caf == null)) {
-            alert("ÇëÍêÉÆÄúµÄĞÅÏ¢");
+            alert("è¯·å®Œå–„æ‚¨çš„ä¿¡æ¯");
             return false;
         }
         if(this.state.pass != this.state.confirmPass) {
-            alert("ÃÜÂë²»Ò»ÖÂ");
+            alert("å¯†ç ä¸ä¸€è‡´");
             return false;
         }
     },
@@ -101,33 +98,33 @@ RegisterInfo = React.createClass({
     render : function () {
         return (
             <div className = "registerInfo">
-                <div><label style = {{color: '#BEBEBE'}}>´´½¨Ö÷¿¼·½ÕËºÅ</label></div>
-                <div><label>¹¤×÷ÓÊÏä£º</label></div>
+                <div><label style = {{color: '#BEBEBE'}}>åˆ›å»ºä¸»è€ƒæ–¹è´¦å·</label></div>
+                <div><label>å·¥ä½œé‚®ç®±ï¼š</label></div>
                 <div><input id="email" name="email" type="email"
                             value = {this.state.userEmail} onChange={this.emailChange}
                             style= {{width: '500px', borderRadius: '10px', height: '40px'}}/></div>
-                <div><label>µÇÂ¼ÃÜÂë£º</label></div>
+                <div><label>å¯†ç ï¼š</label></div>
                 <div><input id="pass" name="password" type="text"
                             value = {this.state.pass} onChange={this.passChange}
                             style= {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
-                <div><label>È·ÈÏÃÜÂë£º</label></div>
+                <div><label>ç¡®è®¤å¯†ç ï¼š</label></div>
                 <div><input id="confirmPass" name="confirmPassword" type="text"
                             value = {this.state.confirmPass} onChange={this.confirmPassChange}
                             style= {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
-                <div><label>»ú¹¹Ãû³Æ£º</label></div>
+                <div><label>æœºæ„åç§°ï¼š</label></div>
                 <div><input id="orgName" name="orgName" type="text"
                             value = {this.state.orgName} onChange={this.orgNameChange}
                             style= {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
-                <div><label>ÁªÏµÈËĞÕÃû£º</label></div>
+                <div><label>è”ç³»äººå§“åï¼š</label></div>
                 <div><input id="userName" name="userName" type="text"
                             value = {this.state.userName} onChange={this.userNameChange}
                             style= {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
-                <div><label>ÑéÖ¤Âë£º</label></div>
+                <div><label>éªŒè¯ç ï¼š</label></div>
                 <div><input id="caf" name="caf" type="text"
                             value = {this.state.caf} onChange={this.cafChange}
                             style= {{width: '500px', borderRadius: '10px', height: '40px' }}/></div>
                 <div><button type="submit" onClick = {this.handleClick}
-                             style={{backgroundColor: '#00CC50', color : '#FFFFFF', borderRadius: '15px', width: '500px', height: '40px' }}>×¢²á</button></div>
+                             style={{backgroundColor: '#00CC50', color : '#FFFFFF', borderRadius: '15px', width: '500px', height: '40px' }}>×¢ï¿½ï¿½</button></div>
             </div>
         )
     }
