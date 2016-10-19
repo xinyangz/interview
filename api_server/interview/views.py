@@ -124,7 +124,8 @@ def user_logout(request):
             {
                 'status': '403',
                 'error': '用户未登陆'
-            }
+            },
+            status.HTTP_403_FORBIDDEN
         )
     else:
         for item in cursor:
@@ -143,6 +144,7 @@ def user_logout(request):
                 {
                     'status': '200'
                 }
+                , status.HTTP_200_OK
             )
 
 

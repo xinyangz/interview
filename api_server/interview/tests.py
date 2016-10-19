@@ -141,7 +141,7 @@ class UserLogoutTestCase(APISimpleTestCase):
             test_db_name = nr.bytes(10)
         settings.DB_NAME = test_db_name
         db = client[settings.DB_NAME]
-        db.users.insert_one(user_data_respond_template)
+        db.users.insert_one()
 
     @classmethod
     def tearDownClass(cls):
@@ -155,13 +155,30 @@ class UserLogoutTestCase(APISimpleTestCase):
         return response
 
     def init_token(self):
-        if post_data_template['token'] is None:
-            client = pymongo.MongoClient(port=settings.DB_PORT)
-            db = client[settings.DB_NAME]
-            post_data_template['token'] = db.users.find_one({'username': 'elder'})['token']
+        client = pymongo.MongoClient(port=settings.DB_PORT)
+        db = client[settings.DB_NAME]
+        if db.users.find({'username': 'elder'}).count() == 0:
+            db.users.insert_one(self.user_data_respond_template)
+        if self.post_data_template['token'] is None:
+            self.post_data_template['token'] = db.users.find_one({'username': 'elder'})['token']
 
     def test_key_error(self):
         self.init_token()
-        post_data = post_data_template.copy()
+        post_data = self.post_data_template.copy()
         post_data['onepointgood'] = "runfast"
-        response = self.get_post_response(self.user_data)
+        response = self.get_post_response(self.post_data)
+        self.assertEqual(response.data['error'], 'Key error')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_not_login(self):
+        self.init_token()
+        post_data = self.post_data_template.copy()
+        post_data['token'] = "thatsabigmistake"
+        response = self.get_post_response(self.post_data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_success(self):
+        self.init_token()
+        post_data = self.post_data_template.copy()
+        response = self.get_post_response(self.post_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
