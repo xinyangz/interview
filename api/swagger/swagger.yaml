@@ -47,6 +47,35 @@ paths:
           description: "用户无访问权限"
           schema:
             $ref: '#/definitions/Error'
+    post:
+      tags:
+        - "room"
+      summary: "添加面试房间"
+      parameters:
+        - name: "room"
+          in: "body"
+          required: true
+          schema:
+            $ref: '#/definitions/Room'
+        - name: "token"
+          in: "query"
+          required: true
+          type: "string"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "创建房间成功，返回房间信息"
+          schema:
+            $ref: '#/definitions/Room'
+        400:
+          description: "创建房间失败"
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: '#/definitions/Error'
   /room/{room_id}:
     get:
       tags:
