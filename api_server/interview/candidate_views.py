@@ -100,7 +100,7 @@ def set_candidate(request, **kwargs):
 
 
 @api_view(['GET'])
-def set_candidate(request, **kwargs):
+def get_candidate(request, **kwargs):
     '''
     'id': '3001',
     'name': 'Mike',
@@ -117,14 +117,13 @@ def set_candidate(request, **kwargs):
     }
     '''
 
-    required_keys = ['token']
-    optional_keys = ['offset', 'limit']
-    candidate_data = request.data['candidate']
-    token = request.data['token']
+    required_key = 'token'
+    all_keys = ['offset', 'limit', 'token']
+    candidate_data = request.data
 
     # Check key error
 
-    if set(required_keys) != set(candidate_data):
+    if required_key not in candidate_data:
         return Response(
             {
                 'status': '30',
@@ -132,13 +131,38 @@ def set_candidate(request, **kwargs):
             },
             status.HTTP_400_BAD_REQUEST
         )
-    if set(record_keys) != set(candidate_data['record']):
+    for key in candidate_data:
+        if key not in all_keys:
+            return Response(
+                {
+                    'status': '30',
+                    'error': 'Key error(in records)'
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+
+    # Check user permission
+
+    client = pymongo.MongoClient()
+    db = client[settings.DB_NAME]
+
+    access_denied = False
+    applicant = db.users.find({'token': candidate_data['token']})
+    if applicant.count() == 0:
+        access_denied = True
+    else:
+        for item in applicant:
+            if item['type'] not in ['hr', 'interviewer']:
+                access_denied = True
+            break
+    if access_denied:
         return Response(
             {
                 'status': '30',
-                'error': 'Key error(in records)'
+                'error': 'Access denied.'
             },
-            status.HTTP_400_BAD_REQUEST
+            status.HTTP_403_FORBIDDEN
         )
 
+    # TODO: Get info
 
