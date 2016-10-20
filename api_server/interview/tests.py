@@ -13,8 +13,8 @@ class UserLoginTestCase(APISimpleTestCase):
 
     user_data_template = {
         'username': 'elder',
-        'password': 'gouqi',
-        'key': 19260817
+        'password': 'gouqi'
+        # 'key': 19260817
     }
 
     user_data_respond_template = {

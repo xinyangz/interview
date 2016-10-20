@@ -15,7 +15,9 @@ def user_login(request, **kwargs):
     'key': 19260817
     '''
 
-    required_keys = ['username', 'password', 'key']
+    # required_keys = ['username', 'password', 'key']
+
+    required_keys = ['username', 'password']
     user_data = request.data
 
     for key in required_keys:
