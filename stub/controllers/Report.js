@@ -6,6 +6,10 @@ var url = require('url');
 var Report = require('./ReportService');
 
 
+module.exports.reportCandidate_idDELETE = function reportCandidate_idDELETE (req, res, next) {
+  Report.reportCandidate_idDELETE(req.swagger.params, res, next);
+};
+
 module.exports.reportCandidate_idGET = function reportCandidate_idGET (req, res, next) {
   Report.reportCandidate_idGET(req.swagger.params, res, next);
 };

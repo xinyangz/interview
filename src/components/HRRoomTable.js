@@ -11,6 +11,7 @@ class HRRoomTable extends React.Component{
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
     this.onDeleteRoomClick = this.onDeleteRoomClick.bind(this);
+    this.onEditRoomClick = this.onEditRoomClick.bind(this);
   }
 
   close() {
@@ -26,6 +27,10 @@ class HRRoomTable extends React.Component{
     this.close();
   }
 
+  onEditRoomClick() {
+    alert('Edit room click!');
+  }
+
   render() {
     return(
       <div>
@@ -34,13 +39,13 @@ class HRRoomTable extends React.Component{
             {this.props.rooms.map(room =>
               <tr key={room.id}>
                 <td>
-                  <a className="room-name" onClick={() => alert('Room title clicked!')}>{room.name}</a>
+                  <a className="room-name" onClick={this.onEditRoomClick}>{room.name}</a>
                 </td>
                 <td>
                   面试官: {room.interviewer} | {room.candidates.length}人
                 </td>
                 <td>
-                  <a className="link" onClick={() => alert('Edit Room Clicked')}>编辑</a> | <a className="link"
+                  <a className="link" onClick={this.onEditRoomClick}>编辑</a> | <a className="link"
                   onClick={() => this.open(room.id)}>删除</a>
                 </td>
               </tr>)}

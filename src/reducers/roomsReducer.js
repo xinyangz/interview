@@ -1,10 +1,12 @@
 import initialState from './initialState';
-import {DELETE_ROOM} from '../constants/actionTypes';
+import * as types from '../constants/actionTypes';
 
 export default function roomsReducer(state = initialState.rooms, action) {
   switch (action.type) {
-    case DELETE_ROOM:
+    case types.DELETE_ROOM_SUCCESS:
       return state.filter(room => room.id != action.room_id);
+    case types.LOAD_ALL_ROOM_SUCCESS:
+      return action.rooms;
     default:
       return state;
   }

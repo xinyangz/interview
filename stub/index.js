@@ -1,7 +1,8 @@
 'use strict';
 
 var connect = require('connect');
-var slow = require('connect-slow');
+var slow = require('connect-slow'); //add delay
+var cors = require('cors'); //add cors support for server stub
 var http = require('http');
 var swaggerTools = require('swagger-tools');
 var jsyaml = require('js-yaml');
@@ -9,7 +10,9 @@ var fs = require('fs');
 var serverPort = 3030;
 
 var app = connect()
-  .use(slow({delay: 500}));
+  .use(slow({delay: 500}))
+  .use(cors());
+
 
 // swaggerRouter configuration
 var options = {

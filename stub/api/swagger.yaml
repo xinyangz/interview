@@ -347,12 +347,12 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "Chat"
-  /problem/{room_id}:
+  /problem/room/{room_id}:
     get:
       tags:
       - "problem"
       summary: "获取房间内面试题目"
-      operationId: "problemRoom_idGET"
+      operationId: "problemRoomRoom_idGET"
       produces:
       - "application/json"
       parameters:
@@ -402,7 +402,7 @@ paths:
       tags:
       - "problem"
       summary: "添加面试题"
-      operationId: "problemRoom_idPOST"
+      operationId: "problemRoomRoom_idPOST"
       consumes:
       - "application/json"
       produces:
@@ -436,6 +436,121 @@ paths:
             $ref: "#/definitions/Error"
         404:
           description: "房间id不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Problem"
+  /problem/{problem_id}:
+    get:
+      tags:
+      - "problem"
+      summary: "获取面试题目"
+      description: "由面试题id获取面试题目"
+      operationId: "problemProblem_idGET"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "problem_id"
+        in: "path"
+        description: "面试题id"
+        required: true
+        type: "string"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "面试题获取成功"
+          schema:
+            $ref: "#/definitions/Problem"
+        400:
+          description: "面试题获取失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "面试题id不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Problem"
+    put:
+      tags:
+      - "problem"
+      summary: "更改面试题"
+      operationId: "problemProblem_idPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "problem_id"
+        in: "path"
+        description: "面试题id"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "problem"
+        description: "更改后的题目"
+        required: true
+        schema:
+          $ref: "#/definitions/Problem"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "面试题更改成功,返回更改后的面试题"
+          schema:
+            $ref: "#/definitions/Problem"
+        400:
+          description: "面试题更改失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "面试题id不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Problem"
+    delete:
+      tags:
+      - "problem"
+      summary: "删除面试题"
+      operationId: "problemProblem_idDELETE"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "problem_id"
+        in: "path"
+        description: "面试题id"
+        required: true
+        type: "string"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "删除面试题成功"
+        400:
+          description: "面试题删除失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "面试题id不存在"
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "Problem"
@@ -501,6 +616,35 @@ paths:
           description: "面试报告更改成功"
           schema:
             $ref: "#/definitions/Report"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "面试者id不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Report"
+    delete:
+      tags:
+      - "report"
+      summary: "删除面试者面试报告"
+      operationId: "reportCandidate_idDELETE"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "candidate_id"
+        in: "path"
+        description: "面试者id"
+        required: true
+        type: "string"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "删除成功"
         403:
           description: "用户无访问权限"
           schema:
@@ -602,6 +746,39 @@ paths:
             $ref: "#/definitions/Room"
         400:
           description: "房间信息更改失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "房间不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Room"
+    delete:
+      tags:
+      - "room"
+      summary: "删除房间"
+      operationId: "roomRoom_idDELETE"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "room_id"
+        in: "path"
+        description: "面试房间id\n"
+        required: true
+        type: "string"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "删除房间成功"
+        400:
+          description: "删除房间失败"
           schema:
             $ref: "#/definitions/Error"
         403:

@@ -1,5 +1,15 @@
 'use strict';
 
+exports.reportCandidate_idDELETE = function(args, res, next) {
+  /**
+   * parameters expected in the args:
+  * candidate_id (String)
+  * token (String)
+  **/
+  // no response value expected for this operation
+  res.end();
+}
+
 exports.reportCandidate_idGET = function(args, res, next) {
   /**
    * parameters expected in the args:
