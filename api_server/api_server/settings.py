@@ -117,4 +117,11 @@ STATIC_URL = '/static/'
 REST_FRAMEWORK = {
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning',
     'ALLOWED_VERSIONS': ['v1'],
+    'DEFAULT_VERSION': 'v1',
 }
+
+# Database configuration
+
+DB_NAME = 'interview'
+
+DB_PORT = 27017
