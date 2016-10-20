@@ -1,10 +1,13 @@
 from django.conf.urls import url, include
-from . import views
+from . import user_views as user_views
+from . import candidate_views as candidate_views
 
 api_patterns = [
-    url(r'^user/login$', views.user_login, name='user-login'),
-    url(r'^user/logout$', views.user_logout, name='user-logout'),
-    url(r'^user/register$', views.user_register, name='user-register'),
+    url(r'^user/login$', user_views.user_login, name='user-login'),
+    url(r'^user/logout$', user_views.user_logout, name='user-logout'),
+    url(r'^user/register$', user_views.user_register, name='user-register'),
+    url(r'^candicate/$', candidate_views.set_candidate, name='set-candidate'),
+    url(r'^candidate/$', candidate_views.get_candidate, name='get-candidate'),
 ]
 
 urlpatterns = [
