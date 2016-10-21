@@ -126,3 +126,5 @@ REST_FRAMEWORK = {
 DB_NAME = 'interview'
 
 DB_PORT = 27017
+
+REPORT_PATH = '/report/'
