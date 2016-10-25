@@ -118,7 +118,7 @@ paths:
             面试房间id
           required: true
           type: string
-        - name: body
+        - name: room
           in: body
           description: |
             面试房间信息
@@ -630,13 +630,13 @@ paths:
           description: "面试者id"
           type: "string"
           required: true
-        - name: "text"
+        - name: "body"
           in: "body"
           description: "新的报告文本"
           type: "string"
           required: true
           schema:
-            $ref: '#/definitions/Report'
+            $ref: '#/definitions/ReportIn'
         - name: "token"
           in: "query"
           required: true
@@ -1189,7 +1189,21 @@ definitions:
         type: string
         description: "报告id"
         example: "7001"
-      roomId:
+      candidateId:
+        type: string
+        description: "报告所属面试者id"
+        example: "101"
+      text:
+        type: string
+        description: "报告文本"
+  ReportIn:
+    type: object
+    required:
+      - id
+      - candidateId
+      - text
+    properties:
+      candidateId:
         type: string
         description: "报告所属面试者id"
         example: "101"
