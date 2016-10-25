@@ -5,6 +5,7 @@ from django.conf import settings
 import pymongo
 import datetime
 import uuid
+from interview.permissions import check_permission
 
 
 @api_view(['GET'])
@@ -177,15 +178,15 @@ def user_register(request, **kwargs):
     # check
     for key in required_keys:
         if key not in data_dict:
-            return Response({'status': '30', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
+            return Response({'status': '400', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
     for key in data_dict:
         if key not in all_keys:
-            return Response({'status': '30', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
+            return Response({'status': '400', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
 
     # check type
     user_type = data_dict['type']
     if user_type not in ('hr', 'interviewer', 'candidate'):
-        return Response({'status': '30', 'error': 'Invalid user type'}, status.HTTP_400_BAD_REQUEST)
+        return Response({'status': '400', 'error': 'Invalid user type'}, status.HTTP_400_BAD_REQUEST)
 
     client = pymongo.MongoClient(port=settings.DB_PORT)
     db = client[settings.DB_NAME]
@@ -194,7 +195,7 @@ def user_register(request, **kwargs):
     username = data_dict['username']
     cursor = db.users.find({'username': username})
     if cursor.count() > 0:
-        return Response({'status': '30', 'error': 'Username already exists'}, status.HTTP_401_UNAUTHORIZED)
+        return Response({'status': '401', 'error': 'Username already exists'}, status.HTTP_401_UNAUTHORIZED)
 
     # insert
     original_dict = data_dict.copy()
