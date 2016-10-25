@@ -177,10 +177,10 @@ def user_register(request, **kwargs):
     # check
     for key in required_keys:
         if key not in data_dict:
-            return Response({'status': '30', 'error': 'User information is incomplete'}, status.HTTP_400_BAD_REQUEST)
+            return Response({'status': '30', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
     for key in data_dict:
         if key not in all_keys:
-            return Response({'status': '30', 'error': 'Unexpected field in user information'}, status.HTTP_400_BAD_REQUEST)
+            return Response({'status': '30', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
 
     # check type
     user_type = data_dict['type']
