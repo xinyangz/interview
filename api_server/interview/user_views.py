@@ -7,7 +7,7 @@ import datetime
 import uuid
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def user_login(request, **kwargs):
     '''
     'username': 'elder',
@@ -18,7 +18,7 @@ def user_login(request, **kwargs):
     # required_keys = ['username', 'password', 'key']
 
     required_keys = ['username', 'password']
-    user_data = request.data
+    user_data = request.GET
 
     for key in required_keys:
         if key not in user_data:
@@ -100,10 +100,10 @@ def user_login(request, **kwargs):
                 )
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def user_logout(request, **kwargs):
     required_keys = ['token']
-    user_data = request.data
+    user_data = request.GET
 
     for key in required_keys:
         if key not in user_data:

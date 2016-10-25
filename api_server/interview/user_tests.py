@@ -66,14 +66,14 @@ class UserLoginTestCase(APISimpleTestCase):
         if self.db.users.find({'contact': 'Hawaii'}).count() == 0:
             self.db.users.insert_one(self.database_error_template)
 
-    def get_post_response(self, data):
+    def get_get_response(self, data):
         url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/user/login'
-        response = self.client.post(url, data, format='json')
+        response = self.client.get(url, data)
         return response
 
     def test_success_full(self):
         self.init_db()
-        response = self.get_post_response(self.user_data_template)
+        response = self.get_get_response(self.user_data_template)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data['user']['username'],
@@ -83,7 +83,7 @@ class UserLoginTestCase(APISimpleTestCase):
         self.init_db()
         user_data = self.user_data_template.copy()
         user_data['username'] += '1s'
-        response = self.get_post_response(user_data)
+        response = self.get_get_response(user_data)
         self.assertEqual(response.data['error'], 'User does not exist.')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -91,12 +91,12 @@ class UserLoginTestCase(APISimpleTestCase):
         self.init_db()
         user_data = self.user_data_template.copy()
         user_data['wuzhongshengyou'] = 'fuzeren'
-        response = self.get_post_response(user_data)
+        response = self.get_get_response(user_data)
         self.assertEqual(response.data['error'], 'Key error')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         user_data = self.user_data_template.copy()
         del user_data['password']
-        response = self.get_post_response(user_data)
+        response = self.get_get_response(user_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['error'], 'Key error')
 
@@ -113,7 +113,7 @@ class UserLoginTestCase(APISimpleTestCase):
                 }
             }
         )
-        response = self.get_post_response(self.user_data_template)
+        response = self.get_get_response(self.user_data_template)
         db.users.update(
             {'contact': 'Hawaii'},
             {
@@ -134,7 +134,7 @@ class UserLoginTestCase(APISimpleTestCase):
         self.init_db()
         user_data = self.user_data_template.copy()
         user_data['password'] += 'life_experience'
-        response = self.get_post_response(user_data)
+        response = self.get_get_response(user_data)
         self.assertEqual(response.data['error'], 'Invalid password.')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -173,9 +173,9 @@ class UserLogoutTestCase(APISimpleTestCase):
         db_client = pymongo.MongoClient(port=settings.DB_PORT)
         db_client.drop_database(settings.DB_NAME)
 
-    def get_post_response(self, data):
+    def get_get_response(self, data):
         url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/user/logout'
-        response = self.client.post(url, data, format='json')
+        response = self.client.get(url, data)
         return response
 
     def init_token(self):
@@ -195,12 +195,12 @@ class UserLogoutTestCase(APISimpleTestCase):
         self.init_token()
         post_data = self.post_data_template.copy()
         post_data['onepointgood'] = "runfast"
-        response = self.get_post_response(post_data)
+        response = self.get_get_response(post_data)
         self.assertEqual(response.data['error'], 'Key error')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         post_data = self.post_data_template.copy()
         del post_data['token']
-        response = self.get_post_response(post_data)
+        response = self.get_get_response(post_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['error'], 'Key error')
 
@@ -208,14 +208,14 @@ class UserLogoutTestCase(APISimpleTestCase):
         self.init_token()
         post_data = self.post_data_template.copy()
         post_data['token'] = "thatsabigmistake"
-        response = self.get_post_response(post_data)
+        response = self.get_get_response(post_data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.data['error'], 'User has not logged in.')
 
     def test_success(self):
         self.init_token()
         post_data = self.post_data_template.copy()
-        response = self.get_post_response(post_data)
+        response = self.get_get_response(post_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
