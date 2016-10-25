@@ -5,18 +5,17 @@ from django.conf import settings
 import pymongo
 import uuid
 import subprocess
-import pylatex
 import os
 
 @api_view(['PUT'])
-def put_report(request, candidate_name, **kwargs):
+def put_report(request, token, **kwargs):
 
     '''
     'id': '7001',
     'roomId': '101',
     'text': 'string'
     '''
-
+    # TODO: token from where?
     required_keys = ['candidate_id', 'text', 'token']
 
     report_data = request.data
@@ -72,10 +71,39 @@ def put_report(request, candidate_name, **kwargs):
         }
     )
 
-    # Write report
 
-    with open(tex_file_path + '.tex', 'w') as f:
-        # TODO: Write a report template here
+    candidate_user_data = db.users.find_one({'candidate_id': report_data['candidate_id']})
+    candidate_candidate_data = db.candidate.find_one({'id': report_data['candidate_id']})
+
+    candidate_name = candidate_candidate_data['name']
+    candidate_id = report_data['candidate_id']
+    candidate_organization = candidate_user_data['organization']
+    candidate_contact = candidate_user_data['contact']
+    candidate_phone = candidate_candidate_data['phone']
+    candidate_email = candidate_candidate_data['email']
+    candidate_status = candidate_candidate_data['status']
+
+    # TODO: Where is the logo?
+    logo = "./generate_report/iitmlogo.pdf"
+    # Write report
+    with open(settings.REPORT_PATH + 'header.tex', 'r') as fheader:
+        lines = []
+        with open(tex_file_path + '.tex', 'w') as f:
+            # Warning: Dirty implementations
+            lines.append(fheader.read())
+            lines.append("\\begin{document}")
+            lines.append("\\begin{tabular*}{7in}{l@{\extracolsep{\\fill}}r}")
+            lines.append(" & \\multirow{4}{*}{\includegraphics[scale=0.19]{" + logo + "}} \\\\")
+            lines.append(" & \\\\")
+            lines.append("\\textbf{\Large " + candidate_name + "$|$" + candidate_id + "} & \\\\")
+            lines.append(candidate_organization + "& \\\\")
+            lines.append(candidate_phone + "& \\\\")
+            lines.append(candidate_email + "& \\\\")
+            lines.append(candidate_contact + \\\\)
+            lines.append("\\end{tabular*} \\\\")
+
+            lines.append("\\reshading{\Large{面试结果：" + candidate_status + "}}")
+
 
     subprocess.call('xelatex ' + report_path + '.tex -output-directory=' + settings.REPORT_PATH)
 
