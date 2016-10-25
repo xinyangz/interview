@@ -5,6 +5,7 @@ api_patterns = [
     url(r'^user/login$', user_views.user_login, name='user-login'),
     url(r'^user/logout$', user_views.user_logout, name='user-logout'),
     url(r'^user/register$', user_views.user_register, name='user-register'),
+    url(r'^user/(?P<username>([^/]+))$', user_views.user_manage, name='user-manage'),
 ]
 
 urlpatterns = [
