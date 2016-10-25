@@ -302,3 +302,4 @@ class UserRegisterTestCase(APISimpleTestCase):
         response = self.get_post_response(self.user_data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(response.data['error'], 'Username already exists')
+
