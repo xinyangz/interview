@@ -27,8 +27,8 @@ def set_candidate(request,  **kwargs):
 
     required_keys = ['id', 'name', 'email', 'phone', 'status', 'roomId', 'record']
     record_keys = ['video', 'board', 'chat', 'code', 'report']
-    candidate_data = request.data['candidate']
-    token = request.POST['token']
+    candidate_data = request.data
+    token = request.GET.get('token')
 
     # Check key error
 
@@ -74,9 +74,9 @@ def set_candidate(request,  **kwargs):
 
     # Add record
 
-    temp_username = "User_" + str(uuid.uuid4()[:8])
+    temp_username = "User_" + str(uuid.uuid4())[:8]
     while db.users.find({'username': temp_username}).count() > 0:
-        temp_username = "User_" + str(uuid.uuid4()[:8])
+        temp_username = "User_" + str(uuid.uuid4())[:8]
     temp_password = uuid.uuid4()
     user_part = {
         'username': temp_username,
@@ -104,7 +104,7 @@ def get_candidate_list(request,  **kwargs):
 
     all_keys = ['offset', 'limit']
     candidate_data = request.data
-    token = request.GET['token']
+    token = request.GET.get('token')
 
     # Check key error
 
@@ -144,12 +144,10 @@ def get_candidate_list(request,  **kwargs):
     # TODO: Get info
 
 @api_view(['GET', 'DELETE', 'PUT'])
-def workon_candidate(request, candidate_id, **kwargs)
-
-    token = request.GET['token']
+def workon_candidate(request, candidate_id, **kwargs):
+    token = request.GET.get('token')
     client = pymongo.MongoClient()
     db = client[settings.DB_NAME]
-
     # Check user permission
 
     access_denied = False
@@ -178,15 +176,15 @@ def workon_candidate(request, candidate_id, **kwargs)
             {
                 'status': '30',
                 'error': 'Candidate not found.'
-            }
+            },
             status.HTTP_404_NOT_FOUND
         )
-    elif data.count() > 1:
+    elif data.count() > 1: # Should never occur
         return Response(
             {
                 'status': '30',
                 'error': 'Candidate id duplicated'
-            }
+            },
             status.HTTP_400_BAD_REQUEST
         )
 
@@ -201,10 +199,15 @@ def workon_candidate(request, candidate_id, **kwargs)
             temp_data['status'] = item['status']
             temp_data['roomId'] = item['roomId']
             temp_data['record'] = item['record']
-            return temp_data
+            return Response(
+                {
+                    'data':  temp_data
+                },
+                status.HTTP_200_OK
+            )
     elif request.method == 'PUT':
         # Put data
-        input_data = request.data['candidate']
+        input_data = request.data
         if input_data['id'] is not candidate_id:
             for item in data:
                 dulp_list = db.candidate.find({'id': input_data['id']})
@@ -222,7 +225,7 @@ def workon_candidate(request, candidate_id, **kwargs)
                 '$set':
                 {
                     'id': input_data['id'],
-                     'name': input_data['name'],
+                    'name': input_data['name'],
                     'email': input_data['email'],
                     'phone': input_data['phone'],
                     'status': input_data['status'],
@@ -231,7 +234,10 @@ def workon_candidate(request, candidate_id, **kwargs)
                 }
             }
         )
-        return db.candidate.find_one({'id': input_data['id']})
+        return Response(
+            input_data,
+            status.HTTP_200_OK
+        )
 
     elif request.method == 'DELETE':
         # Delete data
