@@ -74,7 +74,6 @@
     "cross-env": "2.0.1",
     "css-loader": "0.24.0",
     "enzyme": "2.4.1",
-    "es6-promise": "4.0.5",
     "eslint": "3.4.0",
     "eslint-plugin-import": "1.14.0",
     "eslint-plugin-jsx-a11y": "2.2.0",
