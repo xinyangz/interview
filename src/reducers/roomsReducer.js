@@ -5,7 +5,7 @@ import {combineReducers} from 'redux';
 const rooms = (state = initialState.roomsStates.rooms, action) => {
   switch (action.type) {
     case types.DELETE_ROOM_SUCCESS:
-      return state.filter(room => room.id != action.room_id);
+      return state.filter(room => room.id != action.roomId);
     case types.LOAD_ALL_ROOMS_SUCCESS:
       return action.rooms;
     default:

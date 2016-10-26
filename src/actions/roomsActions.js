@@ -11,10 +11,10 @@ export function beginDeleteRoom() {
   };
 }
 
-export function deleteRoomSuccess(room_id) {
+export function deleteRoomSuccess(roomId) {
   return {
     type: types.DELETE_ROOM_SUCCESS,
-    room_id
+    roomId
   };
 }
 
@@ -45,35 +45,35 @@ export function loadAllRoomsError(error) {
   };
 }
 
-export function deleteRoom(room_id) {
+export function deleteRoom(roomId) {
   return dispatch => {
     dispatch(beginDeleteRoom());
-    axios.delete('/room/' + room_id + '?token=' + token)
+    return axios.delete('/room/' + roomId + '?token=' + token)
       .then(response => {
         if (response.status === 200) {
-          dispatch(deleteRoomSuccess(room_id));
+          dispatch(deleteRoomSuccess(roomId));
         }
         else {
-          dispatch(deleteRoomError(response.data));
+          dispatch(deleteRoomError(response.data.error));
         }
       })
-      .catch(error => dispatch(deleteRoomError(error)));
+      .catch(error => dispatch(deleteRoomError(error.response.data.error || error)));
   };
 }
 
 export function loadAllRooms() {
   return dispatch => {
     dispatch(beginLoadAllRooms());
-    axios.get('/room' + '?token=' + token)
+    return axios.get('/room' + '?token=' + token)
       .then(response => {
         if (response.status === 200) {
           dispatch(loadAllRoomsSuccess(response.data.rooms));
         }
         else {
-          dispatch(loadAllRoomsError(response.data));
+          dispatch(loadAllRoomsError(response.data.error));
         }
       })
-      .catch(error => dispatch(loadAllRoomsError(error)));
+      .catch(error => dispatch(loadAllRoomsError(error.response.data.error || error)));
   };
 }
 
