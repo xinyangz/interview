@@ -73,7 +73,7 @@ HRRoomTable.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    rooms: state.rooms
+    rooms: state.roomsStates.rooms
   };
 }
 
