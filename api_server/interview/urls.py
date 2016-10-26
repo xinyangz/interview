@@ -7,7 +7,8 @@ api_patterns = [
     url(r'^user/logout$', user_views.user_logout, name='user-logout'),
     url(r'^user/register$', user_views.user_register, name='user-register'),
     url(r'^candicate/$', candidate_views.set_candidate, name='set-candidate'),
-    url(r'^candidate/$', candidate_views.get_candidate, name='get-candidate'),
+    url(r'^candidate/$', candidate_views.get_candidate_list, name='get-candidate-list'),
+    url(r'^candidate/(P<candidate_id>(\w+))/', candidate_views.workon_candidate, name='workon-candidate'),
 ]
 
 urlpatterns = [
