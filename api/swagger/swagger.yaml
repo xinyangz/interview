@@ -56,7 +56,7 @@ paths:
           in: "body"
           required: true
           schema:
-            $ref: '#/definitions/Room'
+            $ref: '#/definitions/RoomPost'
         - name: "token"
           in: "query"
           required: true
@@ -76,10 +76,47 @@ paths:
           description: "用户无访问权限"
           schema:
             $ref: '#/definitions/Error'
+  /room/{room_id}/logo:
+    put:
+      tags:
+        - "room"
+      summary: "上传面试房间logo"
+      consumes:
+        - 'image/*'
+      parameters:
+        - name: "room_id"
+          in: "path"
+          description: "面试房间id"
+          required: true
+          type: "string"
+        - name: "image"
+          in: "body"
+          description: "logo图片"
+          required: true
+          type: "file"
+        - name: "token"
+          in: "query"
+          required: true
+          type: "string"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "更改logo成功，返回房间信息"
+          schema:
+            $ref: '#/definitions/Room'
+        400:
+          description: "更改logo失败"
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: '#/definitions/Error'
   /room/{room_id}:
     get:
       tags:
-            - "room"
+        - "room"
       summary: "获取面试房间信息"
       parameters:
         - name: "room_id"
@@ -124,7 +161,7 @@ paths:
             面试房间信息
           required: true
           schema:
-            $ref: '#/definitions/Room'
+            $ref: '#/definitions/RoomPost'
         - name: token
           in: query
           type: string
@@ -236,7 +273,7 @@ paths:
             添加的候选人信息
           required: true
           schema:
-            $ref: '#/definitions/Candidate'
+            $ref: '#/definitions/PostCandidate'
         - name: token
           in: query
           type: string
@@ -366,6 +403,52 @@ paths:
             $ref: '#/definitions/Error'
         404:
           description: 候选人不存在
+          schema:
+            $ref: '#/definitions/Error'
+  /candidate/room/{room_id}:
+    get:
+      tags:
+        - candidate
+      summary: "获取属于某个房间的候选人列表"
+      produces:
+        - application/json
+      parameters:
+        - name: "room_id"
+          in: path
+          type: "string"
+          description: "房间id"
+          required: true
+        - name: "offset"
+          in: query
+          description: |
+            从第几个候选人开始读
+          default: 0
+          minimum: 0
+          type: integer
+          format: int32
+        - name: limit
+          in: query
+          description: |
+            读取数量
+          default: 10
+          maximum: 100
+          type: integer
+          format: int32
+        - name: token
+          in: query
+          type: string
+          required: true
+      responses:
+        200:
+          description: "候选人列表"
+          schema:
+            $ref: '#/definitions/CandidateList'
+        400:
+          description: "候选人列表获取失败"
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: "用户无访问权限"
           schema:
             $ref: '#/definitions/Error'
   /candidate/{candidate_id}/status:
@@ -975,14 +1058,6 @@ paths:
             $ref: "#/definitions/Error"
 
 definitions:
-  Status:
-    type: "object"
-    required:
-      - "status"
-    properties:
-      status:
-        type: "integer"
-        format: "int32"
   _Error:
     type: "object"
     required:
@@ -993,10 +1068,8 @@ definitions:
   Error:
     type: "object"
     allOf:
-      - $ref: "#/definitions/Status"
       - $ref: "#/definitions/_Error"
     example:
-      status: "30"
       error: "错误信息"
   User:
     type: "object"
@@ -1069,13 +1142,32 @@ definitions:
         items:
           type: "string"
         example: ['200', '201']
+  RoomPost:
+    type: "object"
+    required:
+      - "name"
+      - "interviewer"
+    properties:
+      name:
+        description: "面试房间名称"
+        type: "string"
+        example: "计蒜课秋招（前端）"
+      interviewer:
+        description: "面试官ID，若不存在则置空"
+        type: "string"
+      candidates:
+        description: "候选人ID列表"
+        type: "array"
+        items:
+          type: "string"
+        example: ['100', '101', '102']
   RoomList:
     type: "object"
     required:
       - "offset"
       - "limit"
       - "count"
-      - "users"
+      - "rooms"
     properties:
       offset:
         type: "integer"
@@ -1099,6 +1191,33 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/Room"
+  PostCandidate:
+    type: "object"
+    required:
+      - "name"
+      - "email"
+      - "status"
+    properties:
+      name:
+        description: "候选人姓名"
+        type: "string"
+        example: "Mike"
+      email:
+        description: "候选人邮箱"
+        type: "string"
+        example: "example@example.com"
+      phone:
+        description: "候选人手机号"
+        type: "string"
+        example: "1300000000"
+      status:
+        description: "候选人状态"
+        default: "未面试"
+        type: "string"
+      roomId:
+        description: "候选人被分配的唯一的面试房间 id"
+        type: "string"
+        example: "1001"
   Candidate:
     type: "object"
     required:
