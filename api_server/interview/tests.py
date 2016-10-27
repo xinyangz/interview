@@ -407,7 +407,6 @@ class CandidateTestCase(APISimpleTestCase):
 
     def get_get_response_get_all(self, offset, limit, token):
         url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/candidate?offset=' + str(offset) + '&limit' + str(limit) + '&token=' + token
-        print url
         response = self.client.get(url)
         return response
 
@@ -572,7 +571,6 @@ class CandidateTestCase(APISimpleTestCase):
         another_data = self.another_candidate_data.copy()
         another_data['id'] = '302'
         self.db.candidate.insert_one(another_data)
-        self.get_life_status()
         response = self.get_get_response_get_all(0, 2, 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.db.candidate.delete_one({'id': '302'})

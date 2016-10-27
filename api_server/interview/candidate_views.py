@@ -98,13 +98,20 @@ def get_set_candidate(request, **kwargs):
             status.HTTP_200_OK
         )
     elif request.method == 'GET':
-        print "GET"
         offset = request.GET.get('offset')
         limit = request.GET.get('limit')
+        if offset == None or offset == '':
+            offset = 0
+        else:
+            offset = int(offset)
 
-        # TODO: Get info
-        sorted_candidate = db.candidate.find({}).sort({"id": +1})
-        if offset + limit - 1 > len(sorted_candidate):
+        if limit == None or limit == '':
+            limit = 1
+        else:
+            limit = int(limit)
+
+        sorted_candidate = db.candidate.find({}).sort('id', pymongo.ASCENDING)
+        if (offset + limit - 1 > int(sorted_candidate.count())):
             return Response(
                 {
                     'status' :'30',
@@ -112,10 +119,18 @@ def get_set_candidate(request, **kwargs):
                 },
                 status.HTTP_400_BAD_REQUEST
             )
-
-        print sorted_candidate[offset, offset + limit]
+        return_list = map(lambda x: {
+            'id': x['id'],
+            'name': x['name'],
+            'email': x['email'],
+            'phone': x['phone'],
+            'status': x['status'],
+            'roomId': x['roomId'],
+            'record': x['record']
+        },list(sorted_candidate)[offset: offset + limit])
         return Response(
             {
+                'data': return_list
                 #sorted_candidate[offset, offset + limit]
             },
             status.HTTP_200_OK
