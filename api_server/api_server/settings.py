@@ -127,4 +127,6 @@ DB_NAME = 'interview'
 
 DB_PORT = 27017
 
-REPORT_PATH = '/report/'
+REPORT_PATH = 'report/'
+
+TEX_PATH = 'report_tex/'
