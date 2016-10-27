@@ -362,7 +362,7 @@ class CandidateTestCase(APISimpleTestCase):
     }
 
     # In user collection, user name is unique.
-    # In applicant collection, nothing is unique but the reference to name in user collection('unique_username')
+    # In applicant collection, id is unique and the reference to name in user collection('unique_username')
     db = None
     @classmethod
     def setUpClass(cls):
@@ -385,6 +385,11 @@ class CandidateTestCase(APISimpleTestCase):
         db_client = pymongo.MongoClient(port=settings.DB_PORT)
         db_client.drop_database(settings.DB_NAME)
 
+    def get_put_response_change(self, candidate_id, status, token):
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/candidate/' + str(candidate_id) + '/status?status=' + str(status) + '&token=' + token
+        response = self.client.put(url)
+        return response
+
     def get_delete_response_delete(self, candidate_id, token):
         url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/candidate/' + str(candidate_id) + '?token=' + token
         response = self.client.delete(url)
@@ -398,6 +403,12 @@ class CandidateTestCase(APISimpleTestCase):
     def get_post_response_add(self, data, token):
         url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/candidate?token=' + token
         response = self.client.post(url, data, format='json')
+        return response
+
+    def get_get_response_get_all(self, offset, limit, token):
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/candidate?offset=' + str(offset) + '&limit' + str(limit) + '&token=' + token
+        print url
+        response = self.client.get(url)
         return response
 
     def get_get_response_get(self, candidate_id, token):
@@ -449,9 +460,12 @@ class CandidateTestCase(APISimpleTestCase):
             self.db.candidate.insert_one(candidate_data_tmp)
 
     def get_life_status(self):
+        print ''
+        print "Candidate:"
         for item in self.db.candidate.find({}):
             print item
         print ''
+        print "User:"
         for item in self.db.users.find({}):
             print item
 
@@ -531,4 +545,34 @@ class CandidateTestCase(APISimpleTestCase):
         response = self.get_delete_response_delete(301, 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_put_change_success(self):
+        self.init_Wallace()
+        self.init_Elder()
+        response = self.get_put_response_change(301, 'AliveForever', 'exampletoken')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.get_put_response_change(301, 'Alive', 'exampletoken')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_put_change_bad_token(self):
+        self.init_Wallace()
+        self.init_Sharon()
+        self.init_Elder()
+        response = self.get_put_response_change(301, 'Yingdian', 'fastertoken')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_put_change_bad_candidate(self):
+        self.init_Elder()
+        self.init_Wallace()
+        response = self.get_put_response_change(306, 'Alive', 'exampletoken')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_get_all_success(self):
+        self.init_Elder()
+        self.init_Wallace()
+        another_data = self.another_candidate_data.copy()
+        another_data['id'] = '302'
+        self.db.candidate.insert_one(another_data)
+        self.get_life_status()
+        response = self.get_get_response_get_all(0, 2, 'exampletoken')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.db.candidate.delete_one({'id': '302'})

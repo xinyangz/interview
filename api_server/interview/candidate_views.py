@@ -7,8 +7,8 @@ import datetime
 import uuid
 
 
-@api_view(['POST'])
-def set_candidate(request,  **kwargs):
+@api_view(['POST', 'GET'])
+def get_set_candidate(request, **kwargs):
     '''
     'id': '3001',
     'name': 'Mike',
@@ -24,36 +24,10 @@ def set_candidate(request,  **kwargs):
         'report':'string'
     }
     '''
-
-    required_keys = ['id', 'name', 'email', 'phone', 'status', 'roomId', 'record']
-    record_keys = ['video', 'board', 'chat', 'code', 'report']
-    candidate_data = request.data
     token = request.GET.get('token')
-
-    # Check key error
-
-    if set(required_keys) != set(candidate_data):
-        return Response(
-            {
-                'status': '30',
-                'error': 'Key error'
-            },
-            status.HTTP_400_BAD_REQUEST
-        )
-    if set(record_keys) != set(candidate_data['record']):
-        return Response(
-            {
-                'status': '30',
-                'error': 'Key error(in records)'
-            },
-            status.HTTP_400_BAD_REQUEST
-        )
-
     client = pymongo.MongoClient()
     db = client[settings.DB_NAME]
-
     # Check user permission
-
     access_denied = False
     applicant = db.users.find({'token': token})
     if applicant.count() == 0:
@@ -72,44 +46,24 @@ def set_candidate(request,  **kwargs):
             status.HTTP_403_FORBIDDEN
         )
 
-    # Add record
 
-    temp_username = "User_" + str(uuid.uuid4())[:8]
-    while db.users.find({'username': temp_username}).count() > 0:
-        temp_username = "User_" + str(uuid.uuid4())[:8]
-    temp_password = uuid.uuid4()
-    user_part = {
-        'username': temp_username,
-        'type': 'candidate',
-        'email': candidate_data['email'],
-        'password': temp_password,
-        'organization': 'Candidate Group',
-        'contact': candidate_data['phone'],
-    }
-    db.users.insert_one(user_part)
+    if request.method == 'POST':
+        required_keys = ['id', 'name', 'email', 'phone', 'status', 'roomId', 'record']
+        record_keys = ['video', 'board', 'chat', 'code', 'report']
+        candidate_data = request.data
 
-    candidate_part = candidate_data.copy()
-    candidate_part['unique_username'] = temp_username
-    db.candidate.insert_one(candidate_part)
-    return Response(
-        {
-            'status': '200'
-        },
-        status.HTTP_200_OK
-    )
+        # Check key error
 
-
-@api_view(['GET'])
-def get_candidate_list(request,  **kwargs):
-
-    all_keys = ['offset', 'limit']
-    candidate_data = request.data
-    token = request.GET.get('token')
-
-    # Check key error
-
-    for key in candidate_data:
-        if key not in all_keys:
+        if set(required_keys) != set(candidate_data):
+            return Response(
+                {
+                    'status': '30',
+                    'error': 'Key error'
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+        if set(record_keys) != set(candidate_data['record']):
+            print "Key error record"
             return Response(
                 {
                     'status': '30',
@@ -118,30 +72,64 @@ def get_candidate_list(request,  **kwargs):
                 status.HTTP_400_BAD_REQUEST
             )
 
-    # Check user permission
+       # Add record
 
-    client = pymongo.MongoClient()
-    db = client[settings.DB_NAME]
+        temp_username = "User_" + str(uuid.uuid4())[:8]
+        while db.users.find({'username': temp_username}).count() > 0:
+            temp_username = "User_" + str(uuid.uuid4())[:8]
+        temp_password = uuid.uuid4()
+        user_part = {
+            'username': temp_username,
+            'type': 'candidate',
+            'email': candidate_data['email'],
+            'password': temp_password,
+            'organization': 'Candidate Group',
+            'contact': candidate_data['phone'],
+        }
+        db.users.insert_one(user_part)
 
-    access_denied = False
-    applicant = db.users.find({'token': token})
-    if applicant.count() == 0:
-        access_denied = True
+        candidate_part = candidate_data.copy()
+        candidate_part['unique_username'] = temp_username
+        db.candidate.insert_one(candidate_part)
+        return Response(
+            {
+                'status': '200'
+            },
+            status.HTTP_200_OK
+        )
+    elif request.method == 'GET':
+        print "GET"
+        offset = request.GET.get('offset')
+        limit = request.GET.get('limit')
+
+        # TODO: Get info
+        sorted_candidate = db.candidate.find({}).sort({"id": +1})
+        if offset + limit - 1 > len(sorted_candidate):
+            return Response(
+                {
+                    'status' :'30',
+                    'error': 'Index out of boundary'
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+
+        print sorted_candidate[offset, offset + limit]
+        return Response(
+            {
+                #sorted_candidate[offset, offset + limit]
+            },
+            status.HTTP_200_OK
+        )
     else:
-        for item in applicant:
-            if item['type'] not in ['hr', 'interviewer']:
-                access_denied = True
-            break
-    if access_denied:
         return Response(
             {
                 'status': '30',
-                'error': 'Access denied.'
+                'error': 'Unknown method'
             },
-            status.HTTP_403_FORBIDDEN
+            status.HTTP_400_BAD_REQUEST
         )
 
-    # TODO: Get info
+
 
 @api_view(['GET', 'DELETE', 'PUT'])
 def workon_candidate(request, candidate_id, **kwargs):
@@ -255,4 +243,76 @@ def workon_candidate(request, candidate_id, **kwargs):
             status.HTTP_400_BAD_REQUEST
         )
 
+@api_view(['PUT'])
+def change_status_candidate(request, candidate_id, **kwargs):
+
+    new_status = request.GET.get('status')
+    token = request.GET.get('token')
+    # Check key error
+
+
+    client = pymongo.MongoClient()
+    db = client[settings.DB_NAME]
+
+    # Check user permission
+
+    access_denied = False
+    applicant = db.users.find({'token': token})
+    if applicant.count() == 0:
+        access_denied = True
+    else:
+        for item in applicant:
+            if item['type'] not in ['hr', 'interviewer']:
+                access_denied = True
+            break
+    if access_denied:
+        return Response(
+            {
+                'status': '30',
+                'error': 'Access denied.'
+            },
+            status.HTTP_403_FORBIDDEN
+        )
+
+    candidate = db.candidate.find({'id': candidate_id})
+    if candidate.count() == 0:
+        return Response(
+            {
+                'status': '30',
+                'error': 'Candidate not found.'
+            },
+            status.HTTP_404_NOT_FOUND
+        )
+    elif candidate.count() > 1:
+        return Response(
+            {
+                'status': '30',
+                'error': 'Candidate id duplicated'
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
+    else:
+        for item in candidate:
+            db.candidate.update(
+                {'id': candidate_id},
+                {
+                    '$set':
+                    {
+                        'status': new_status
+                    }
+                }
+            )
+            response_dict = {
+                "id": item['id'],
+                "name": item['name'],
+                "email": item['email'],
+                "phone": item['phone'],
+                'status': item['status'],
+                'roomId': item['roomId'],
+                'record': item['record'],
+            }
+            return Response(
+                response_dict,
+                status.HTTP_200_OK
+            )
 
