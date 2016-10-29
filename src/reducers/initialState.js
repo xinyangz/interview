@@ -15,5 +15,10 @@ export default {
       threeYear: 0
     }
   },
-  rooms: []
+  rooms: [],
+  isLogin: false,
+  userToken: undefined,
+  userType: undefined,
+  userInfo: {}
+
 };

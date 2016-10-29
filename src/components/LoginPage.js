@@ -72,6 +72,14 @@ function mapStateToProps() {
   };
 }
 
+/*
+function mapDispatchToProps() {
+  return {
+
+  };
+}
+*/
+
 //export default LoginPage;
 export default connect(mapStateToProps, {login})(LoginPage);
 

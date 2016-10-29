@@ -3,10 +3,6 @@ import { push } from 'react-router-redux';
 import axios from 'axios';
 
 
-// import { polyfill } from 'es6-promise';
-// require('es6-promise').polyfill();
-
-
 export function beginLogin() {
   return {
     type: types.USER_LOGIN
