@@ -5,9 +5,10 @@ from django.conf import settings
 import pymongo
 import datetime
 import uuid
+from interview.permissions import check_permission
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def user_login(request, **kwargs):
     '''
     'username': 'elder',
@@ -18,13 +19,13 @@ def user_login(request, **kwargs):
     # required_keys = ['username', 'password', 'key']
 
     required_keys = ['username', 'password']
-    user_data = request.data
+    user_data = request.GET
 
     for key in required_keys:
         if key not in user_data:
             return Response(
                 {
-                    'status': '30',
+                    'status': '400',
                     'error': 'Key error'
                 },
                 status.HTTP_400_BAD_REQUEST
@@ -33,7 +34,7 @@ def user_login(request, **kwargs):
         if key not in required_keys:
             return Response(
                 {
-                    'status': '30',
+                    'status': '400',
                     'error': 'Key error'
                 },
                 status.HTTP_400_BAD_REQUEST
@@ -46,7 +47,7 @@ def user_login(request, **kwargs):
     if cursor.count() == 0:
         return Response(
             {
-                'status': '30',
+                'status': '400',
                 'error': 'User does not exist.'
             },
             status.HTTP_400_BAD_REQUEST
@@ -54,7 +55,7 @@ def user_login(request, **kwargs):
     elif cursor.count() > 1:
         return Response(
             {
-                'status': '30',
+                'status': '400',
                 'error': 'Multiple records with the same user name.'
             },
             status.HTTP_400_BAD_REQUEST
@@ -93,23 +94,23 @@ def user_login(request, **kwargs):
             else:
                 return Response(
                     {
-                        'status': '30',
+                        'status': '400',
                         'error': 'Invalid password.'
                     },
                     status.HTTP_400_BAD_REQUEST
                 )
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def user_logout(request, **kwargs):
     required_keys = ['token']
-    user_data = request.data
+    user_data = request.GET
 
     for key in required_keys:
         if key not in user_data:
             return Response(
                 {
-                    'status': '30',
+                    'status': '400',
                     'error': 'Key error'
                 },
                 status.HTTP_400_BAD_REQUEST
@@ -118,7 +119,7 @@ def user_logout(request, **kwargs):
         if key not in required_keys:
             return Response(
                 {
-                    'status': '30',
+                    'status': '400',
                     'error': 'Key error'
                 },
                 status.HTTP_400_BAD_REQUEST
@@ -177,15 +178,15 @@ def user_register(request, **kwargs):
     # check
     for key in required_keys:
         if key not in data_dict:
-            return Response({'status': '30', 'error': 'User information is incomplete'}, status.HTTP_400_BAD_REQUEST)
+            return Response({'status': '400', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
     for key in data_dict:
         if key not in all_keys:
-            return Response({'status': '30', 'error': 'Unexpected field in user information'}, status.HTTP_400_BAD_REQUEST)
+            return Response({'status': '400', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
 
     # check type
     user_type = data_dict['type']
     if user_type not in ('hr', 'interviewer', 'candidate'):
-        return Response({'status': '30', 'error': 'Invalid user type'}, status.HTTP_400_BAD_REQUEST)
+        return Response({'status': '400', 'error': 'Invalid user type'}, status.HTTP_400_BAD_REQUEST)
 
     client = pymongo.MongoClient(port=settings.DB_PORT)
     db = client[settings.DB_NAME]
@@ -194,9 +195,87 @@ def user_register(request, **kwargs):
     username = data_dict['username']
     cursor = db.users.find({'username': username})
     if cursor.count() > 0:
-        return Response({'status': '30', 'error': 'Username already exists'}, status.HTTP_401_UNAUTHORIZED)
+        return Response({'status': '401', 'error': 'Username already exists'}, status.HTTP_401_UNAUTHORIZED)
 
     # insert
     original_dict = data_dict.copy()
     db.users.insert_one(data_dict)
     return Response(original_dict, status=status.HTTP_200_OK)
+
+
+@api_view(['DELETE', 'GET', 'PUT'])
+def user_manage(request, **kwargs):
+
+    permitted_user_types = ['hr', 'interviewer']
+
+    if not check_permission(request, permitted_user_types):
+        return Response(
+            {
+                'status': '403',
+                'error': 'Permission denied'
+            },
+            status.HTTP_403_FORBIDDEN
+        )
+
+    username = kwargs['username']
+
+    client = pymongo.MongoClient()
+    db = client[settings.DB_NAME]
+
+    cursor = db.users.find({'username': username})
+    if cursor.count() == 0:
+        return Response(
+            {
+                'status': '404',
+                'error': 'User does not exist.'
+            },
+            status.HTTP_404_NOT_FOUND
+        )
+    elif cursor.count() > 1:
+        return Response(
+            {
+                'status': '400',
+                'error': 'Multiple records with the same user name.'
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
+
+    if request.method == 'DELETE':
+        db.users.delete_one({'username': username})
+        return Response(status=status.HTTP_200_OK)
+
+    if request.method == 'GET':
+        user_data = cursor[0]
+        del user_data['_id']
+        del user_data['token']
+        return Response(user_data, status.HTTP_200_OK)
+
+    if request.method == 'PUT':
+        # TODO API change
+        required_keys = ['username', 'type', 'email', 'password']
+        optional_keys = ['organization', 'contact']
+        all_keys = required_keys + optional_keys
+
+        changed_data = request.data
+
+        for key in changed_data:
+            if key not in all_keys:
+                return Response(
+                    {
+                        'status': '400',
+                        'error': 'Key error'
+                    },
+                    status.HTTP_400_BAD_REQUEST
+                )
+
+        db.users.update_one(
+            {'username': username},
+            {
+                '$set': changed_data
+            }
+        )
+
+        user_data = db.users.find({'username': username})[0]
+        del user_data['_id']
+        del user_data['token']
+        return Response(user_data, status.HTTP_200_OK)
