@@ -15,5 +15,8 @@ export default {
       threeYear: 0
     }
   },
-  rooms: []
+  roomsStates: {
+    rooms: [],
+    isWaiting: false
+  }
 };

@@ -2,55 +2,78 @@ import * as types from '../constants/actionTypes';
 
 import axios from 'axios';
 
-export function deleteRoomSuccess(room_id) {
+// token should be read from state
+const token = '123';
+
+export function beginDeleteRoom() {
   return {
-    type: types.DELETE_ROOM_SUCCESS,
-    room_id
+    type: types.DELETE_ROOM
   };
 }
 
-export function deleteRoomError() {
-  alert('删除房间错误');
+export function deleteRoomSuccess(roomId) {
+  return {
+    type: types.DELETE_ROOM_SUCCESS,
+    roomId
+  };
 }
 
-export function loadAllRoomsSuccess(data) {
+export function deleteRoomError(error) {
   return {
-    type: types.LOAD_ALL_ROOM_SUCCESS,
-    rooms: data.rooms
+    type: types.DELETE_ROOM_ERROR,
+    error
+  };
+}
+
+export function beginLoadAllRooms() {
+  return {
+    type: types.LOAD_ALL_ROOMS
+  };
+}
+
+export function loadAllRoomsSuccess(rooms) {
+  return {
+    type: types.LOAD_ALL_ROOMS_SUCCESS,
+    rooms
   };
 }
 
 export function loadAllRoomsError(error) {
-  alert('读取房间列表错误' + error);
+  return {
+    type: types.LOAD_ALL_ROOMS_ERROR,
+    error
+  };
 }
 
-export function deleteRoom(room_id) {
+export function deleteRoom(roomId) {
   return dispatch => {
-    axios.delete('/room/' + room_id + '?token=123')
+    dispatch(beginDeleteRoom());
+    return axios.delete('/room/' + roomId + '?token=' + token)
       .then(response => {
         if (response.status === 200) {
-          dispatch(deleteRoomSuccess(room_id));
+          dispatch(deleteRoomSuccess(roomId));
         }
         else {
-          dispatch(deleteRoomError());
+          dispatch(deleteRoomError(response.data.error));
         }
       })
-      .catch(error => alert(error));
+      .catch(error => dispatch(deleteRoomError(error.response.data.error || error)));
   };
 }
 
 export function loadAllRooms() {
   return dispatch => {
-    axios.get('/room?token=123')
+    dispatch(beginLoadAllRooms());
+    return axios.get('/room' + '?token=' + token)
       .then(response => {
         if (response.status === 200) {
-          dispatch(loadAllRoomsSuccess(response.data));
+          dispatch(loadAllRoomsSuccess(response.data.rooms));
         }
         else {
-          dispatch(loadAllRoomsError(response.data));
+          dispatch(loadAllRoomsError(response.data.error));
         }
       })
-      .catch(error => alert(error));
+      .catch(error => dispatch(loadAllRoomsError(error.response.data.error || error)));
   };
 }
 
