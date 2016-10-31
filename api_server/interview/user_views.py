@@ -5,6 +5,8 @@ from django.conf import settings
 import pymongo
 import datetime
 import uuid
+import jsonschema
+from . import schemas
 from interview.permissions import check_permission
 
 
@@ -163,30 +165,34 @@ def user_register(request, **kwargs):
     """
     {
         "username": "Tom",
-        "type":
+        "type": "hr",
         "email": "example@example.com",
         "password": "12345",
-        "organization": "Example Company"
+        "organization": "Example Company",
         "contact": "Example Contact"
     }
     """
-    required_keys = ['username', 'type', 'email', 'password']
-    optional_keys = ['organization', 'contact']
-    all_keys = required_keys + optional_keys
+    # required_keys = ['username', 'type', 'email', 'password']
+    # optional_keys = ['organization', 'contact']
+    # all_keys = required_keys + optional_keys
     data_dict = request.data
-
-    # check
-    for key in required_keys:
-        if key not in data_dict:
-            return Response({'status': '400', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
-    for key in data_dict:
-        if key not in all_keys:
-            return Response({'status': '400', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
-
-    # check type
-    user_type = data_dict['type']
-    if user_type not in ('hr', 'interviewer', 'candidate'):
-        return Response({'status': '400', 'error': 'Invalid user type'}, status.HTTP_400_BAD_REQUEST)
+    #
+    # # check
+    # for key in required_keys:
+    #     if key not in data_dict:
+    #         return Response({'status': '400', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
+    # for key in data_dict:
+    #     if key not in all_keys:
+    #         return Response({'status': '400', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
+    #
+    # # check type
+    # user_type = data_dict['type']
+    # if user_type not in ('hr', 'interviewer', 'candidate'):
+    #     return Response({'status': '400', 'error': 'Invalid user type'}, status.HTTP_400_BAD_REQUEST)
+    try:
+        jsonschema.validate(data_dict, schemas.user_schema)
+    except:
+        return Response({'status': '400', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
 
     client = pymongo.MongoClient(port=settings.DB_PORT)
     db = client[settings.DB_NAME]

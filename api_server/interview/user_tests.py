@@ -293,7 +293,7 @@ class UserRegisterTestCase(APISimpleTestCase):
         user_data['type'] = 'what'
         response = self.get_post_response(user_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data['error'], 'Invalid user type')
+        self.assertEqual(response.data['error'], 'Key error')
 
     def test_name_conflict(self):
         self.user_data['username'] += 'x'
