@@ -47,7 +47,7 @@ class UserLoginTestCase(APISimpleTestCase):
                 break
             # test_db_name = nr.bytes(10)
             test_db_name = ''.join(
-                random.choice(string.lowercase) for i in range(10))
+                random.choice(string.ascii_lowercase) for i in range(10))
         settings.DB_NAME = test_db_name
 
     @classmethod
@@ -164,7 +164,7 @@ class UserLogoutTestCase(APISimpleTestCase):
             if test_db_name not in existing_db_names:
                 break
             test_db_name = ''.join(
-                random.choice(string.lowercase) for i in range(10))
+                random.choice(string.ascii_lowercase) for i in range(10))
         settings.DB_NAME = test_db_name
 
     @classmethod
@@ -612,7 +612,7 @@ class UserManageTestCase(APISimpleTestCase):
             if test_db_name not in existing_db_names:
                 break
             test_db_name = ''.join(
-                random.choice(string.lowercase) for i in range(10))
+                random.choice(string.ascii_lowercase) for i in range(10))
         settings.DB_NAME = test_db_name
         # Initialize database
         db = pymongo.MongoClient(port=settings.DB_PORT)[settings.DB_NAME]
