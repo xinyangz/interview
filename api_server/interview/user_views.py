@@ -6,7 +6,7 @@ import pymongo
 import datetime
 import uuid
 import jsonschema
-from . import schemas
+from .schemas import swagger_schema
 from interview.permissions import check_permission
 
 
@@ -190,7 +190,7 @@ def user_register(request, **kwargs):
     # if user_type not in ('hr', 'interviewer', 'candidate'):
     #     return Response({'status': '400', 'error': 'Invalid user type'}, status.HTTP_400_BAD_REQUEST)
     try:
-        jsonschema.validate(data_dict, schemas.user_schema)
+        jsonschema.validate(data_dict, swagger_schema['definitions']['User'])
     except:
         return Response({'status': '400', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
 
