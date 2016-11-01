@@ -1,12 +1,10 @@
 import initialState from './initialState';
 import * as types from '../constants/actionTypes';
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 
-const isLogin = (
-  state = initialState.isLogin,
-  action
-) => {
-  switch(action.type) {
+const isLogin = (state = initialState.user.isLogin,
+                 action) => {
+  switch (action.type) {
     case types.USER_LOGIN_SUCCESS:
     case types.USER_LOGIN:
       return true;
@@ -17,11 +15,22 @@ const isLogin = (
   }
 };
 
-const userToken = (
-  state = initialState.userToken,
-  action
-) => {
-  switch(action.type) {
+const wrongPassword = (state = initialState.user.wrongPassword,
+                       action) => {
+  switch (action.type) {
+    case types.USER_LOGIN_ERROR:
+      if (action.error === 'wrong password')
+        return true;
+      else
+        return false;
+    default:
+      return state;
+  }
+};
+
+const userToken = (state = initialState.user.userToken,
+                   action) => {
+  switch (action.type) {
     case types.USER_LOGIN_SUCCESS:
       return action.token;
     default:
@@ -29,10 +38,8 @@ const userToken = (
   }
 };
 
-const userType = (
-  state = initialState.userType,
-  action
-) => {
+const userType = (state = initialState.user.userType,
+                  action) => {
   switch (action.type) {
     case types.USER_LOGIN_SUCCESS:
       return action.user.type;
@@ -41,10 +48,8 @@ const userType = (
   }
 };
 
-const userInfo = (
-  state = initialState.userInfo,
-    action
-) => {
+const userInfo = (state = initialState.user.userInfo,
+                  action) => {
   switch (action.type) {
     case types.USER_LOGIN_SUCCESS:
       return action.user;
@@ -57,6 +62,7 @@ const userReducer = combineReducers({
   isLogin,
   userToken,
   userType,
+  wrongPassword,
   userInfo
 });
 

@@ -14,11 +14,9 @@ class LoginPage extends React.Component {
 
   onLoginClicked(event) {
     event.preventDefault();
-    //alert('login button clicked');
     const { login } = this.props;
     const username = ReactDOM.findDOMNode(this.refs.username).value;
     const password = ReactDOM.findDOMNode(this.refs.password).value;
-    console.log(username, password);
     login({ username, password });
   }
 
@@ -50,12 +48,10 @@ class LoginPage extends React.Component {
                 <FormGroup controlId = "formHorizontalError">
                   <h4>
                     <Label bsStyle="warning">
-                      {this.props.isLogin ? "账号或密码错误！" : ""}
+                      {(this.props.wrongPassword === true) ? "账号或密码错误！" : ""}
                     </Label>
                   </h4>
                 </FormGroup>
-
-
 
                 <FormGroup>
                   <Col smOffset={2} sm={8}>
@@ -73,25 +69,17 @@ class LoginPage extends React.Component {
 }
 
 LoginPage.propTypes = {
-  isLogin: PropTypes.object,
-  login: PropTypes.func.isRequired
+  isLogin: PropTypes.bool.isRequired,
+  login: PropTypes.func.isRequired,
+  wrongPassword: PropTypes.bool.isRequired
 };
 
-
-function mapStateToProps({isLogin}) {
+function mapStateToProps(state) {
   return {
-    isLogin
+    isLogin : state.user.isLogin,
+    wrongPassword: state.user.wrongPassword
   };
 }
 
-/*
-function mapDispatchToProps() {
-  return {
-
-  };
-}
-*/
-
-//export default LoginPage;
 export default connect(mapStateToProps, {login})(LoginPage);
 

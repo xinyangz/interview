@@ -10,7 +10,6 @@ export function beginLogin() {
 }
 
 export function loginSuccess(data) {
-  debugger;
   return {
     type: types.USER_LOGIN_SUCCESS,
     user: data.user,
@@ -18,8 +17,11 @@ export function loginSuccess(data) {
   };
 }
 
-export function loginError() {
-  alert('登陆失败');
+export function loginError(error) {
+  return {
+    type: types.USER_LOGIN_ERROR,
+    error
+  };
 }
 
 export function login(data) {
@@ -34,11 +36,14 @@ export function login(data) {
           dispatch(push('/'));
           console.log('response correct');
         }
+        else if (response.status === 400) {
+          dispatch(loginError('wrong password'));
+        }
         else {
-          dispatch(loginError());
+          dispatch(loginError(response.data));
         }
       })
-      .catch(err => alert(err));
+      .catch(dispatch(loginError(error)));
   };
 }
 

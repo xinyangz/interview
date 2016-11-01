@@ -16,9 +16,12 @@ export default {
     }
   },
   rooms: [],
-  isLogin: null,
-  userToken: null,
-  userType: null,
-  userInfo: {}
+  user: {
+    isLogin: false,
+    wrongPassword: false,
+    userToken: null,
+    userType: null,
+    userInfo: {}
+  }
 
 };
