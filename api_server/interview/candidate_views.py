@@ -32,7 +32,7 @@ def get_set_candidate(request, **kwargs):
     '''
 
     # Check user permission
-    if permissions.check_token(request, ('hr', 'interviewer')) != permissions.PASS:
+    if permissions.check(request, ('hr', 'interviewer')) != permissions.PASS:
         return Response(
             {
                 'status': '30',
@@ -45,8 +45,6 @@ def get_set_candidate(request, **kwargs):
     db = client[settings.DB_NAME]
 
     if request.method == 'POST':
-        required_keys = ['id', 'name', 'email', 'phone', 'status', 'roomId', 'record']
-        record_keys = ['video', 'board', 'chat', 'code', 'report']
         candidate_data = request.data
 
         # Check key error
@@ -131,7 +129,7 @@ def get_set_candidate(request, **kwargs):
 @api_view(['GET', 'DELETE', 'PUT'])
 def workon_candidate(request, candidate_id, **kwargs):
     # Check user permission
-    if permissions.check_token(request, ('hr', 'interviewer')) != permissions.PASS:
+    if permissions.check(request, ('hr', 'interviewer')) != permissions.PASS:
         return Response(
             {
                 'status': '30',
@@ -225,7 +223,7 @@ def change_status_candidate(request, candidate_id, **kwargs):
     db = client[settings.DB_NAME]
 
     # Check user permission
-    if permissions.check_token(request, ('hr', 'interviewer')) != permissions.PASS:
+    if permissions.check(request, ('hr', 'interviewer')) != permissions.PASS:
         return Response(
             {
                 'status': '30',

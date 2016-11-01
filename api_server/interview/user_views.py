@@ -105,7 +105,7 @@ def user_login(request, **kwargs):
 
 @api_view(['GET'])
 def user_logout(request, **kwargs):
-    perm_result = permissions.check_token(request)
+    perm_result = permissions.check(request)
     if perm_result == permissions.NO_TOKEN or perm_result == permissions.NO_PERMISSION:
         return Response(
             {
@@ -198,7 +198,7 @@ def user_manage(request, **kwargs):
 
     permitted_user_types = ['hr', 'interviewer']
 
-    if permissions.check_token(request, permitted_user_types) != permissions.PASS:
+    if permissions.check(request, permitted_user_types) != permissions.PASS:
         return Response(
             {
                 'status': '403',
