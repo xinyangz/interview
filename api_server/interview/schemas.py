@@ -1,5 +1,5 @@
 """
-JSON Schemas related to API format.
+JSON converted from swagger.yaml.
 """
 
 swagger_schema = {
@@ -1570,6 +1570,7 @@ swagger_schema = {
     "definitions": {
         "_Error": {
             "type": "object",
+            "additionalProperties": False,
             "required": [
                 "error"
             ],
@@ -1581,6 +1582,7 @@ swagger_schema = {
         },
         "Error": {
             "type": "object",
+            "additionalProperties": False,
             "allOf": [
                 {
                     "$ref": "#/definitions/_Error"
@@ -1597,12 +1599,13 @@ swagger_schema = {
                 "email",
                 "type"
             ],
+            "additionalProperties": False,
             "properties": {
                 "username": {
                     "type": "string"
                 },
                 "type": {
-                    "type": "string"
+                    "enum": ["hr", "interviewer", "candidate"]
                 },
                 "email": {
                     "type": "string"
@@ -1628,6 +1631,7 @@ swagger_schema = {
         },
         "LoginInfo": {
             "type": "object",
+            "additionalProperties": False,
             "properties": {
                 "user": {
                     "$ref": "#/definitions/User"
@@ -1647,6 +1651,7 @@ swagger_schema = {
                 "candidates",
                 "problems"
             ],
+            "additionalProperties": False,
             "properties": {
                 "id": {
                     "type": "string",
@@ -1698,6 +1703,7 @@ swagger_schema = {
                 "name",
                 "interviewer"
             ],
+            "additionalProperties": False,
             "properties": {
                 "name": {
                     "description": "面试房间名称",
@@ -1730,6 +1736,7 @@ swagger_schema = {
                 "count",
                 "rooms"
             ],
+            "additionalProperties": False,
             "properties": {
                 "offset": {
                     "type": "integer",
@@ -1767,6 +1774,7 @@ swagger_schema = {
                 "email",
                 "status"
             ],
+            "additionalProperties": False,
             "properties": {
                 "name": {
                     "description": "候选人姓名",
@@ -1803,6 +1811,7 @@ swagger_schema = {
                 "email",
                 "status"
             ],
+            "additionalProperties": False,
             "properties": {
                 "id": {
                     "description": "候选人id",
@@ -1870,6 +1879,7 @@ swagger_schema = {
                 "limit",
                 "candidates"
             ],
+            "additionalProperties": False,
             "properties": {
                 "offset": {
                     "type": "integer",
@@ -1904,6 +1914,7 @@ swagger_schema = {
                 "candidateId",
                 "text"
             ],
+            "additionalProperties": False,
             "properties": {
                 "id": {
                     "type": "string",
@@ -1928,6 +1939,7 @@ swagger_schema = {
                 "candidateId",
                 "text"
             ],
+            "additionalProperties": False,
             "properties": {
                 "candidateId": {
                     "type": "string",
@@ -1948,6 +1960,7 @@ swagger_schema = {
                 "text",
                 "sender"
             ],
+            "additionalProperties": False,
             "properties": {
                 "id": {
                     "type": "string",
@@ -1982,6 +1995,7 @@ swagger_schema = {
                 "limit",
                 "chats"
             ],
+            "additionalProperties": False,
             "properties": {
                 "offset": {
                     "type": "integer",
@@ -2010,6 +2024,7 @@ swagger_schema = {
                 "title",
                 "description"
             ],
+            "additionalProperties": False,
             "properties": {
                 "title": {
                     "type": "string",
@@ -2049,6 +2064,7 @@ swagger_schema = {
                 "type",
                 "content"
             ],
+            "additionalProperties": False,
             "properties": {
                 "id": {
                     "type": "string",
@@ -2080,6 +2096,7 @@ swagger_schema = {
                 "limit",
                 "problems"
             ],
+            "additionalProperties": False,
             "properties": {
                 "offset": {
                     "type": "integer",
