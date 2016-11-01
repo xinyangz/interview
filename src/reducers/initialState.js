@@ -18,5 +18,9 @@ export default {
   roomsStates: {
     rooms: [],
     isWaiting: false
+  },
+  problemStates: {
+    problems: [],
+    isWaiting: false
   }
 };

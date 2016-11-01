@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import RoomTitle from './RoomTitle';
 import ControlTab from './ControlTab';
 
@@ -19,6 +19,7 @@ class InterviewerPage extends React.Component {
   render() {
     return (
       <div>
+        <h1>{}</h1>
         <RoomTitle room={room}/>
         <ControlTab/>
       </div>
