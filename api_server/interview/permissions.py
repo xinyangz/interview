@@ -9,7 +9,7 @@ NO_PERMISSION = 3
 DUPLICATE_TOKEN = 4
 
 
-def check_permission(request, permitted_user_types=None):
+def check_token(request, permitted_user_types=None):
     """
     Check the if the request is permitted.
     :param request: Request to check
