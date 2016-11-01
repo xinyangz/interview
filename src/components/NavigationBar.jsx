@@ -23,11 +23,14 @@ const Navigation = () => {
           <LinkContainer to="/about">
             <NavItem eventKey={3}>About</NavItem>
           </LinkContainer>
+          <LinkContainer to="/interviewer">
+            <NavItem eventKey={4}>面试官房间</NavItem>
+          </LinkContainer>
         </Nav>
 
         <Nav pullRight>
-          <NavItem eventKey={4}>登陆</NavItem>
-          <NavItem eventKey={5}>注册</NavItem>
+          <NavItem eventKey={5}>登录</NavItem>
+          <NavItem eventKey={6}>注册</NavItem>
         </Nav>
       </Navbar>
     </header>

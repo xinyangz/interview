@@ -13,7 +13,8 @@ export default (
   <Route path="/" component={App}>
     <IndexRoute component={HRRoomTable}/>
     <Route path="fuel-savings" component={FuelSavingsPage}/>
-    <Route path="about" component={InterviewerPage}/>
+    <Route path="about" component={AboutPage}/>
+    <Route path="interviewer" component={InterviewerPage} />
     <Route path="*" component={NotFoundPage}/>
   </Route>
 );
