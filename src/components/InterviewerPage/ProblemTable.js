@@ -82,7 +82,7 @@ class ProblemTable extends React.Component {
             <Modal.Title>确认删除题目？</Modal.Title>
           </Modal.Header>
           <Modal.Footer>
-            <Button onClick={this.close}>取消</Button>
+            <Button onClick={this.closeDeleteModal}>取消</Button>
             <Button bsStyle="primary" onClick={this.onDeleteRoomClick}>确认</Button>
           </Modal.Footer>
         </Modal>
