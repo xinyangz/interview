@@ -8,11 +8,13 @@ import AboutPage from './components/AboutPage.js';
 import NotFoundPage from './components/NotFoundPage.js';
 import HRRoomTable from './components/HRRoomTable';
 import InterviewerPage from './components/InterviewerPage/InterviewerPage';
+import WelcomePage from './components/WelcomePage';
 import LoginPage from './components/LoginPage';
 
 export default (
   <Route path="/" component={App}>
-    <IndexRoute component={HRRoomTable}/>
+    <IndexRoute component={WelcomePage}/>
+    <Route path="/hr" component={HRRoomTable} />
     <Route path="fuel-savings" component={FuelSavingsPage}/>
     <Route path="about" component={AboutPage}/>
     <Route path="interviewer" component={InterviewerPage} />

@@ -10,21 +10,18 @@ const Navigation = () => {
       <Navbar fixedTop>
         <Navbar.Header>
           <Navbar.Brand>
-            <a href="/">React Slingshot</a>
+            <a href="/">面试管理平台</a>
           </Navbar.Brand>
         </Navbar.Header>
         <Nav>
-          <IndexLinkContainer to="/">
-            <NavItem eventKey={1}>Home</NavItem>
+          <IndexLinkContainer to="/hr">
+            <NavItem eventKey={1}>房间管理</NavItem>
           </IndexLinkContainer>
-          <LinkContainer to="/fuel-savings">
-            <NavItem eventKey={2}>Fuel</NavItem>
+          <LinkContainer to="/interviewer">
+            <NavItem eventKey={3}>面试官管理台</NavItem>
           </LinkContainer>
           <LinkContainer to="/about">
-            <NavItem eventKey={3}>About</NavItem>
-          </LinkContainer>
-          <LinkContainer to="/interviewer">
-            <NavItem eventKey={4}>面试官房间</NavItem>
+            <NavItem eventKey={4}>About</NavItem>
           </LinkContainer>
         </Nav>
 
