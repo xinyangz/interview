@@ -6,6 +6,8 @@ const problems = (state = initialState.problemStates.problems, action) => {
   switch (action.type) {
     case types.LOAD_ALL_PROBLEMS_SUCCESS:
       return action.problems;
+    case types.DELETE_PROBLEM_SUCCESS:
+      return state.filter(problem => problem.id !== action.problemId);
     default:
       return state;
   }
