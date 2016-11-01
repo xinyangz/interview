@@ -191,18 +191,13 @@ class UserLogoutTestCase(APISimpleTestCase):
             self.post_data_template['token'] = \
                 db.users.find_one({'username': 'elder'})['token']
 
-    def test_key_error(self):
+    def test_no_token(self):
         self.init_token()
-        post_data = self.post_data_template.copy()
-        post_data['onepointgood'] = "runfast"
-        response = self.get_get_response(post_data)
-        self.assertEqual(response.data['error'], 'Key error')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         post_data = self.post_data_template.copy()
         del post_data['token']
         response = self.get_get_response(post_data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data['error'], 'Key error')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.data['error'], 'Permission denied')
 
     def test_not_login(self):
         self.init_token()
@@ -680,9 +675,12 @@ class UserManageTestCase(APISimpleTestCase):
         self.assertEqual(response.data, expected)
 
     def test_put_success(self):
+        test_data = self.test_candidate_data.copy()
+        test_data['organization'] = 'secret'
+        del test_data['token']
         response = self.get_put_response(self.test_candidate_data['username'],
                                          {'token': self.test_hr_data['token']},
-                                         {'organization': 'secret'})
+                                         test_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         expected = self.test_candidate_data.copy()
         del expected['token']
