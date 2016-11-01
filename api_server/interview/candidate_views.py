@@ -5,6 +5,12 @@ from django.conf import settings
 import pymongo
 import datetime
 import uuid
+import jsonschema
+from . import permissions
+from .schemas import swagger_schema
+
+
+candidate_keys = ('id', 'name', 'email', 'phone', 'status', 'roomId', 'record')
 
 
 @api_view(['POST', 'GET'])
@@ -24,20 +30,9 @@ def get_set_candidate(request, **kwargs):
         'report':'string'
     }
     '''
-    token = request.GET.get('token')
-    client = pymongo.MongoClient()
-    db = client[settings.DB_NAME]
+
     # Check user permission
-    access_denied = False
-    applicant = db.users.find({'token': token})
-    if applicant.count() == 0:
-        access_denied = True
-    else:
-        for item in applicant:
-            if item['type'] not in ['hr', 'interviewer']:
-                access_denied = True
-            break
-    if access_denied:
+    if permissions.check_permission(request, ('hr', 'interviewer')) != permissions.PASS:
         return Response(
             {
                 'status': '30',
@@ -46,26 +41,22 @@ def get_set_candidate(request, **kwargs):
             status.HTTP_403_FORBIDDEN
         )
 
+    client = pymongo.MongoClient()
+    db = client[settings.DB_NAME]
+
     if request.method == 'POST':
         required_keys = ['id', 'name', 'email', 'phone', 'status', 'roomId', 'record']
         record_keys = ['video', 'board', 'chat', 'code', 'report']
         candidate_data = request.data
 
         # Check key error
-
-        if set(required_keys) != set(candidate_data):
+        try:
+            jsonschema.validate(candidate_data, swagger_schema['definitions']['Candidate'])
+        except:
             return Response(
                 {
                     'status': '30',
                     'error': 'Key error'
-                },
-                status.HTTP_400_BAD_REQUEST
-            )
-        if set(record_keys) != set(candidate_data['record']):
-            return Response(
-                {
-                    'status': '30',
-                    'error': 'Key error(in records)'
                 },
                 status.HTTP_400_BAD_REQUEST
             )
@@ -82,8 +73,9 @@ def get_set_candidate(request, **kwargs):
             'email': candidate_data['email'],
             'password': temp_password,
             'organization': 'Candidate Group',
-            'contact': candidate_data['phone'],
         }
+        if 'phone' in candidate_data:
+            user_part['contact'] = candidate_data['phone']
         db.users.insert_one(user_part)
 
         candidate_part = candidate_data.copy()
@@ -117,15 +109,8 @@ def get_set_candidate(request, **kwargs):
                 },
                 status.HTTP_400_BAD_REQUEST
             )
-        return_list = map(lambda x: {
-            'id': x['id'],
-            'name': x['name'],
-            'email': x['email'],
-            'phone': x['phone'],
-            'status': x['status'],
-            'roomId': x['roomId'],
-            'record': x['record']
-        }, list(sorted_candidate)[offset: offset + limit])
+        return_list = map(lambda x: {k: v for k, v in dict(sorted_candidate).items() if k in candidate_keys},
+                          list(sorted_candidate)[offset: offset + limit])
         return Response(
             {
                 'data': return_list
@@ -145,22 +130,8 @@ def get_set_candidate(request, **kwargs):
 
 @api_view(['GET', 'DELETE', 'PUT'])
 def workon_candidate(request, candidate_id, **kwargs):
-    token = request.GET.get('token')
-    client = pymongo.MongoClient()
-    db = client[settings.DB_NAME]
     # Check user permission
-
-    access_denied = False
-    applicant = db.users.find({'token': token})
-
-    if applicant.count() == 0:
-        access_denied = True
-    else:
-        for item in applicant:
-            if item['type'] not in ['hr', 'interviewer']:
-                access_denied = True
-            break
-    if access_denied:
+    if permissions.check_permission(request, ('hr', 'interviewer')) != permissions.PASS:
         return Response(
             {
                 'status': '30',
@@ -168,6 +139,9 @@ def workon_candidate(request, candidate_id, **kwargs):
             },
             status.HTTP_403_FORBIDDEN
         )
+
+    client = pymongo.MongoClient()
+    db = client[settings.DB_NAME]
 
     # Check existance
     data = db.candidate.find({'id': candidate_id})
@@ -191,14 +165,7 @@ def workon_candidate(request, candidate_id, **kwargs):
     if request.method == 'GET':
         # Get data
         for item in data:
-            temp_data = dict()
-            temp_data['id'] = item['id']
-            temp_data['name'] = item['name']
-            temp_data['email'] = item['email']
-            temp_data['phone'] = item['phone']
-            temp_data['status'] = item['status']
-            temp_data['roomId'] = item['roomId']
-            temp_data['record'] = item['record']
+            temp_data = {k: v for k, v in dict(item).items() if k in candidate_keys}
             return Response(
                 {
                     'data':  temp_data
@@ -219,19 +186,11 @@ def workon_candidate(request, candidate_id, **kwargs):
                          },
                         status.HTTP_400_BAD_REQUEST
                     )
+        temp_data = {k: v for k, v in input_data.items() if k in candidate_keys}
         db.candidate.update(
             {'id': candidate_id},
             {
-                '$set':
-                {
-                    'id': input_data['id'],
-                    'name': input_data['name'],
-                    'email': input_data['email'],
-                    'phone': input_data['phone'],
-                    'status': input_data['status'],
-                    'roomId': input_data['roomId'],
-                    'record': input_data['record']
-                }
+                '$set': temp_data
             }
         )
         return Response(
@@ -260,24 +219,13 @@ def workon_candidate(request, candidate_id, **kwargs):
 def change_status_candidate(request, candidate_id, **kwargs):
 
     new_status = request.GET.get('status')
-    token = request.GET.get('token')
     # Check key error
 
     client = pymongo.MongoClient()
     db = client[settings.DB_NAME]
 
     # Check user permission
-
-    access_denied = False
-    applicant = db.users.find({'token': token})
-    if applicant.count() == 0:
-        access_denied = True
-    else:
-        for item in applicant:
-            if item['type'] not in ['hr', 'interviewer']:
-                access_denied = True
-            break
-    if access_denied:
+    if permissions.check_permission(request, ('hr', 'interviewer')) != permissions.PASS:
         return Response(
             {
                 'status': '30',
@@ -314,17 +262,9 @@ def change_status_candidate(request, candidate_id, **kwargs):
                     }
                 }
             )
-            response_dict = {
-                "id": item['id'],
-                "name": item['name'],
-                "email": item['email'],
-                "phone": item['phone'],
-                'status': item['status'],
-                'roomId': item['roomId'],
-                'record': item['record'],
-            }
+            response_dict = {k: v for k, v in dict(item).items() if k in candidate_keys}
+
             return Response(
                 response_dict,
                 status.HTTP_200_OK
             )
-

@@ -242,7 +242,6 @@ def user_manage(request, **kwargs):
 
     if request.method == 'PUT':
         changed_data = request.data
-        print(changed_data)
 
         try:
             jsonschema.validate(changed_data, swagger_schema['definitions']['User'])
