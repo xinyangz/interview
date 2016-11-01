@@ -3,7 +3,7 @@ import {Route, IndexRouter} from 'react-router';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { login } from '../actions/userActions';
-import {Form, FormGroup, Col, Checkbox, Button, ControlLabel, FormControl, Panel, Nav, Navbar} from 'react-bootstrap';
+import {Form, FormGroup, Col, Checkbox, Button, ControlLabel, Label, FormControl, Panel, Nav, Navbar} from 'react-bootstrap';
 import '../styles/loginpage.css'
 
 class LoginPage extends React.Component {
@@ -47,6 +47,16 @@ class LoginPage extends React.Component {
                   </Col>
                 </FormGroup>
 
+                <FormGroup controlId = "formHorizontalError">
+                  <h4>
+                    <Label bsStyle="warning">
+                      {this.props.isLogin ? "账号或密码错误！" : ""}
+                    </Label>
+                  </h4>
+                </FormGroup>
+
+
+
                 <FormGroup>
                   <Col smOffset={2} sm={8}>
                     <Button bsStyle="primary" type="submit" onClick = {this.onLoginClicked}>
@@ -63,12 +73,14 @@ class LoginPage extends React.Component {
 }
 
 LoginPage.propTypes = {
+  isLogin: PropTypes.object,
   login: PropTypes.func.isRequired
 };
 
 
-function mapStateToProps() {
+function mapStateToProps({isLogin}) {
   return {
+    isLogin
   };
 }
 

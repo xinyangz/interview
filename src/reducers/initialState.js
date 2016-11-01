@@ -16,9 +16,9 @@ export default {
     }
   },
   rooms: [],
-  isLogin: false,
-  userToken: undefined,
-  userType: undefined,
+  isLogin: null,
+  userToken: null,
+  userType: null,
   userInfo: {}
 
 };
