@@ -53,5 +53,5 @@ describe('Reducers: rooms', () => {
     };
     expect(reducer({isWaiting: true, rooms}, {type: types.DELETE_ROOM_SUCCESS, roomId: "1002"}))
       .to.deep.equal(expectedState);
-  })
+  });
 });

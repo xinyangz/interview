@@ -7,12 +7,14 @@ import FuelSavingsPage from './containers/FuelSavingsPage'; // eslint-disable-li
 import AboutPage from './components/AboutPage.js';
 import NotFoundPage from './components/NotFoundPage.js';
 import HRRoomTable from './components/HRRoomTable';
+import InterviewerPage from './components/InterviewerPage/InterviewerPage';
 
 export default (
   <Route path="/" component={App}>
     <IndexRoute component={HRRoomTable}/>
     <Route path="fuel-savings" component={FuelSavingsPage}/>
     <Route path="about" component={AboutPage}/>
+    <Route path="interviewer" component={InterviewerPage} />
     <Route path="*" component={NotFoundPage}/>
   </Route>
 );
