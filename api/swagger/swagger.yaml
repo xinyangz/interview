@@ -1082,6 +1082,7 @@ definitions:
         type: "string"
       type:
         type: "string"
+        enum: ["hr", "interviewer", "candidate"]
       email:
         type: "string"
       password:
@@ -1355,7 +1356,7 @@ definitions:
       sender:
         type: boolean
         description: "消息发送方,false代表面试官,true代表面试者"
-        defualt: true
+        default: true
   ChatList:
     type: object
     required:
@@ -1424,6 +1425,7 @@ definitions:
         example: "1001"
       type:
         type: string
+        enum: ["choice", "blank", "answer", "code"]
         description: 题目类型(choice, blank, answer, code)
         example: "choice"
       content:
