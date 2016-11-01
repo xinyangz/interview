@@ -6,6 +6,7 @@ PASS = 0
 NO_TOKEN = 1
 INVALID_TOKEN = 2
 NO_PERMISSION = 3
+DUPLICATE_TOKEN = 4
 
 
 def check_permission(request, permitted_user_types=None):
@@ -30,7 +31,8 @@ def check_permission(request, permitted_user_types=None):
     if cursor.count() == 0:
         return INVALID_TOKEN
 
-    # TODO: cursor.count() > 1
+    if cursor.count() > 1:
+        return DUPLICATE_TOKEN
 
     # Do not check user type
     if permitted_user_types is None:
