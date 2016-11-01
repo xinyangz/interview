@@ -34,7 +34,6 @@ export function login(data) {
         if ( response.status === 200 ) {
           dispatch(loginSuccess(response.data));
           dispatch(push('/'));
-          console.log('response correct');
         }
         else if (response.status === 400) {
           dispatch(loginError('wrong password'));
