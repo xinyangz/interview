@@ -1,7 +1,6 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
 import {Row, Col, Tab, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import ProblemTable from './ProblemTable';
-import {connect} from 'react-redux';
 
 class ControlTab extends React.Component {
   constructor(props) {

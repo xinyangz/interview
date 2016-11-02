@@ -10,6 +10,8 @@ const isLogin = (state = initialState.user.isLogin,
       return true;
     case types.USER_LOGIN_ERROR:
       return false;
+    case types.USER_LOGOUT_SUCCESS:
+      return false;
     default:
       return state;
   }
@@ -19,10 +21,9 @@ const wrongPassword = (state = initialState.user.wrongPassword,
                        action) => {
   switch (action.type) {
     case types.USER_LOGIN_ERROR:
-      if (action.error === 'wrong password')
-        return true;
-      else
-        return false;
+      return action.error === 'wrong password';
+    case types.USER_LOGOUT_SUCCESS:
+      return false;
     default:
       return state;
   }
@@ -33,6 +34,8 @@ const token = (state = initialState.user.token,
   switch (action.type) {
     case types.USER_LOGIN_SUCCESS:
       return action.token;
+    case types.USER_LOGOUT_SUCCESS:
+      return null;
     default:
       return state;
   }
@@ -43,6 +46,8 @@ const type = (state = initialState.user.type,
   switch (action.type) {
     case types.USER_LOGIN_SUCCESS:
       return action.user.type;
+    case types.USER_LOGOUT_SUCCESS:
+      return null;
     default:
       return state;
   }
@@ -53,6 +58,8 @@ const info = (state = initialState.user.info,
   switch (action.type) {
     case types.USER_LOGIN_SUCCESS:
       return action.user;
+    case types.USER_LOGOUT_SUCCESS:
+      return null;
     default:
       return state;
   }
