@@ -92,4 +92,97 @@ def logo(request, room_id, **kwargs):
             status.HTTP_403_FORBIDDEN
         )
 
+    client = pymongo.MongoClient()
+    db = client[settings.DB_NAME]
+
+    # Check existence
     room_id = int(room_id)
+    room_cursor = db.rooms.find({'id': room_id})
+    if room_cursor.count() == 0:
+        return Response(
+            {
+                'error': 'Room not found.'
+            },
+            status.HTTP_404_NOT_FOUND
+        )
+    elif room_cursor.count() > 1:
+        return Response(
+            {
+                'error': 'Room id duplicated'
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
+
+    room_data = dict(room_cursor[0])
+    del room_data['_id']
+
+    # TODO: request.data
+
+
+@api_view(['DELETE', 'GET', 'PUT'])
+def manage(request, room_id, **kwargs):
+    permitted_user_types = ['hr', 'interviewer']
+
+    if permissions.check(request, permitted_user_types) != permissions.PASS:
+        return Response(
+            {'error': 'Permission denied'},
+            status.HTTP_403_FORBIDDEN
+        )
+
+    client = pymongo.MongoClient()
+    db = client[settings.DB_NAME]
+
+    # Check existence
+    room_id = int(room_id)
+    room_cursor = db.rooms.find({'id': room_id})
+    if room_cursor.count() == 0:
+        return Response(
+            {
+                'error': 'Room not found.'
+            },
+            status.HTTP_404_NOT_FOUND
+        )
+    elif room_cursor.count() > 1:
+        return Response(
+            {
+                'error': 'Room id duplicated'
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
+
+    if request.method == 'DELETE':
+        db.rooms.delete_one({'id': room_id})
+        return Response(status=status.HTTP_200_OK)
+
+    if request.method == 'GET':
+        ret_data = {k: v for k, v in dict(room_cursor[0]).items() if k in room_keys}
+        return Response(
+            ret_data,
+            status.HTTP_200_OK
+        )
+
+    if request.method == 'PUT':
+        room_data_full = {k: v for k, v in dict(room_cursor[0]).items() if k in room_keys}
+        update_data = dict(request.data)
+
+        # Schema check
+        try:
+            jsonschema.validate(update_data, swagger_schema['definitions']['RoomPost'])
+        except:
+            return Response(
+                {'error': 'Key error'},
+                status.HTTP_400_BAD_REQUEST
+            )
+
+        db.rooms.update_one(
+            {'id': room_id},
+            {'$set': update_data}
+        )
+
+        for k, v in update_data.items():
+            room_data_full[k] = v
+
+        return Response(
+            room_data_full,
+            status.HTTP_200_OK
+        )

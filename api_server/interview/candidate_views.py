@@ -190,7 +190,7 @@ def workon_candidate(request, candidate_id, **kwargs):
                         status.HTTP_400_BAD_REQUEST
                     )
         temp_data = {k: v for k, v in input_data.items() if k in candidate_keys}
-        db.candidate.update(
+        db.candidate.update_one(
             {'id': candidate_id},
             {
                 '$set': temp_data
@@ -204,9 +204,7 @@ def workon_candidate(request, candidate_id, **kwargs):
     elif request.method == 'DELETE':
         # Delete data
         db.candidate.delete_one({'id': candidate_id})
-        return Response(
-            status.HTTP_200_OK
-        )
+        return Response(status=status.HTTP_200_OK)
 
     else:
         return Response(
@@ -254,7 +252,7 @@ def change_status_candidate(request, candidate_id, **kwargs):
         )
     else:
         for item in candidate:
-            db.candidate.update(
+            db.candidate.update_one(
                 {'id': candidate_id},
                 {
                     '$set':

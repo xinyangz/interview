@@ -12,7 +12,8 @@ api_patterns = [
     url(r'^candidate/(?P<candidate_id>([0-9]+))$', candidate_views.workon_candidate, name='workon-candidate'),
     url(r'^candidate/(?P<candidate_id>([0-9]+))/status$', candidate_views.change_status_candidate, name='status-candidate'),
     url(r'^room$', room_views.root, name='room-root'),
-    url(r'^room/(?P<room_id>([0-9]+))/logo', room_views.logo, name='room-logo'),
+    url(r'^room/(?P<room_id>([0-9]+))/logo$', room_views.logo, name='room-logo'),
+    url(r'^room/(?P<room_id>([0-9]+))$', room_views.manage, name='room-manage'),
 ]
 
 urlpatterns = [
