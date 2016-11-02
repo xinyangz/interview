@@ -3,15 +3,22 @@
  */
 import React, {PropTypes}from 'react'
 import {connect} from 'react-redux';
-import {Tabs, Tab, Table, Modal} from 'react-bootstrap'
+import {Tabs, Tab, Table, Modal, Button, FormControl, FormGroup, ControlLabel} from 'react-bootstrap'
 import {deleteCandidate} from './CandidateManagerActions'
 
 class CandidateManagerTable extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {showModal: false, selectedCandidate: null};
+    this.state = {
+      showModal: false,
+      selectedCandidate: null,
+      showEditModal: false,
+      selectedEditCandidate: null
+    };
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
+    this.closeEditModal = this.closeEditModal.bind(this);
+    this.openEditModal = this.openEditModal.bind(this);
     this.onDeleteCandidateClick = this.onDeleteCandidateClick.bind(this);
     this.onEditCandidateClick = this.onEditCandidateClick.bind(this);
   }
@@ -21,7 +28,15 @@ class CandidateManagerTable extends React.Component {
   }
 
   open(candidate_id) {
-    this.setState({showModal: true, selectedRoom: candidate_id});
+    this.setState({showModal: true, selectedCandidate: candidate_id});
+  }
+
+  closeEditModal() {
+    this.setState({showEditModal: false});
+  }
+
+  openEditModal(candidate_id) {
+    this.setState({showEditModal: true, selectedEditCandidate: candidate_id});
   }
 
   onDeleteCandidateClick() {
@@ -30,12 +45,12 @@ class CandidateManagerTable extends React.Component {
   }
 
   onEditCandidateClick() {
-    alert('Edit room click!');
+    this.closeEditModal();
   }
 
   render() {
     return (
-      <Tabs defaultActiveKey={2}>
+      <Tabs id="lll" defaultActiveKey={2}>
         <Tab eventKey={1} title="房间管理">nothing</Tab>
         <Tab eventKey={2} title="候选人管理">
           <Table responsive>
@@ -51,15 +66,22 @@ class CandidateManagerTable extends React.Component {
             </tr>
             </thead>
             <tbody>
-              {this.props.candidates.map(candidate =>
+              {this.props.candidateManager.map(candidate =>
                 <tr key={candidate.id}>
-                  <td><a>{candidate.name}</a></td>
-                  <td><a>{candidate.email}</a></td>
-                  <td><a>{candidate.phone}</a></td>
-                  <td>Table cell</td>
+                  <td>{candidate.name}</td>
+                  <td>{candidate.email}</td>
+                  <td>{candidate.phone}</td>
+                  <td>
+                    <FormGroup controlId={candidate.id}>
+                      <FormControl componentClass="select" placeholder="select">
+                        {this.props.rooms.map(room =>
+                          <option key={room.id}>{room.name}</option>)}
+                      </FormControl>
+                    </FormGroup>
+                  </td>
                   <td>一些图案</td>
-                  <td><label style={{color:"#FF7575"}}>未通过</label></td>
-                  <td><a onClick={this.onEditCandidateClick}>编辑</a> | <a onClick={() => this.open(candidate.id)}>删除</a></td>
+                  <td>{candidate.status}</td>
+                  <td><a onClick={this.open(candidate.id)}>编辑</a> | <a onClick={() => this.open(candidate.id)}>删除</a></td>
                 </tr>)}
 
                 <Modal show={this.state.showModal} onHide={this.close}>
@@ -80,13 +102,15 @@ class CandidateManagerTable extends React.Component {
 }
 
 CandidateManagerTable.PropTypes = {
-  candidates: PropTypes.arrayOf(PropTypes.object).isRequired,
-  deleteCandidate: PropTypes.func
+  candidateManager: PropTypes.arrayOf(PropTypes.object).isRequired,
+  deleteCandidate: PropTypes.func,
+  rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 function mapStateToProps(state) {
   return {
-    candidates: state.candidatesStates.candidates
+    candidateManager: state.candidatesStates.candidates,
+    rooms: state.roomsStates.rooms
   };
 }
 

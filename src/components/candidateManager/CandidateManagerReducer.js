@@ -5,7 +5,7 @@ import {combineReducers} from 'redux';
 const candidates = (state = initialState.candidatesStates.candidates, action) => {
   switch (action.type) {
     case types.DELETE_CANDIDATE_SUCCESS:
-      return state.filter(room => room.id != action.roomId);
+      return state.filter(candidate => candidate.id != action.candidateId);
     case types.LOAD_ALL_CANDIDATE_SUCCESS:
       return action.candidates;
     default:
@@ -34,6 +34,3 @@ const candidatesManagerReducer = combineReducers({
 });
 
 export default candidatesManagerReducer;
-/**
- * Created by 薛凯韬 on 2016/11/2.
- */

@@ -7,6 +7,8 @@ import axios from 'axios';
 
 // token should be read from state
 const token = '123';
+const offset = '0';
+const limit = '1';
 
 export function beginDeleteCandidate() {
   return {
@@ -14,10 +16,10 @@ export function beginDeleteCandidate() {
   };
 }
 
-export function deleteCandidateSuccess(roomId) {
+export function deleteCandidateSuccess(candidateId) {
   return {
     type: types.DELETE_CANDIDATE_SUCCESS,
-    roomId
+    candidateId
   };
 }
 
@@ -34,10 +36,10 @@ export function beginLoadAllCandidates() {
   };
 }
 
-export function loadAllCandidatesSuccess(rooms) {
+export function loadAllCandidatesSuccess(candidates) {
   return {
     type: types.LOAD_ALL_CANDIDATE_SUCCESS,
-    rooms
+    candidates
   };
 }
 
@@ -67,16 +69,16 @@ export function deleteCandidate(candidateId) {
 export function loadAllCandidates() {
   return dispatch => {
     dispatch(beginLoadAllCandidates());
-    return axios.get('/candidate' + '?token=' + token)
+    return axios.get('/candidate' + '?offset='+ offset + '&limit=' + limit + '&token=' + token)
       .then(response => {
         if (response.status === 200) {
-          dispatch(loadAllCandidatesSuccess(response.data.rooms));
+          dispatch(loadAllCandidatesSuccess(response.data.candidates));
         }
         else {
           dispatch(loadAllCandidatesError(response.data.error));
         }
       })
-      .catch(error => dispatch(loadAllCandidatesError(error.response.data.error || error)));
+      .catch(error => dispatch(loadAllCandidatesError(error)));
   };
 }
 

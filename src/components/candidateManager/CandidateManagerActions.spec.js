@@ -35,6 +35,7 @@ describe('Candidates async actions', () => {
           "name": "Jason Yip",
           "email": "bibi@163.com",
           "phone": "1213123123",
+          "status": "not",
           "id": "1001",
         }]
       }
@@ -101,6 +102,7 @@ describe('Candidates async actions', () => {
         "email" : "123123@123.com",
         "phone" : "3245345345",
         "id" : "1001",
+        "status": "not",
       }
     };
 

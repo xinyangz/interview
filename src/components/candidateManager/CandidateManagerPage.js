@@ -6,10 +6,13 @@ import CandidateManagerTable from './CandidateManagerTable'
 
 class CandidateManagerPage extends React.Component {
   render() {
-  return (
-    <CandidateManagerTable />
-  )
-}
+    return (
+      <div>
+      /*<CandidateManagerTable />*/
+        fuck fuck
+      </div>
+    )
+  }
 }
 
 export default CandidateManagerPage;

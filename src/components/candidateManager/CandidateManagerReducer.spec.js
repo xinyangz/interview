@@ -6,7 +6,7 @@ import reducer from './CandidateManagerReducer';
 import * as types from './Consts';
 import init from '../../reducers/initialState';
 
-describe('Reducers: rooms', () => {
+describe('Reducers: candidates', () => {
   const initialState = init.candidatesStates;
   const candidates = [{
       "name": "Jason Yip",
@@ -42,7 +42,7 @@ describe('Reducers: rooms', () => {
   it('should handle DELETE_CANDIDATE_SUCCESS', () => {
     const expectedState = {
       isWaiting: false,
-      rooms: [{
+      candidates: [{
       "name": "Jason Yip",
       "email": "bibi@163.com",
       "phone": "1213123123",
