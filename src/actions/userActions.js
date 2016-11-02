@@ -42,7 +42,7 @@ export function login(data) {
           dispatch(loginError(response.data));
         }
       })
-      .catch(dispatch(loginError(error)));
+      .catch(error=>dispatch(loginError(error)));
   };
 }
 

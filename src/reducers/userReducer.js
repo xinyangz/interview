@@ -28,7 +28,7 @@ const wrongPassword = (state = initialState.user.wrongPassword,
   }
 };
 
-const userToken = (state = initialState.user.userToken,
+const token = (state = initialState.user.token,
                    action) => {
   switch (action.type) {
     case types.USER_LOGIN_SUCCESS:
@@ -38,7 +38,7 @@ const userToken = (state = initialState.user.userToken,
   }
 };
 
-const userType = (state = initialState.user.userType,
+const type = (state = initialState.user.type,
                   action) => {
   switch (action.type) {
     case types.USER_LOGIN_SUCCESS:
@@ -48,7 +48,7 @@ const userType = (state = initialState.user.userType,
   }
 };
 
-const userInfo = (state = initialState.user.userInfo,
+const info = (state = initialState.user.info,
                   action) => {
   switch (action.type) {
     case types.USER_LOGIN_SUCCESS:
@@ -60,10 +60,10 @@ const userInfo = (state = initialState.user.userInfo,
 
 const userReducer = combineReducers({
   isLogin,
-  userToken,
-  userType,
+  token,
+  type,
   wrongPassword,
-  userInfo
+  info
 });
 
 export default userReducer;

@@ -19,9 +19,9 @@ export default {
   user: {
     isLogin: false,
     wrongPassword: false,
-    userToken: null,
-    userType: null,
-    userInfo: {}
+    token: null,
+    type: null,
+    info: {}
   }
 
 };
