@@ -5,7 +5,9 @@ from django.conf import settings
 import pymongo
 import datetime
 import uuid
-from interview.permissions import check_permission
+import jsonschema
+from .schemas import swagger_schema
+from . import permissions
 
 
 @api_view(['GET'])
@@ -103,27 +105,25 @@ def user_login(request, **kwargs):
 
 @api_view(['GET'])
 def user_logout(request, **kwargs):
-    required_keys = ['token']
-    user_data = request.GET
+    perm_result = permissions.check(request)
+    if perm_result == permissions.NO_TOKEN or perm_result == permissions.NO_PERMISSION:
+        return Response(
+            {
+                'status': '403',
+                'error': 'Permission denied'
+            },
+            status.HTTP_403_FORBIDDEN
+        )
+    elif perm_result == permissions.INVALID_TOKEN:
+        return Response(
+            {
+                'status': '403',
+                'error': 'User has not logged in.'
+            },
+            status.HTTP_403_FORBIDDEN
+        )
 
-    for key in required_keys:
-        if key not in user_data:
-            return Response(
-                {
-                    'status': '400',
-                    'error': 'Key error'
-                },
-                status.HTTP_400_BAD_REQUEST
-            )
-    for key in user_data:
-        if key not in required_keys:
-            return Response(
-                {
-                    'status': '400',
-                    'error': 'Key error'
-                },
-                status.HTTP_400_BAD_REQUEST
-            )
+    user_data = request.GET
 
     client = pymongo.MongoClient()
     db = client[settings.DB_NAME]
@@ -163,30 +163,20 @@ def user_register(request, **kwargs):
     """
     {
         "username": "Tom",
-        "type":
+        "type": "hr",
         "email": "example@example.com",
         "password": "12345",
-        "organization": "Example Company"
+        "organization": "Example Company",
         "contact": "Example Contact"
     }
     """
-    required_keys = ['username', 'type', 'email', 'password']
-    optional_keys = ['organization', 'contact']
-    all_keys = required_keys + optional_keys
+
     data_dict = request.data
 
-    # check
-    for key in required_keys:
-        if key not in data_dict:
-            return Response({'status': '400', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
-    for key in data_dict:
-        if key not in all_keys:
-            return Response({'status': '400', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
-
-    # check type
-    user_type = data_dict['type']
-    if user_type not in ('hr', 'interviewer', 'candidate'):
-        return Response({'status': '400', 'error': 'Invalid user type'}, status.HTTP_400_BAD_REQUEST)
+    try:
+        jsonschema.validate(data_dict, swagger_schema['definitions']['User'])
+    except:
+        return Response({'status': '400', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
 
     client = pymongo.MongoClient(port=settings.DB_PORT)
     db = client[settings.DB_NAME]
@@ -208,7 +198,7 @@ def user_manage(request, **kwargs):
 
     permitted_user_types = ['hr', 'interviewer']
 
-    if not check_permission(request, permitted_user_types):
+    if permissions.check(request, permitted_user_types) != permissions.PASS:
         return Response(
             {
                 'status': '403',
@@ -251,22 +241,12 @@ def user_manage(request, **kwargs):
         return Response(user_data, status.HTTP_200_OK)
 
     if request.method == 'PUT':
-        # TODO API change
-        required_keys = ['username', 'type', 'email', 'password']
-        optional_keys = ['organization', 'contact']
-        all_keys = required_keys + optional_keys
-
         changed_data = request.data
 
-        for key in changed_data:
-            if key not in all_keys:
-                return Response(
-                    {
-                        'status': '400',
-                        'error': 'Key error'
-                    },
-                    status.HTTP_400_BAD_REQUEST
-                )
+        try:
+            jsonschema.validate(changed_data, swagger_schema['definitions']['User'])
+        except:
+            return Response({'status': '400', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
 
         db.users.update_one(
             {'username': username},

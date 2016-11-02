@@ -11,6 +11,7 @@
     pip install djangorestframework
     pip install pymongo
     pip install django-cors-headers
+    pip install jsonschema
     ```
 
 ## Run
