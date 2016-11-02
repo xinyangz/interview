@@ -4,7 +4,7 @@
 import React, {PropTypes}from 'react'
 import {connect} from 'react-redux';
 import {Tabs, Tab, Table, Modal, Button, FormControl, FormGroup, ControlLabel, Form, Col} from 'react-bootstrap'
-import {deleteCandidate} from './CandidateManagerActions'
+import {deleteCandidate, editCandidate} from './CandidateManagerActions'
 
 class CandidateManagerTable extends React.Component {
   constructor(props) {
@@ -45,7 +45,8 @@ class CandidateManagerTable extends React.Component {
   }
 
   onEditCandidateClick() {
-    //this.closeEditModal();
+    this.props.editCandidate(this.state.selectedEditCandidate);
+    this.closeEditModal();
   }
 
   render() {
@@ -81,7 +82,7 @@ class CandidateManagerTable extends React.Component {
                   </td>
                   <td>一些图案</td>
                   <td>{candidate.status}</td>
-                  <td><a onClick={() => this.openEditModal(candidate.id)}>编辑</a> | <a onClick={() => this.open(candidate.id)}>删除</a></td>
+                  <td><a onClick={() => this.openEditModal(candidate)}>编辑</a> | <a onClick={() => this.open(candidate.id)}>删除</a></td>
                 </tr>)}
 
                 <Modal show={this.state.showModal} onHide={this.close}>

@@ -30,6 +30,26 @@ export function deleteCandidateError(error) {
   };
 }
 
+export function beginEditCandidate() {
+  return {
+    type: types.EDIT_CANDIDATE_BEGIN,
+  };
+}
+
+export function editCandidateSuccess(candidateId) {
+  return {
+    type: types.EDIT_CANDIDATE_SUCCESS,
+    candidateId
+  };
+}
+
+export function editCandidateError(error) {
+  return {
+    type: types.EDIT_CANDIDATE_ERROR,
+    error
+  };
+}
+
 export function beginLoadAllCandidates() {
   return {
     type: types.LOAD_ALL_CANDIDATE_BEGIN
@@ -66,19 +86,27 @@ export function deleteCandidate(candidateId) {
   };
 }
 
-export function deleteCandidate(candidateId) {
+export function editCandidate(candidate) {
   return dispatch => {
-    dispatch(beginDeleteCandidate());
-    return axios.delete('/candidate/' + candidateId + '?token=' + token)
+    dispatch(beginEditCandidate());
+    return axios.put('/candidate/' + candidate.id + '?token=' + token,{
+      "phone": candidate.phone,
+      "record": candidate.record,
+      "name": "Mike",
+      "id": "3001",
+      "email": "example@example.com",
+      "roomId": "1001",
+      "status": "aeiou"
+    })
       .then(response => {
         if (response.status === 200) {
-          dispatch(deleteCandidateSuccess(candidateId));
+          dispatch(editCandidateSuccess(candidate.id));
         }
         else {
-          dispatch(deleteCandidateError(response.data.error));
+          dispatch(editCandidateError(response.data.error));
         }
       })
-      .catch(error => dispatch(deleteCandidateError(error.response.data.error || error)));
+      .catch(error => dispatch(editCandidateError(error.response.data.error || error)));
   };
 }
 
