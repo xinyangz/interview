@@ -1,0 +1,17 @@
+/**
+ * Created by 薛凯韬 on 2016/10/27.
+ */
+import * as types from './consts'
+import { combineReducers } from 'redux';
+
+export function RegisterReducer(state = {}, action) {
+  switch (action.type) {
+    case types.REGISTER_SUCCESS:
+    case types.REGISTER_ERROR:
+    case types.BEGIN_REGISTER:
+    default:
+      return state;
+  }
+}
+
+export default  RegisterReducer;
