@@ -19,14 +19,6 @@ def get_next_sequence(sequence_name):
         upsert=True
     )
 
-    if db.sequences.find({'_id': sequence_name}) == 0:
-        db.sequences.insert_one(
-            {
-                '_id': sequence_name,
-                'seq': 0
-            }
-        )
-
     ret = db.sequences.find_one_and_update(
         {'_id': sequence_name},
         {'$inc': {'seq': 1}},

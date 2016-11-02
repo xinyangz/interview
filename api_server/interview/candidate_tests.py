@@ -13,35 +13,35 @@ class CandidateTestCase(APISimpleTestCase):
     # setup initial data
 
     candidate_data = {
-        'id': '301',
+        # 'id': '301',
         'name': 'elder',
         'email': 'changedChina@ccp.cn',
         'phone': '12345678901',
         'status': 'Alive',
-        'roomId': '2301',
-        'record': {
-            'video': 'tanxiaofengsheng',
-            'board': 'basiclaw',
-            'chat': 'withWallace',
-            'code': '100professors',
-            'report': ''
-        }
+        'roomId': 2301,
+        # 'record': {
+        #     'video': 'tanxiaofengsheng',
+        #     'board': 'basiclaw',
+        #     'chat': 'withWallace',
+        #     'code': '100professors',
+        #     'report': ''
+        # }
     }
 
     another_candidate_data = {
-        'id': '301',
+        # 'id': '301',
         'name': 'Queen Elizabeth II',
         'email': 'someemail@somehost.uk',
         'phone': '10987654321',
         'status': 'Alive',
-        'roomId': '2302',
-        'record': {
-            'video': '',
-            'board': '',
-            'chat': '',
-            'code': '',
-            'report': ''
-        }
+        'roomId': 2302,
+        # 'record': {
+        #     'video': '',
+        #     'board': '',
+        #     'chat': '',
+        #     'code': '',
+        #     'report': ''
+        # }
     }
 
     applicant_data = {
@@ -161,6 +161,7 @@ class CandidateTestCase(APISimpleTestCase):
             self.db.users.insert_one(user_info)
             candidate_data_tmp = self.candidate_data.copy()
             candidate_data_tmp['unique_username'] = temp_username
+            candidate_data_tmp['id'] = 0
             self.db.candidate.insert_one(candidate_data_tmp)
 
     def get_life_status(self):
@@ -199,7 +200,7 @@ class CandidateTestCase(APISimpleTestCase):
     def test_get_success(self):
         self.init_Wallace()
         self.init_Elder()
-        response = self.get_get_response_get(301, 'exampletoken')
+        response = self.get_get_response_get(0, 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_bad_candidate(self):
@@ -211,10 +212,12 @@ class CandidateTestCase(APISimpleTestCase):
     def test_get_dupl_candidate(self): # Should never occur in practice
         self.init_Wallace()
         self.init_Elder()
-        self.db.candidate.insert_one(self.another_candidate_data)
-        response = self.get_get_response_get(301, 'exampletoken')
+        candidate_data_tmp = self.another_candidate_data.copy()
+        candidate_data_tmp['id'] = 0
+        self.db.candidate.insert_one(candidate_data_tmp)
+        response = self.get_get_response_get(0, 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.db.candidate.delete_one({'roomId': '2302'})
+        self.db.candidate.delete_one({'roomId': 2302})
 
     def test_get_bad_token(self):
         self.init_Sharon()
@@ -226,35 +229,36 @@ class CandidateTestCase(APISimpleTestCase):
         self.init_Wallace()
         self.init_Elder()
         new_data = self.candidate_data.copy()
-        new_data['id'] = '302'
-        response = self.get_put_response_put(301, new_data, 'exampletoken')
+        new_data['id'] = 302
+        response = self.get_put_response_put(0, new_data, 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.get_put_response_put(302, self.candidate_data, 'exampletoken')
+        response = self.get_put_response_put(302, new_data, 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_put_dupl_candidate(self):
         self.init_Wallace()
         self.init_Elder()
         new_data = self.candidate_data.copy()
+        new_data['id'] = 0
         another_data = self.another_candidate_data.copy()
-        another_data['id'] = '302'
+        another_data['id'] = 302
         self.db.candidate.insert_one(another_data)
         response = self.get_put_response_put(302, new_data, 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.db.candidate.delete_one({'roomId': '2302'})
+        self.db.candidate.delete_one({'roomId': 2302})
 
     def test_delete_success(self):
         self.init_Wallace()
         self.init_Elder()
-        response = self.get_delete_response_delete(301, 'exampletoken')
+        response = self.get_delete_response_delete(0, 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_put_change_success(self):
         self.init_Wallace()
         self.init_Elder()
-        response = self.get_put_response_change(301, 'AliveForever', 'exampletoken')
+        response = self.get_put_response_change(0, 'AliveForever', 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.get_put_response_change(301, 'Alive', 'exampletoken')
+        response = self.get_put_response_change(0, 'Alive', 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_put_change_bad_token(self):

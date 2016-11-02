@@ -7,6 +7,7 @@ import datetime
 import uuid
 import jsonschema
 from . import permissions
+from . import sequences
 from .schemas import swagger_schema
 
 
@@ -16,12 +17,12 @@ candidate_keys = ('id', 'name', 'email', 'phone', 'status', 'roomId', 'record')
 @api_view(['POST', 'GET'])
 def get_set_candidate(request, **kwargs):
     '''
-    'id': '3001',
+    'id': 3001,
     'name': 'Mike',
     'email': 'example@example.com',
     'phone': '1300000000',
     'status': 'weimianshi',
-    'roomId': '1001',
+    'roomId': 1001,
     'record':{
         'video': 'string',
         'board': 'string',
@@ -74,8 +75,12 @@ def get_set_candidate(request, **kwargs):
             user_part['contact'] = candidate_data['phone']
         db.users.insert_one(user_part)
 
+        # Generate unique id
+        candidate_id = sequences.get_next_sequence('candidate_id')
+
         candidate_part = candidate_data.copy()
         candidate_part['unique_username'] = temp_username
+        candidate_part['id'] = candidate_id
         db.candidate.insert_one(candidate_part)
         return Response(status=status.HTTP_200_OK)
     elif request.method == 'GET':
@@ -131,6 +136,8 @@ def workon_candidate(request, candidate_id, **kwargs):
     client = pymongo.MongoClient()
     db = client[settings.DB_NAME]
 
+    candidate_id = int(candidate_id)
+
     # Check existance
     data = db.candidate.find({'id': candidate_id})
     if data.count() == 0:
@@ -161,7 +168,18 @@ def workon_candidate(request, candidate_id, **kwargs):
     elif request.method == 'PUT':
         # Put data
         input_data = request.data
-        if input_data['id'] is not candidate_id:
+
+        try:
+            jsonschema.validate(input_data, swagger_schema['definitions']['Candidate'])
+        except:
+            return Response(
+                {
+                    'error': 'Key error'
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+
+        if input_data['id'] != candidate_id:
             for item in data:
                 dulp_list = db.candidate.find({'id': input_data['id']})
                 if dulp_list.count() > 0:
@@ -216,6 +234,8 @@ def change_status_candidate(request, candidate_id, **kwargs):
             },
             status.HTTP_403_FORBIDDEN
         )
+
+    candidate_id = int(candidate_id)
 
     candidate = db.candidate.find({'id': candidate_id})
     if candidate.count() == 0:
