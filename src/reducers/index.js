@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import fuelSavings from './fuelSavingsReducer';
 import roomsStates from './roomsReducer';
 import problemStates from './problemReducer';
+import candidatesStates from '../components/candidateManager/CandidateManagerReducer'
 import {routerReducer} from 'react-router-redux';
 import user from './userReducer';
 
@@ -9,6 +10,7 @@ const rootReducer = combineReducers({
   fuelSavings,
   roomsStates,
   problemStates,
+  candidatesStates,
   user,
   routing: routerReducer
 });

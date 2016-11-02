@@ -29,6 +29,9 @@ export default {
     token: null,
     type: null,
     info: {}
+  },
+  candidatesStates:{
+    candidates:[],
+    isWaiting: false
   }
-
 };
