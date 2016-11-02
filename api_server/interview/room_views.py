@@ -9,7 +9,7 @@ from . import permissions
 from . import sequences
 
 
-room_keys = ('id', 'logo', 'interviewer', 'candidates', 'problems')
+room_keys = ('id', 'name', 'logo', 'interviewer', 'candidates', 'problems')
 
 
 @api_view(['GET', 'POST'])
@@ -69,8 +69,8 @@ def root(request, **kwargs):
             }
         ).sort('id', pymongo.ASCENDING)
         count = sorted_rooms.count()
-        return_list = map(lambda x: {k: v for k, v in dict(x).items() if k in room_keys},
-                          list(sorted_rooms))
+        return_list = list(map(lambda x: {k: v for k, v in dict(x).items() if k in room_keys},
+                           list(sorted_rooms)))
         return Response(
             {
                 'offset': offset,

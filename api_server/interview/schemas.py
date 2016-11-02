@@ -1714,13 +1714,13 @@ swagger_schema = {
                 },
                 "interviewer": {
                     "description": "面试官ID，若不存在则置空",
-                    "type": "string"
+                    "type": "integer"
                 },
                 "candidates": {
                     "description": "候选人ID列表",
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "example": [
                         "100",
