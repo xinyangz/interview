@@ -35,7 +35,6 @@ def get_set_candidate(request, **kwargs):
     if permissions.check(request, ('hr', 'interviewer')) != permissions.PASS:
         return Response(
             {
-                'status': '30',
                 'error': 'Access denied.'
             },
             status.HTTP_403_FORBIDDEN
@@ -53,7 +52,6 @@ def get_set_candidate(request, **kwargs):
         except:
             return Response(
                 {
-                    'status': '30',
                     'error': 'Key error'
                 },
                 status.HTTP_400_BAD_REQUEST
@@ -79,12 +77,7 @@ def get_set_candidate(request, **kwargs):
         candidate_part = candidate_data.copy()
         candidate_part['unique_username'] = temp_username
         db.candidate.insert_one(candidate_part)
-        return Response(
-            {
-                'status': '200'
-            },
-            status.HTTP_200_OK
-        )
+        return Response(status=status.HTTP_200_OK)
     elif request.method == 'GET':
         offset = request.GET.get('offset')
         limit = request.GET.get('limit')
@@ -102,7 +95,6 @@ def get_set_candidate(request, **kwargs):
         if offset + limit - 1 > int(sorted_candidate.count()):
             return Response(
                 {
-                    'status': '30',
                     'error': 'Index out of boundary'
                 },
                 status.HTTP_400_BAD_REQUEST
@@ -119,7 +111,6 @@ def get_set_candidate(request, **kwargs):
     else:
         return Response(
             {
-                'status': '30',
                 'error': 'Unknown method'
             },
             status.HTTP_400_BAD_REQUEST
@@ -132,7 +123,6 @@ def workon_candidate(request, candidate_id, **kwargs):
     if permissions.check(request, ('hr', 'interviewer')) != permissions.PASS:
         return Response(
             {
-                'status': '30',
                 'error': 'Access denied.'
             },
             status.HTTP_403_FORBIDDEN
@@ -146,7 +136,6 @@ def workon_candidate(request, candidate_id, **kwargs):
     if data.count() == 0:
         return Response(
             {
-                'status': '30',
                 'error': 'Candidate not found.'
             },
             status.HTTP_404_NOT_FOUND
@@ -154,7 +143,6 @@ def workon_candidate(request, candidate_id, **kwargs):
     elif data.count() > 1:  # Should never occur
         return Response(
             {
-                'status': '30',
                 'error': 'Candidate id duplicated'
             },
             status.HTTP_400_BAD_REQUEST
@@ -179,7 +167,6 @@ def workon_candidate(request, candidate_id, **kwargs):
                 if dulp_list.count() > 0:
                     return Response(
                         {
-                            'status': '30',
                             'error': 'Trying to generate candidates with same id'
                          },
                         status.HTTP_400_BAD_REQUEST
@@ -206,7 +193,6 @@ def workon_candidate(request, candidate_id, **kwargs):
     else:
         return Response(
             {
-                'status': '30',
                 'error': 'Unknown request method'
             },
             status.HTTP_400_BAD_REQUEST
@@ -226,7 +212,6 @@ def change_status_candidate(request, candidate_id, **kwargs):
     if permissions.check(request, ('hr', 'interviewer')) != permissions.PASS:
         return Response(
             {
-                'status': '30',
                 'error': 'Access denied.'
             },
             status.HTTP_403_FORBIDDEN
@@ -236,7 +221,6 @@ def change_status_candidate(request, candidate_id, **kwargs):
     if candidate.count() == 0:
         return Response(
             {
-                'status': '30',
                 'error': 'Candidate not found.'
             },
             status.HTTP_404_NOT_FOUND
@@ -244,7 +228,6 @@ def change_status_candidate(request, candidate_id, **kwargs):
     elif candidate.count() > 1:
         return Response(
             {
-                'status': '30',
                 'error': 'Candidate id duplicated'
             },
             status.HTTP_400_BAD_REQUEST

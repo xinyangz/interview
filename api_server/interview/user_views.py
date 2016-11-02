@@ -27,7 +27,6 @@ def user_login(request, **kwargs):
         if key not in user_data:
             return Response(
                 {
-                    'status': '400',
                     'error': 'Key error'
                 },
                 status.HTTP_400_BAD_REQUEST
@@ -36,7 +35,6 @@ def user_login(request, **kwargs):
         if key not in required_keys:
             return Response(
                 {
-                    'status': '400',
                     'error': 'Key error'
                 },
                 status.HTTP_400_BAD_REQUEST
@@ -49,7 +47,6 @@ def user_login(request, **kwargs):
     if cursor.count() == 0:
         return Response(
             {
-                'status': '400',
                 'error': 'User does not exist.'
             },
             status.HTTP_400_BAD_REQUEST
@@ -57,7 +54,6 @@ def user_login(request, **kwargs):
     elif cursor.count() > 1:
         return Response(
             {
-                'status': '400',
                 'error': 'Multiple records with the same user name.'
             },
             status.HTTP_400_BAD_REQUEST
@@ -96,7 +92,6 @@ def user_login(request, **kwargs):
             else:
                 return Response(
                     {
-                        'status': '400',
                         'error': 'Invalid password.'
                     },
                     status.HTTP_400_BAD_REQUEST
@@ -109,7 +104,6 @@ def user_logout(request, **kwargs):
     if perm_result == permissions.NO_TOKEN or perm_result == permissions.NO_PERMISSION:
         return Response(
             {
-                'status': '403',
                 'error': 'Permission denied'
             },
             status.HTTP_403_FORBIDDEN
@@ -117,7 +111,6 @@ def user_logout(request, **kwargs):
     elif perm_result == permissions.INVALID_TOKEN:
         return Response(
             {
-                'status': '403',
                 'error': 'User has not logged in.'
             },
             status.HTTP_403_FORBIDDEN
@@ -133,7 +126,6 @@ def user_logout(request, **kwargs):
     if cursor.count() == 0:
         return Response(
             {
-                'status': '403',
                 'error': 'User has not logged in.'
             },
             status.HTTP_403_FORBIDDEN
@@ -150,12 +142,7 @@ def user_logout(request, **kwargs):
                     }
                 }
             )
-            return Response(
-                {
-                    'status': '200'
-                },
-                status.HTTP_200_OK
-            )
+            return Response(status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -176,7 +163,7 @@ def user_register(request, **kwargs):
     try:
         jsonschema.validate(data_dict, swagger_schema['definitions']['User'])
     except:
-        return Response({'status': '400', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
 
     client = pymongo.MongoClient(port=settings.DB_PORT)
     db = client[settings.DB_NAME]
@@ -185,7 +172,7 @@ def user_register(request, **kwargs):
     username = data_dict['username']
     cursor = db.users.find({'username': username})
     if cursor.count() > 0:
-        return Response({'status': '401', 'error': 'Username already exists'}, status.HTTP_401_UNAUTHORIZED)
+        return Response({'error': 'Username already exists'}, status.HTTP_401_UNAUTHORIZED)
 
     # insert
     original_dict = data_dict.copy()
@@ -201,7 +188,6 @@ def user_manage(request, **kwargs):
     if permissions.check(request, permitted_user_types) != permissions.PASS:
         return Response(
             {
-                'status': '403',
                 'error': 'Permission denied'
             },
             status.HTTP_403_FORBIDDEN
@@ -216,7 +202,6 @@ def user_manage(request, **kwargs):
     if cursor.count() == 0:
         return Response(
             {
-                'status': '404',
                 'error': 'User does not exist.'
             },
             status.HTTP_404_NOT_FOUND
@@ -224,7 +209,6 @@ def user_manage(request, **kwargs):
     elif cursor.count() > 1:
         return Response(
             {
-                'status': '400',
                 'error': 'Multiple records with the same user name.'
             },
             status.HTTP_400_BAD_REQUEST
@@ -246,7 +230,7 @@ def user_manage(request, **kwargs):
         try:
             jsonschema.validate(changed_data, swagger_schema['definitions']['User'])
         except:
-            return Response({'status': '400', 'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
 
         db.users.update_one(
             {'username': username},
