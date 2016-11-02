@@ -6,6 +6,7 @@ import pymongo
 import jsonschema
 from .schemas import swagger_schema
 from . import permissions
+from . import sequences
 
 
 @api_view(['GET', 'POST'])
@@ -29,6 +30,9 @@ def root(request, **kwargs):
                 {'error': 'Key error'},
                 status.HTTP_400_BAD_REQUEST
             )
+
+        room_id = sequences.get_next_sequence('room_id')
+
 
         client = pymongo.MongoClient()
         db = client[settings.DB_NAME]

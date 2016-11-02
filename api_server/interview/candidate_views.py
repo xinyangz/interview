@@ -82,7 +82,9 @@ def get_set_candidate(request, **kwargs):
         candidate_part['unique_username'] = temp_username
         candidate_part['id'] = candidate_id
         db.candidate.insert_one(candidate_part)
-        return Response(status=status.HTTP_200_OK)
+        ret_candidate_part = candidate_data.copy()
+        ret_candidate_part['id'] = candidate_id
+        return Response(ret_candidate_part, status.HTTP_200_OK)
     elif request.method == 'GET':
         offset = request.GET.get('offset')
         limit = request.GET.get('limit')
@@ -96,20 +98,20 @@ def get_set_candidate(request, **kwargs):
         else:
             limit = int(limit)
 
-        sorted_candidate = db.candidate.find({}).sort('id', pymongo.ASCENDING)
-        if offset + limit - 1 > int(sorted_candidate.count()):
-            return Response(
-                {
-                    'error': 'Index out of boundary'
-                },
-                status.HTTP_400_BAD_REQUEST
-            )
+        sorted_candidate = db.candidate.find(
+            {
+                'id': {'$gte': offset + 1, '$lte': offset + limit}
+            }
+        ).sort('id', pymongo.ASCENDING)
+        count = sorted_candidate.count()
         return_list = map(lambda x: {k: v for k, v in dict(sorted_candidate).items() if k in candidate_keys},
-                          list(sorted_candidate)[offset: offset + limit])
+                          list(sorted_candidate))
         return Response(
             {
-                'data': return_list
-                # sorted_candidate[offset, offset + limit]
+                'offset': offset,
+                'limit': limit,
+                'count': count,
+                'candidates': return_list
             },
             status.HTTP_200_OK
         )
@@ -160,9 +162,7 @@ def workon_candidate(request, candidate_id, **kwargs):
         for item in data:
             temp_data = {k: v for k, v in dict(item).items() if k in candidate_keys}
             return Response(
-                {
-                    'data':  temp_data
-                },
+                temp_data,
                 status.HTTP_200_OK
             )
     elif request.method == 'PUT':
