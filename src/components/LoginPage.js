@@ -1,10 +1,8 @@
 import React, { PropTypes }from 'react';
-import {Route, IndexRouter} from 'react-router';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { login } from '../actions/userActions';
-import {Form, FormGroup, Col, Checkbox, Button, ControlLabel, Label, FormControl, Panel, Nav, Navbar} from 'react-bootstrap';
-import '../styles/loginpage.css'
+import {Form, FormGroup, Col, Button, ControlLabel, Label, FormControl, Panel} from 'react-bootstrap';
 
 class LoginPage extends React.Component {
   constructor(props) {
