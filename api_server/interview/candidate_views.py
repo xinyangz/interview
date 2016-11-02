@@ -104,7 +104,7 @@ def get_set_candidate(request, **kwargs):
             }
         ).sort('id', pymongo.ASCENDING)
         count = sorted_candidate.count()
-        return_list = map(lambda x: {k: v for k, v in dict(sorted_candidate).items() if k in candidate_keys},
+        return_list = map(lambda x: {k: v for k, v in dict(x).items() if k in candidate_keys},
                           list(sorted_candidate))
         return Response(
             {
