@@ -28,10 +28,26 @@ paths:
         - "room"
       summary: "获取所有面试房间"
       parameters:
-        - name: "token"
-          in: "query"
+        - name: offset
+          in: query
+          description: |
+            从第几个房间开始读
+          default: 0
+          minimum: 0
+          type: integer
+          format: int32
+        - name: limit
+          in: query
+          description: |
+            读取数量
+          default: 10
+          maximum: 100
+          type: integer
+          format: int32
+        - name: token
+          in: query
+          type: string
           required: true
-          type: "string"
       produces:
         - "application/json"
       responses:
@@ -88,7 +104,7 @@ paths:
           in: "path"
           description: "面试房间id"
           required: true
-          type: "string"
+          type: "integer"
         - name: "image"
           in: "body"
           description: "logo图片"
@@ -123,7 +139,7 @@ paths:
           in: "path"
           description: "面试房间id"
           required: true
-          type: "string"
+          type: "integer"
         - name: "token"
           in: "query"
           required: true
@@ -154,7 +170,7 @@ paths:
           description: |
             面试房间id
           required: true
-          type: string
+          type: integer
         - name: room
           in: body
           description: |
@@ -197,7 +213,7 @@ paths:
           description: |
             面试房间id
           required: true
-          type: string
+          type: integer
         - name: token
           in: query
           type: string
@@ -306,7 +322,7 @@ paths:
           description: |
             候选人 id
           required: true
-          type: string
+          type: integer
         - name: token
           in: query
           type: string
@@ -340,7 +356,7 @@ paths:
           description: |
             候选人 id
           required: true
-          type: string
+          type: integer
         - name: candidate
           in: body
           description: |
@@ -383,7 +399,7 @@ paths:
           description: |
             候选人 id
           required: true
-          type: string
+          type: integer
         - name: token
           in: query
           type: string
@@ -415,7 +431,7 @@ paths:
       parameters:
         - name: "room_id"
           in: path
-          type: "string"
+          type: "integer"
           description: "房间id"
           required: true
         - name: "offset"
@@ -462,7 +478,7 @@ paths:
           description: |
             候选人 id
           required: true
-          type: string
+          type: integer
         - name: status
           in: query
           type: string
@@ -682,7 +698,7 @@ paths:
         - name: "candidate_id"
           in: "path"
           description: "面试者id"
-          type: "string"
+          type: "integer"
           required: true
         - name: "token"
           in: "query"
@@ -711,7 +727,7 @@ paths:
         - name: "candidate_id"
           in: "path"
           description: "面试者id"
-          type: "string"
+          type: "integer"
           required: true
         - name: "body"
           in: "body"
@@ -781,7 +797,7 @@ paths:
         - name: candidate_id
           in: path
           description: 面试者id
-          type: string
+          type: integer
           required: true
         - name: offset
           in: query
@@ -828,7 +844,7 @@ paths:
         - name: candidate_id
           in: path
           description: 面试者id
-          type: string
+          type: integer
           required: true
         - name: chat
           in: body
@@ -870,7 +886,7 @@ paths:
         - name: room_id
           in: path
           description: 房间id
-          type: string
+          type: integer
           required: true
         - name: offset
           in: query
@@ -916,7 +932,7 @@ paths:
         - name: room_id
           in: path
           description: 房间id
-          type: string
+          type: integer
           required: true
         - name: problem
           in: body
@@ -959,7 +975,7 @@ paths:
         - name: problem_id
           in: path
           description: 面试题id
-          type: string
+          type: integer
           required: true
         - name: token
           in: query
@@ -990,7 +1006,7 @@ paths:
         - name: problem_id
           in: path
           description: 面试题id
-          type: string
+          type: integer
           required: true
         - name: problem
           in: body
@@ -1031,7 +1047,7 @@ paths:
         - name: problem_id
           in: path
           description: 面试题id
-          type: string
+          type: integer
           required: true
         - name: token
           in: query
@@ -1117,9 +1133,9 @@ definitions:
       - "problems"
     properties:
       id:
-        type: "string"
+        type: "integer"
         description: "面试房间ID"
-        example: "1001"
+        example: 1001
       name:
         description: "面试房间名称"
         type: "string"
@@ -1135,14 +1151,14 @@ definitions:
         description: "候选人ID列表"
         type: "array"
         items:
-          type: "string"
-        example: ['100', '101', '102']
+          type: "integer"
+        example: [100, 101, 102]
       problems:
         description: "面试题ID列表"
         type: "array"
         items:
-          type: "string"
-        example: ['200', '201']
+          type: "integer"
+        example: [200, 201]
   RoomPost:
     type: "object"
     required:
@@ -1155,13 +1171,13 @@ definitions:
         example: "计蒜课秋招（前端）"
       interviewer:
         description: "面试官ID，若不存在则置空"
-        type: "string"
+        type: "integer"
       candidates:
         description: "候选人ID列表"
         type: "array"
         items:
-          type: "string"
-        example: ['100', '101', '102']
+          type: "integer"
+        example: [100, 101, 102]
   RoomList:
     type: "object"
     required:
@@ -1217,7 +1233,7 @@ definitions:
         type: "string"
       roomId:
         description: "候选人被分配的唯一的面试房间 id"
-        type: "string"
+        type: "integer"
         example: "1001"
   Candidate:
     type: "object"
@@ -1229,7 +1245,7 @@ definitions:
     properties:
       id:
         description: "候选人id"
-        type: "string"
+        type: "integer"
         example: "3001"
       name:
         description: "候选人姓名"
@@ -1249,7 +1265,7 @@ definitions:
         type: "string"
       roomId:
         description: "候选人被分配的唯一的面试房间 id"
-        type: "string"
+        type: "integer"
         example: "1001"
       #此处面试记录可能修改
       record:
@@ -1306,11 +1322,11 @@ definitions:
       - text
     properties:
       id:
-        type: string
+        type: integer
         description: "报告id"
         example: "7001"
       candidateId:
-        type: string
+        type: integer
         description: "报告所属面试者id"
         example: "101"
       text:
@@ -1324,7 +1340,7 @@ definitions:
       - text
     properties:
       candidateId:
-        type: string
+        type: integer
         description: "报告所属面试者id"
         example: "101"
       text:
@@ -1339,10 +1355,10 @@ definitions:
       - sender
     properties:
       id:
-        type: string
+        type: integer
         example: "10001"
       candidateId:
-        type: string
+        type: integer
         description: "聊天所属面试者id"
         example: "101"
       time:
@@ -1416,11 +1432,11 @@ definitions:
       - content
     properties:
       id:
-        type: string
+        type: integer
         description: 题目id
         example: "3901"
       roomId:
-        type: string
+        type: integer
         description: 题目所属房间id
         example: "1001"
       type:
