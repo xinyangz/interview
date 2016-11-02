@@ -15,9 +15,7 @@ def root(request, **kwargs):
 
     if permissions.check(request, permitted_user_types) != permissions.PASS:
         return Response(
-            {
-                'error': 'Permission denied'
-            },
+            {'error': 'Permission denied'},
             status.HTTP_403_FORBIDDEN
         )
 
@@ -27,7 +25,10 @@ def root(request, **kwargs):
         try:
             jsonschema.validate(room_data, swagger_schema['definitions']['RoomPost'])
         except:
-            return Response({'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'error': 'Key error'},
+                status.HTTP_400_BAD_REQUEST
+            )
 
         client = pymongo.MongoClient()
         db = client[settings.DB_NAME]

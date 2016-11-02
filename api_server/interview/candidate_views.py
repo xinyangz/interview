@@ -48,7 +48,7 @@ def get_set_candidate(request, **kwargs):
 
         # Check key error
         try:
-            jsonschema.validate(candidate_data, swagger_schema['definitions']['Candidate'])
+            jsonschema.validate(candidate_data, swagger_schema['definitions']['PostCandidate'])
         except:
             return Response(
                 {
