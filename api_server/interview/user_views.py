@@ -87,7 +87,8 @@ def user_login(request, **kwargs):
                     {
                         'user': user_part,
                         'token': str(token)
-                    }
+                    },
+                    status.HTTP_200_OK
                 )
             else:
                 return Response(
