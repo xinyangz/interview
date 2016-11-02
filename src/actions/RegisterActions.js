@@ -1,7 +1,7 @@
 /**
  * Created by 薛凯韬 on 2016/10/27.
  */
-import * as types from './consts'
+import * as types from '../constants/actionTypes'
 import { push } from 'react-router-redux';
 import axios from 'axios';
 

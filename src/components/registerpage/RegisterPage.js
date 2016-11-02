@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import RegisterInfo from './RegisterInfo';
-import * as RegisterActions from './RegisterActions'
+import * as RegisterActions from '../../actions/RegisterActions'
 import { Panel } from  'react-bootstrap'
 
 class RegisterPage extends React.Component {

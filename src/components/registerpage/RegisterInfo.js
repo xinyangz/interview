@@ -4,7 +4,7 @@
 import React, {PropTypes} from 'react';
 import {FormGroup, FormControl, ControlLabel, Button, Form, Col} from 'react-bootstrap';
 import {connect} from 'react-redux';
-import {Register} from './RegisterActions'
+import {Register} from '../../actions/RegisterActions'
 
 class RegisterInfo extends React.Component {
   constructor(props) {

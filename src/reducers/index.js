@@ -3,7 +3,7 @@ import fuelSavings from './fuelSavingsReducer';
 import roomsStates from './roomsReducer';
 import problemStates from './problemReducer';
 import {routerReducer} from 'react-router-redux';
-import RegisterReducer from '../components/registerpage/RegisterReducers'
+import RegisterReducer from './RegisterReducers'
 import user from './userReducer';
 
 const rootReducer = combineReducers({

@@ -1,8 +1,7 @@
 /**
  * Created by 薛凯韬 on 2016/10/27.
  */
-import * as types from './consts'
-import { combineReducers } from 'redux';
+import * as types from '../constants/actionTypes'
 
 export function RegisterReducer(state = {}, action) {
   switch (action.type) {
