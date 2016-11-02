@@ -66,6 +66,22 @@ export function deleteCandidate(candidateId) {
   };
 }
 
+export function deleteCandidate(candidateId) {
+  return dispatch => {
+    dispatch(beginDeleteCandidate());
+    return axios.delete('/candidate/' + candidateId + '?token=' + token)
+      .then(response => {
+        if (response.status === 200) {
+          dispatch(deleteCandidateSuccess(candidateId));
+        }
+        else {
+          dispatch(deleteCandidateError(response.data.error));
+        }
+      })
+      .catch(error => dispatch(deleteCandidateError(error.response.data.error || error)));
+  };
+}
+
 export function loadAllCandidates() {
   return dispatch => {
     dispatch(beginLoadAllCandidates());

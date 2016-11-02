@@ -3,7 +3,7 @@
  */
 import React, {PropTypes}from 'react'
 import {connect} from 'react-redux';
-import {Tabs, Tab, Table, Modal, Button, FormControl, FormGroup, ControlLabel} from 'react-bootstrap'
+import {Tabs, Tab, Table, Modal, Button, FormControl, FormGroup, ControlLabel, Form, Col} from 'react-bootstrap'
 import {deleteCandidate} from './CandidateManagerActions'
 
 class CandidateManagerTable extends React.Component {
@@ -45,7 +45,7 @@ class CandidateManagerTable extends React.Component {
   }
 
   onEditCandidateClick() {
-    this.closeEditModal();
+    //this.closeEditModal();
   }
 
   render() {
@@ -81,7 +81,7 @@ class CandidateManagerTable extends React.Component {
                   </td>
                   <td>一些图案</td>
                   <td>{candidate.status}</td>
-                  <td><a onClick={this.open(candidate.id)}>编辑</a> | <a onClick={() => this.open(candidate.id)}>删除</a></td>
+                  <td><a onClick={() => this.openEditModal(candidate.id)}>编辑</a> | <a onClick={() => this.open(candidate.id)}>删除</a></td>
                 </tr>)}
 
                 <Modal show={this.state.showModal} onHide={this.close}>
@@ -93,6 +93,34 @@ class CandidateManagerTable extends React.Component {
                     <Button bsStyle="primary" onClick={this.onDeleteCandidateClick}>确认</Button>
                   </Modal.Footer>
                 </Modal>
+
+              <Modal show={this.state.showEditModal} onHide={this.closeEditModal}>
+                <Modal.Header closeButton>
+                  <Modal.Title>编辑候选人</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <Form horizontal>
+                    <FormGroup controlId="candidateName">
+                      <Col componentClass={ControlLabel} sm={2}>候选人姓名</Col>
+                      <Col sm={10}><FormControl type="text" placeholder="请输入候选人姓名" /></Col>
+                    </FormGroup>
+
+                    <FormGroup controlId="candidateEmail">
+                      <Col componentClass={ControlLabel} sm={2}>候选人邮箱</Col>
+                      <Col sm={10}><FormControl type="email" placeholder="请输入候选人邮箱" /></Col>
+                    </FormGroup>
+
+                    <FormGroup controlId="candidateEmail">
+                      <Col componentClass={ControlLabel} sm={2}>候选人手机</Col>
+                      <Col sm={10}><FormControl type="text" placeholder="请输入候选人手机" /></Col>
+                    </FormGroup>
+                  </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button onClick={this.closeEditModal}>取消</Button>
+                  <Button bsStyle="primary" onClick={this.onEditCandidateClick}>确认</Button>
+                </Modal.Footer>
+              </Modal>
             </tbody>
           </Table>
         </Tab>
@@ -104,6 +132,7 @@ class CandidateManagerTable extends React.Component {
 CandidateManagerTable.PropTypes = {
   candidateManager: PropTypes.arrayOf(PropTypes.object).isRequired,
   deleteCandidate: PropTypes.func,
+  editCandidate: PropTypes.func,
   rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
