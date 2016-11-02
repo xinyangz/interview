@@ -1,6 +1,7 @@
 import React from 'react';
 import {Navbar, Nav, NavItem} from 'react-bootstrap';
 import {LinkContainer, IndexLinkContainer} from 'react-router-bootstrap';
+import {connect} from 'react-redux';
 import '../styles/navigation.css';
 
 
@@ -26,7 +27,9 @@ const Navigation = () => {
         </Nav>
 
         <Nav pullRight>
-          <NavItem eventKey={5}>登录</NavItem>
+          <LinkContainer to="/login">
+            <NavItem eventKey={5}>登录</NavItem>
+          </LinkContainer>
           <NavItem eventKey={6}>注册</NavItem>
         </Nav>
       </Navbar>
@@ -34,4 +37,11 @@ const Navigation = () => {
   );
 };
 
-export default Navigation;
+function mapStateToProps(state) {
+  return {
+    isLogin: state.user.isLogin,
+    type: state.user.type
+  };
+}
+
+export default connect(mapStateToProps)(Navigation);

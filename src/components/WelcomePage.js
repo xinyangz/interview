@@ -10,7 +10,7 @@ const WelcomePage = () => {
         <h1>欢迎</h1>
         <p>欢迎访问面试管理平台</p>
         <p>
-          <LinkContainer to="/hr">
+          <LinkContainer to="/login">
             <Button bsStyle="primary">登录</Button>
           </LinkContainer>
         </p>

@@ -33,7 +33,7 @@ export function login(data) {
       .then(response => {
         if ( response.status === 200 ) {
           dispatch(loginSuccess(response.data));
-          dispatch(push('/'));
+          dispatch(push('/hr'));
         }
         else if (response.status === 400) {
           dispatch(loginError('wrong password'));
