@@ -22,5 +22,13 @@ export default {
   problemStates: {
     problems: [],
     isWaiting: false
+  },
+  user: {
+    isLogin: false,
+    wrongPassword: false,
+    token: null,
+    type: null,
+    info: {}
   }
+
 };

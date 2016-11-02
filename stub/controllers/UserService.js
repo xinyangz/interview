@@ -25,7 +25,7 @@ exports.userLoginGET = function(args, res, next) {
   else {
     res.end();
   }
-  
+
 }
 
 exports.userLogoutGET = function(args, res, next) {
@@ -58,7 +58,7 @@ exports.userRegisterPOST = function(args, res, next) {
   else {
     res.end();
   }
-  
+
 }
 
 exports.userUsernameDELETE = function(args, res, next) {
@@ -93,7 +93,7 @@ exports.userUsernameGET = function(args, res, next) {
   else {
     res.end();
   }
-  
+
 }
 
 exports.userUsernamePUT = function(args, res, next) {
@@ -119,6 +119,6 @@ exports.userUsernamePUT = function(args, res, next) {
   else {
     res.end();
   }
-  
+
 }
 
