@@ -9,6 +9,7 @@ import random
 import string
 import uuid
 import datetime
+import subprocess
 
 
 class UserLoginTestCase(APISimpleTestCase):
@@ -384,8 +385,17 @@ class ReportTestCase(APISimpleTestCase):
 
     def get_put_response(self, candidate_id, data, token):
         url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/report/' + str(candidate_id) + '?token=' + token
-        print url
         response = self.client.put(url, data, format='json')
+        return response
+
+    def get_get_response(self, candidate_id, token):
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/report/' + str(candidate_id) + '?token=' + token
+        response = self.client.get(url)
+        return response
+
+    def get_del_response(self, candidate_id, token):
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/report/' + str(candidate_id) + '?token=' + token
+        response = self.client.delete(url)
         return response
 
     def test_report_success(self):
@@ -396,4 +406,12 @@ class ReportTestCase(APISimpleTestCase):
         self.db.room.insert_one(self.room_template)
         response = self.get_put_response(301, "His English is very poor", 'houbuhouwa')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.get_get_response(301, 'houbuhouwa')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.get_del_response(301, 'houbuhouwa')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        subprocess.call("sh clear_tex.sh", shell=True)
 

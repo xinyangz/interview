@@ -8,9 +8,147 @@ import pymongo
 import uuid
 import subprocess
 import os
+from time import sleep
 
-@api_view(['PUT'])
-def put_report(request, candidate_id, **kwargs):
+
+@api_view(['GET', 'DELETE', 'PUT'])
+def all_report(request, candidate_id, **kwargs):
+    method = request.method
+
+    if method == 'GET':
+        return get_report(request, candidate_id)
+    elif method == 'DELETE':
+        return delete_report(request, candidate_id)
+    elif method == 'PUT':
+        return put_report(request, candidate_id)
+    else:
+        return Response(
+            {
+                'error': 'Method error'
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
+
+def get_report(request, candidate_id):
+    token = request.GET.get('token')
+    client = pymongo.MongoClient()
+    db = client[settings.DB_NAME]
+
+    # Check user permission
+
+    access_denied = False
+    applicant = db.users.find({'token': token})
+    if applicant.count() == 0:
+        access_denied = True
+    else:
+        for item in applicant:
+            if item['type'] not in ['hr', 'interviewer']:
+                access_denied = True
+                break
+    if access_denied:
+        return Response(
+            {
+                'status': '30',
+                'error': 'Permission denied.'
+            },
+            status.HTTP_403_FORBIDDEN
+        )
+    report_cursor = db.report.find({'candidate_id': candidate_id})
+    if report_cursor.count() == 0:
+        print "Candidate not found"
+        return Response(
+            {
+                'error': 'Candidate not found'
+            },
+            status.HTTP_404_NOT_FOUND
+        )
+    elif report_cursor.count() > 1:
+        print "Duplicate in database"
+        return Response(
+            {
+                'error': 'Duplicate in database'
+            },
+            status.HTTP_404_NOT_FOUND
+        )
+    else:
+        for report in report_cursor:
+            return Response(
+            {
+                'id': report['report_id'],
+                'candidateId': candidate_id,
+                'url': report['path']
+            },
+            status.HTTP_200_OK
+        )
+
+
+def delete_report(request, candidate_id):
+    token = request.GET.get('token')
+    client = pymongo.MongoClient()
+    db = client[settings.DB_NAME]
+    # Check user permission
+
+    access_denied = False
+    applicant = db.users.find({'token': token})
+    if applicant.count() == 0:
+        access_denied = True
+    else:
+        for item in applicant:
+            if item['type'] not in ['hr', 'interviewer']:
+                access_denied = True
+                break
+    if access_denied:
+        return Response(
+            {
+                'status': '30',
+                'error': 'Permission denied.'
+            },
+            status.HTTP_403_FORBIDDEN
+        )
+    user_cursor = db.candidate.find({'id': candidate_id})
+    if user_cursor.count() == 0:
+        return Response(
+            {
+                'error': 'Candidate not found'
+            },
+            status.HTTP_404_NOT_FOUND
+        )
+    elif user_cursor.count() > 1:
+        return Response(
+            {
+                'error': 'Duplicate in database'
+            },
+            status.HTTP_404_NOT_FOUND
+        )
+    else:
+        report_cursor = db.report.find({'candidate_id': candidate_id})
+        if report_cursor.count() == 0:
+            return Response(
+                {
+                    'error': 'No such report!'
+                },
+                status.HTTP_404_NOT_FOUND
+            )
+        elif report_cursor.count() > 1:
+            return Response(
+                {
+                    'error': 'Report duplicated!'
+                },
+                status.HTTP_404_NOT_FOUND
+            )
+        else:
+            for report in report_cursor:
+                subprocess.call("rm " + report['path'], shell=True)
+                db.report.delete_one({'candidate_id': candidate_id})
+                return Response(
+                    {
+                        'candidate_id': candidate_id,
+                        'token': token
+                    },
+                    status.HTTP_200_OK
+                )
+
+def put_report(request, candidate_id):
 
     '''
     'id': '7001',
@@ -19,6 +157,7 @@ def put_report(request, candidate_id, **kwargs):
     '''
 
     report_data = request.data
+    text = report_data
     token = request.GET.get('token')
 
     client = pymongo.MongoClient()
@@ -45,7 +184,6 @@ def put_report(request, candidate_id, **kwargs):
         )
 
     # Set path record
-    # TODO: Should there be more than one report for each candidate?
 
     report_id = str(uuid.uuid4())
     while db.report.find({'report_id': report_id}).count() > 0:
@@ -59,13 +197,30 @@ def put_report(request, candidate_id, **kwargs):
             'path': report_path + '.pdf'
         }
     )
-    # TODO: ???
-    #db.candidate.update({'id': report_data['candidate_id']}, {'$set': {report_id}})
 
     # Get related data from 3 collections
     candidate_candidate_data = db.candidate.find_one({'id': candidate_id})
     user_name = candidate_candidate_data['unique_username']
     candidate_user_data = db.users.find_one({'username': user_name})
+
+    # Update text
+    db.candidate.update(
+        {'candidate_id': candidate_id},
+        {
+            "$set":
+            {
+                'record':
+                {
+                    'video': candidate_candidate_data['record']['video'],
+                    'board': candidate_candidate_data['record']['board'],
+                    'chat': candidate_candidate_data['record']['chat'],
+                    'code': candidate_candidate_data['record']['code'],
+                    'report': text
+                }
+            }
+        }
+    )
+    candidate_candidate_data = db.candidate.find_one({'id': candidate_id})
 
     candidate_name = candidate_candidate_data['name']
     candidate_id = candidate_id
@@ -79,6 +234,7 @@ def put_report(request, candidate_id, **kwargs):
     candidate_board = candidate_candidate_data['record']['board']
     candidate_chat = candidate_candidate_data['record']['chat']
     candidate_code = candidate_candidate_data['record']['code']
+    candidate_text = candidate_candidate_data['record']['report']
 
     room_id = candidate_candidate_data['roomId']
     room_data = db.room.find_one({'id': room_id})
@@ -87,7 +243,6 @@ def put_report(request, candidate_id, **kwargs):
 
     # TODO: Where is the logo? room_data['logo'] returns what?
     logo = settings.TEX_PATH + "logo/iitmlogo.pdf"
-
 
     # Write report
 
@@ -152,7 +307,7 @@ def put_report(request, candidate_id, **kwargs):
     with open(settings.TEX_PATH + str(report_id) + ".tex", 'w') as f:
         f.writelines(lines)
 
-    subprocess.call('xelatex ' + tex_path + ' -output-directory=' + settings.REPORT_PATH + ' -aux-directory=report/ && sh clean.sh', shell=True)
+    subprocess.call('/Library/TeX/texbin/xelatex ' + tex_path + ' -output-directory=' + settings.REPORT_PATH + ' -aux-directory=report/ && sh clean.sh', shell=True)
 
     return Response(
         {
