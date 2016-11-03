@@ -139,3 +139,5 @@ CORS_ORIGIN_WHITELIST = (
 # File storage
 
 FILE_ROOT = os.path.join(BASE_DIR, 'file')
+
+FILE_URL = '/file/'

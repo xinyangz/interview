@@ -127,7 +127,7 @@ def logo(request, room_id, **kwargs):
     destination.close()
 
     # update logo url
-    logo_url = '/file/logo' + extension
+    logo_url = settings.FILE_URL + str(room_id) + '/logo' + extension
     db.rooms.update_one(
         {'id': room_id},
         {'$set': {'logo': logo_url}}
