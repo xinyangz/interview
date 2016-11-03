@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.conf import settings
 import pymongo
+import os
 import jsonschema
 from .schemas import swagger_schema
 from . import permissions
@@ -116,7 +117,27 @@ def logo(request, room_id, **kwargs):
     room_data = dict(room_cursor[0])
     del room_data['_id']
 
-    # TODO: request.data
+    # TODO: test
+    img_file = request.data['image']
+    _, extension = os.path.splitext(img_file.name)
+    file_path = os.path.join(settings.FILE_ROOT, str(room_id), 'logo' + extension)
+    destination = open(file_path, 'wb+')
+    for chunk in img_file.chunks():
+        destination.write(chunk)
+    destination.close()
+
+    # update logo url
+    logo_url = '/file/logo' + extension
+    db.rooms.update_one(
+        {'id': room_id},
+        {'$set': {'logo': logo_url}}
+    )
+    room_data['logo'] = logo_url
+
+    return Response(
+        room_data,
+        status.HTTP_200_OK
+    )
 
 
 @api_view(['DELETE', 'GET', 'PUT'])
