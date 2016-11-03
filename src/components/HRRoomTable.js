@@ -32,6 +32,10 @@ class HRRoomTable extends React.Component{
 
   openModify(room_id) {
     this.setState({showModify: true, selectedRoom: room_id});
+    console.log(this.props.rooms.find(room => room.id === room_id).name);
+    console.log(room_id);
+    console.log(this.state.showModify);
+    console.log(this.state.selectedRoom);
   }
 
   onDeleteRoomClick() {
@@ -44,8 +48,7 @@ class HRRoomTable extends React.Component{
     event.preventDefault();
     const name = ReactDOM.findDOMNode(this.refs.name).value;
     const room_id = this.state.selectedRoom;
-    //console.log(name);
-    //console.log(room_id);
+
     function clone(obj) {
       // Handle the 2 simple types, and null or undefined
       if (null == obj || "object" != typeof obj) return obj;
@@ -65,7 +68,7 @@ class HRRoomTable extends React.Component{
         }
         return copy;
       }
-      throw new Error("Unable to copy obj! Its type isn't supported.");
+      //throw new Error("Unable to copy obj! Its type isn't supported.");
     }
     const roomToChange = this.props.rooms.find(room => room.id === room_id);
     const nameToChange = {"name": name};
@@ -122,7 +125,7 @@ class HRRoomTable extends React.Component{
                   房间名
                 </Col>
                 <Col sm={10}>
-                  <FormControl type="text" ref="name" placeholder="目前房间名"/>
+                  <FormControl type="text" ref="name" placeholder={this.props.rooms.find(room => room.id === this.state.selectedRoom) && this.props.rooms.find(room => room.id === this.state.selectedRoom).name}/>
                 </Col>
               </FormGroup>
 
@@ -131,7 +134,7 @@ class HRRoomTable extends React.Component{
                   面试官
                 </Col>
                 <Col sm={10}>
-                  <FormControl type="email" ref="interviewer" placeholder="目前面试官" disabled/>
+                  <FormControl type="email" ref="interviewer" placeholder={this.props.rooms.find(room => room.id === this.state.selectedRoom) && this.props.rooms.find(room => room.id === this.state.selectedRoom).interviewer} disabled/>
                 </Col>
               </FormGroup>
 
@@ -143,7 +146,7 @@ class HRRoomTable extends React.Component{
                   <input type="file" ref="logo" accept="image/*"/>
                 </Col>
                 <Col xs={6} md={4}>
-                  <img src="https://www.baidu.com/img/bd_logo1.png" width="100%"/>
+                  <img src={this.props.rooms.find(room => room.id === this.state.selectedRoom) && this.props.rooms.find(room => room.id === this.state.selectedRoom).logo} width="100%"/>
                 </Col>
               </FormGroup>
 
