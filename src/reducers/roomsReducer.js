@@ -4,7 +4,7 @@ import {combineReducers} from 'redux';
 
 const rooms = (state = initialState.roomsStates.rooms, action) => {
   function isChangedRoom(room) {
-    return room.id === action.room_id;
+    return room.id === action.room.id;
   }
   switch (action.type) {
     case types.DELETE_ROOM_SUCCESS:
@@ -13,7 +13,9 @@ const rooms = (state = initialState.roomsStates.rooms, action) => {
       return action.rooms;
     case types.MODIFY_ROOM_SUCCESS:
      {
+       //console.log(action.room.name);
        state.find(isChangedRoom).name = action.room.name;
+       //console.log(state.find(isChangedRoom));
        return state;
      }
     default:

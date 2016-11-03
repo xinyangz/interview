@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {Table, Modal, Button, Form, FormControl, FormGroup, Col, ControlLabel} from 'react-bootstrap';
 import {deleteRoom, modifyRoom} from '../actions/roomsActions';
 import '../styles/hrroomtable.css';
+import 'babel-polyfill';
 
 class HRRoomTable extends React.Component{
   constructor(props) {
@@ -41,11 +42,39 @@ class HRRoomTable extends React.Component{
   onEditRoomClick(event) {
     //alert('Edit room click!');
     event.preventDefault();
-    const name = ReactDOM.findDOMNode(this.ref.name).value;
+    const name = ReactDOM.findDOMNode(this.refs.name).value;
     const room_id = this.state.selectedRoom;
-    const roomToChange = this.props.rooms.find(room => room.id === this.state.selectedRoom);
+    //console.log(name);
+    //console.log(room_id);
+    function clone(obj) {
+      // Handle the 2 simple types, and null or undefined
+      if (null == obj || "object" != typeof obj) return obj;
+      // Handle Array
+      if (obj instanceof Array) {
+        var copy = [];
+        for (var i = 0; i < obj.length; ++i) {
+          copy[i] = clone(obj[i]);
+        }
+        return copy;
+      }
+      // Handle Object
+      if (obj instanceof Object) {
+        copy = {};
+        for (var attr in obj) {
+          if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+        }
+        return copy;
+      }
+      throw new Error("Unable to copy obj! Its type isn't supported.");
+    }
+    const roomToChange = this.props.rooms.find(room => room.id === room_id);
     const nameToChange = {"name": name};
-    let newRoom = Object.Assign(roomToChange,nameToChange);
+    //let newRoom = Object.Assign(roomToChange,nameToChange);
+    let newRoom = clone(roomToChange);
+    newRoom.name = nameToChange.name;
+    //console.log(newRoom.name);
+    //console.log(roomToChange.name);
+    //console.log(newRoom.interviewer);
     this.props.modifyRoom({newRoom,room_id});
     this.closeModify();
   }

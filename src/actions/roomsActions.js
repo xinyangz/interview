@@ -51,10 +51,10 @@ export function beginModifyRoom() {
   };
 }
 
-export function modifyRoomSuccess(rooms) {
+export function modifyRoomSuccess(data) {
   return {
     type: types.MODIFY_ROOM_SUCCESS,
-    rooms
+    room: data
   };
 }
 
@@ -102,10 +102,18 @@ export function modifyRoom(data) {
     dispatch(beginModifyRoom());
     const room_id = data.room_id;
     const room = data.newRoom;
+
+    /*
+    console.log("In modifyRoom after beginModifyRoom");
+    console.log(room_id);
+    console.log(room);
+    */
     return axios.put('/room/' + room_id + '?token=' + token, room)
       .then(response => {
         if(response.status === 200) {
-          dispatch(modifyRoomSuccess(response.data.rooms));
+          //console.log("response status 200");
+          //console.log(response.data);
+          dispatch(modifyRoomSuccess(response.data));
         }
         else {
           dispatch(modifyRoomError(response.data.error));
