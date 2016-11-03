@@ -63,7 +63,16 @@ class RegisterInfo extends React.Component {
 
   getEmailValState(){
     const length = this.state.userEmail.length;
-    if (length > 0) return 'success';
+    if (length > 0)
+    {
+      var pattern = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+      pattern.test(this.state.userEmail);
+      if(pattern.test(this.state.userEmail)) {
+        return 'success';
+      }
+      return 'error';
+    }
+
   }
 
   getContactValState(){

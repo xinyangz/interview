@@ -36,7 +36,6 @@ export function Register(registerInfo) {
           dispatch(push('/login'));
         } else {
           dispatch(errorRegister('Oops! Something went wrong!'));
-          dispatch(push('/login'));
         }
       })
       .catch(err => {
