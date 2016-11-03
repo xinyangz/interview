@@ -9,12 +9,12 @@ exports.userLoginGET = function(args, res, next) {
     var examples = {};
   examples['application/json'] = {
   "user" : {
-    "password" : "aeiou",
-    "organization" : "aeiou",
-    "contact" : "aeiou",
-    "type" : "aeiou",
-    "email" : "aeiou",
-    "username" : "aeiou"
+    "password" : "123",
+    "organization" : "301 Hospital",
+    "contact" : "1302332333",
+    "type" : "hr",
+    "email" : "example@example.com",
+    "username" : "Jason Yip"
   },
   "token" : "123456"
 };

@@ -43,7 +43,7 @@ class ProblemTable extends React.Component {
       default:
         return "未知类型";
     }
-  };
+  }
 
   render() {
     return (
@@ -67,7 +67,7 @@ class ProblemTable extends React.Component {
                     </td>
                     <td className="aln-right">
                       <a className="link">编辑</a> | <a
-                      className="link" onClick={() => {this.openDeleteModal(problem.id)}}>删除</a>
+                      className="link" onClick={() => {this.openDeleteModal(problem.id);}}>删除</a>
                     </td>
                   </tr>)
                 :
@@ -90,7 +90,7 @@ class ProblemTable extends React.Component {
     );
   }
 }
-;
+
 
 ProblemTable.propTypes = {
   problems: PropTypes.arrayOf(PropTypes.object).isRequired,

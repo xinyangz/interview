@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {Grid, Row, Col, Tab, Nav, NavItem, NavDropdown, Button, DropdownButton, MenuItem} from 'react-bootstrap';
+import {Grid, Row, Col} from 'react-bootstrap';
 import '../../styles/InterviewerPage/interviewer-page.css';
 
 const RoomTitle = ({room}) => {
@@ -15,7 +15,7 @@ const RoomTitle = ({room}) => {
       </Row>
     </Grid>
 
-  )
+  );
 };
 
 RoomTitle.propTypes = {
