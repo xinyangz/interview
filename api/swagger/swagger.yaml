@@ -1336,13 +1336,8 @@ definitions:
   ReportIn:
     type: object
     required:
-      - candidateId
       - text
     properties:
-      candidateId:
-        type: integer
-        description: "报告所属面试者id"
-        example: "101"
       text:
         type: string
         description: "报告文本"
