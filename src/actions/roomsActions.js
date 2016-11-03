@@ -45,6 +45,26 @@ export function loadAllRoomsError(error) {
   };
 }
 
+export function beginModifyRoom() {
+  return {
+    type: types.MODIFY_ROOM
+  };
+}
+
+export function modifyRoomSuccess(rooms) {
+  return {
+    type: types.MODIFY_ROOM_SUCCESS,
+    rooms
+  };
+}
+
+export function modifyRoomError(error) {
+  return {
+    type: types.MODIFY_ROOM_ERROR,
+    error
+  };
+}
+
 export function deleteRoom(roomId) {
   return dispatch => {
     dispatch(beginDeleteRoom());
@@ -77,3 +97,20 @@ export function loadAllRooms() {
   };
 }
 
+export function modifyRoom(data) {
+  return dispatch  => {
+    dispatch(beginModifyRoom());
+    const room_id = data.room_id;
+    const room = data.newRoom;
+    return axios.put('/room/' + room_id + '?token=' + token, room)
+      .then(response => {
+        if(response.status === 200) {
+          dispatch(modifyRoomSuccess(response.data.rooms));
+        }
+        else {
+          dispatch(modifyRoomError(response.data.error));
+        }
+      })
+      .catch(error => dispatch(modifyRoomError(error.response.data.error || error)));
+  };
+}
