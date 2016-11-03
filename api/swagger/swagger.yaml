@@ -28,18 +28,16 @@ paths:
         - "room"
       summary: "获取所有面试房间"
       parameters:
-        - name: offset
-          in: query
-          description: |
-            从第几个房间开始读
-          default: 0
-          minimum: 0
+        - name: "offset"
+          in: "query"
+          description: "从第几个房间开始读"
+          default: "0"
+          minimum: "0"
           type: integer
           format: int32
         - name: limit
           in: query
-          description: |
-            读取数量
+          description: "读取数量"
           default: 10
           maximum: 100
           type: integer
@@ -938,7 +936,7 @@ paths:
           in: body
           description: 添加的题目
           schema:
-            $ref: '#/definitions/Problem'
+            $ref: '#/definitions/ProblemIn'
           required: true
         - name: token
           in: query
@@ -951,6 +949,8 @@ paths:
       responses:
         200:
           description: "面试题添加成功"
+          schema:
+            $ref: '#/definitions/Problem'
         400:
           description: "面试题添加失败"
           schema:
@@ -1319,7 +1319,7 @@ definitions:
     required:
       - id
       - candidateId
-      - text
+      - url
     properties:
       id:
         type: integer
@@ -1329,13 +1329,13 @@ definitions:
         type: integer
         description: "报告所属面试者id"
         example: "101"
-      text:
+      url:
         type: string
-        description: "报告文本"
+        description: "下载报告url"
+        example: "example.com/report/123.pdf"
   ReportIn:
     type: object
     required:
-      - id
       - candidateId
       - text
     properties:
@@ -1435,6 +1435,26 @@ definitions:
         type: integer
         description: 题目id
         example: "3901"
+      roomId:
+        type: integer
+        description: 题目所属房间id
+        example: "1001"
+      type:
+        type: string
+        enum: ["choice", "blank", "answer", "code"]
+        description: 题目类型(choice, blank, answer, code)
+        example: "choice"
+      content:
+        description: 题目内容
+        schema:
+          $ref: '#/definitions/ProblemContent'
+  ProblemIn:
+    type: object
+    required:
+      - roomId
+      - type
+      - content
+    properties:
       roomId:
         type: integer
         description: 题目所属房间id
