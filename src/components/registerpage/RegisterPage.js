@@ -6,10 +6,11 @@ import { Panel } from  'react-bootstrap'
 class RegisterPage extends React.Component {
     render() {
         return (
-            <Panel header={<h3>创建主考方账号</h3>} bsStyle="primary">
-              <RegisterInfo
-                clickAction={RegisterActions.register}/>
-            </Panel>
+              <Panel>
+                <h3>注册主考方账号</h3>
+                  <RegisterInfo
+                    clickAction={RegisterActions.register}/>
+              </Panel>
         )
     }
 }
