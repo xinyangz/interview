@@ -15,6 +15,7 @@ export default (
   <Route path="/" component={App}>
     <IndexRoute component={RegisterPage}/>
     <Route path="fuel-savings" component={FuelSavingsPage}/>
+    <Route path="register" component={RegisterPage}/>
     <Route path="about" component={AboutPage}/>
     <Route path="interviewer" component={InterviewerPage} />
     <Route path="login" component={LoginPage}/>

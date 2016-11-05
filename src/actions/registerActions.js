@@ -1,45 +1,42 @@
-/**
- * Created by 薛凯韬 on 2016/10/27.
- */
 import * as types from '../constants/actionTypes'
 import { push } from 'react-router-redux';
 import axios from 'axios';
 
-export function beginRegister() {
+export function registerBegin() {
   return {
-    type : types.BEGIN_REGISTER
+    type : types.REGISTER_BEGIN,
   }
 }
 
-export function successRegister(message) {
+export function registerSuccess(message) {
   return {
     type : types.REGISTER_SUCCESS,
     message
   }
 }
 
-export function errorRegister(message) {
+export function registerError(message) {
   return {
     type : types.REGISTER_ERROR,
     message
   }
 }
 
-export function Register(registerInfo) {
+export function register(registerInfo) {
   return dispatch => {
-    dispatch(beginRegister());
+    dispatch(registerBegin());
 
     return axios.post('/user/register', registerInfo)
       .then(response => {
         if (response.status === 200) {
-          dispatch(successRegister(response.data));
+          dispatch(registerSuccess(response.data));
           dispatch(push('/login'));
         } else {
-          dispatch(errorRegister('Oops! Something went wrong!'));
+          dispatch(registerError('Oops! Something went wrong!'));
         }
       })
       .catch(err => {
-        dispatch(errorRegister(err));
+        dispatch(registerError(err));
       });
   };
 }

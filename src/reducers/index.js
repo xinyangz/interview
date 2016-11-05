@@ -3,14 +3,14 @@ import fuelSavings from './fuelSavingsReducer';
 import roomsStates from './roomsReducer';
 import problemStates from './problemReducer';
 import {routerReducer} from 'react-router-redux';
-import RegisterReducer from './RegisterReducers'
+import registerReducer from './registerReducer'
 import user from './userReducer';
 
 const rootReducer = combineReducers({
   fuelSavings,
   roomsStates,
   problemStates,
-  RegisterReducer,
+  registerReducer,
   user,
   routing: routerReducer
 });

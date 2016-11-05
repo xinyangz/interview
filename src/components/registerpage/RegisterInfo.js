@@ -1,10 +1,7 @@
-/**
- * Created by 薛凯韬 on 2016/10/22.
- */
 import React, {PropTypes} from 'react';
 import {FormGroup, FormControl, ControlLabel, Button, Form, Col} from 'react-bootstrap';
 import {connect} from 'react-redux';
-import {Register} from '../../actions/RegisterActions'
+import {register} from '../../actions/registerActions'
 
 class RegisterInfo extends React.Component {
   constructor(props) {
@@ -175,8 +172,8 @@ RegisterInfo.propTypes = {
   Register: PropTypes.func.isRequired,
 };
 
-function mapStateToProps(state) {
+function mapStateToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, {Register})(RegisterInfo);
+export default connect(mapStateToProps, {register})(RegisterInfo);

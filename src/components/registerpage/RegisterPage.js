@@ -1,9 +1,6 @@
-﻿/**
- * Created by 薛凯�? on 2016/10/19.
- */
-import React from 'react';
+﻿import React from 'react';
 import RegisterInfo from './RegisterInfo';
-import * as RegisterActions from '../../actions/RegisterActions'
+import * as RegisterActions from '../../actions/registerActions'
 import { Panel } from  'react-bootstrap'
 
 class RegisterPage extends React.Component {
@@ -11,7 +8,7 @@ class RegisterPage extends React.Component {
         return (
             <Panel header={<h3>创建主考方账号</h3>} bsStyle="primary">
               <RegisterInfo
-                clickAction={RegisterActions.Register}/>
+                clickAction={RegisterActions.register}/>
             </Panel>
         )
     }

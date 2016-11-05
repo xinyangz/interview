@@ -29,8 +29,12 @@ const Navigation = () => {
         </Nav>
 
         <Nav pullRight>
-          <NavItem eventKey={5}>登录</NavItem>
-          <NavItem eventKey={6}>注册</NavItem>
+          <LinkContainer to="/login">
+            <NavItem eventKey={5}>登录</NavItem>
+          </LinkContainer>
+          <LinkContainer to="/register">
+            <NavItem eventKey={6}>注册</NavItem>
+          </LinkContainer>
         </Nav>
       </Navbar>
     </header>
