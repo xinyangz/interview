@@ -122,40 +122,52 @@ class RegisterInfo extends React.Component {
   render() {
     return (
       <Form horizontal>
-        <FormGroup controlId="userEmail" validationState={this.getUserValState()}>
+        <FormGroup controlId="userName" validationState={this.getUserValState()}>
           <Col componentClass={ControlLabel} sm={2}>用户名</Col>
-          <Col sm={8}><FormControl type="text" value = {this.state.userName} onChange = {this.userNameChange} placeholder="请输入您的用户名"/>
-          <FormControl.Feedback /></Col>
+          <Col sm={8}>
+            <FormControl type="text" value = {this.state.userName} onChange = {this.userNameChange} placeholder="请输入您的用户名"/>
+            <FormControl.Feedback />
+          </Col>
         </FormGroup>
 
         <FormGroup controlId="userEmail" validationState={this.getEmailValState()}>
           <Col componentClass={ControlLabel} sm={2}>工作邮箱</Col>
-          <Col sm={8}><FormControl type="email" value = {this.state.userEmail} onChange = {this.emailChange} placeholder="请输入您的工作邮箱"/>
-          <FormControl.Feedback /></Col>
+          <Col sm={8}>
+            <FormControl type="email" value = {this.state.userEmail} onChange = {this.emailChange} placeholder="请输入您的工作邮箱"/>
+            <FormControl.Feedback />
+          </Col>
         </FormGroup>
 
         <FormGroup controlId="pass" validationState={this.getPassValState()}>
           <Col componentClass={ControlLabel} sm={2}>登录密码</Col>
-          <Col sm={8}><FormControl type="password"  value = {this.state.pass} onChange = {this.passChange} placeholder="请输入您的密码"/>
-          <FormControl.Feedback /></Col>
+          <Col sm={8}>
+            <FormControl type="password"  value = {this.state.pass} onChange = {this.passChange} placeholder="请输入您的密码"/>
+            <FormControl.Feedback />
+          </Col>
         </FormGroup>
 
         <FormGroup controlId="confirmPass" validationState={this.getConPassValState()}>
           <Col componentClass={ControlLabel} sm={2}>确认登录密码</Col>
-          <Col sm={8}><FormControl type="password" value = {this.state.confirmPass} onChange = {this.confirmPassChange} placeholder="请确认您的密码"/>
-          <FormControl.Feedback /></Col>
+          <Col sm={8}>
+            <FormControl type="password" value = {this.state.confirmPass} onChange = {this.confirmPassChange} placeholder="请确认您的密码"/>
+            <FormControl.Feedback />
+          </Col>
         </FormGroup>
 
         <FormGroup controlId="orgName" validationState={this.getOrgValState()}>
           <Col componentClass={ControlLabel} sm={2}>机构名称</Col>
-          <Col sm={8}><FormControl type="text" value = {this.state.orgName} onChange = {this.orgNameChange} placeholder="请输入您的机构名称"/>
-          <FormControl.Feedback /></Col>
+          <Col sm={8}>
+            <FormControl type="text" value = {this.state.orgName} onChange = {this.orgNameChange} placeholder="请输入您的机构名称"/>
+            <FormControl.Feedback />
+          </Col>
         </FormGroup>
 
         <FormGroup controlId="contact" validationState={this.getContactValState()}>
           <Col componentClass={ControlLabel} sm={2}>联系人姓名</Col>
-          <Col sm={8}><FormControl type="text" value = {this.state.contact} onChange = {this.contactChange} placeholder="请输入联系人姓名"/>
-          <FormControl.Feedback /></Col>
+          <Col sm={8}>
+            <FormControl type="text" value = {this.state.contact} onChange = {this.contactChange} placeholder="请输入联系人姓名"/>
+            <FormControl.Feedback />
+          </Col>
         </FormGroup>
 
         <FormGroup>
