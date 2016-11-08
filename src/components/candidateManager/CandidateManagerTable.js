@@ -22,6 +22,26 @@ class CandidateManagerTable extends React.Component {
     this.openEditModal = this.openEditModal.bind(this);
     this.onDeleteCandidateClick = this.onDeleteCandidateClick.bind(this);
     this.onEditCandidateClick = this.onEditCandidateClick.bind(this);
+    this.changeName = this.changeName.bind(this);
+    this.changeEmail = this.changeEmail.bind(this);
+    this.changeRoom = this.changeRoom.bind(this);
+    this.changePhone = this.changePhone.bind(this);
+  }
+
+  changeName(e) {
+    this.setState({nameChange: e.target.value});
+  }
+
+  changeEmail(e) {
+    this.setState({emailChange: e.target.value});
+  }
+
+  changeRoom(e) {
+    this.setState({roomChange: this.props.rooms.find(room => room.name === e.target.value).id});
+  }
+
+  changePhone(e) {
+    this.setState({phoneChange: e.target.value});
   }
 
   close() {
@@ -108,31 +128,31 @@ class CandidateManagerTable extends React.Component {
                   </Modal.Footer>
                 </Modal>
 
-              <Modal show={this.state.showEditModal} onHide={this.closeEditModal}>
+              <Modal show={this.state.showEditModal} onHide={this.closeEditModal} style={{width: '800px', margin: '0 auto'}}>
                 <Modal.Header closeButton>
                   <Modal.Title>编辑候选人</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                   <Form horizontal>
                     <FormGroup controlId="candidateName">
-                      <Col componentClass={ControlLabel} sm={2}>候选人姓名</Col>
-                      <Col sm={10}><FormControl type="text" placeholder={this.state.nameChange}/></Col>
+                      <Col componentClass={ControlLabel} sm={3}>候选人姓名</Col>
+                      <Col sm={9}><FormControl type="text" placeholder={this.state.nameChange} onChange={this.changeName}/></Col>
                     </FormGroup>
 
                     <FormGroup controlId="candidateEmail">
-                      <Col componentClass={ControlLabel} sm={2}>候选人邮箱</Col>
-                      <Col sm={10}><FormControl type="email" placeholder={this.state.emailChange} /></Col>
+                      <Col componentClass={ControlLabel} sm={3}>候选人邮箱</Col>
+                      <Col sm={9}><FormControl type="email" placeholder={this.state.emailChange}  onChange={this.changeEmail}/></Col>
                     </FormGroup>
 
                     <FormGroup controlId="candidatePhone">
-                      <Col componentClass={ControlLabel} sm={2}>候选人手机</Col>
-                      <Col sm={10}><FormControl type="text" placeholder={this.state.phoneChange}/></Col>
+                      <Col componentClass={ControlLabel} sm={3}>候选人手机</Col>
+                      <Col sm={9}><FormControl type="text" placeholder={this.state.phoneChange}  onChange={this.changePhone}/></Col>
                     </FormGroup>
 
                     <FormGroup controlId="candidateRoom">
-                      <Col componentClass={ControlLabel} sm={2}>候选人房间</Col>
-                      <Col sm={10}>
-                        <FormControl componentClass="select" placeholder="select">
+                      <Col componentClass={ControlLabel} sm={3}>候选人房间</Col>
+                      <Col sm={9}>
+                        <FormControl componentClass="select" placeholder="select"  onChange={this.changeRoom}>
                           {this.props.rooms.map(room =>
                             <option key={room.id}>{room.name}</option>)}
                         </FormControl>
