@@ -1,6 +1,6 @@
 import React, {PropTypes}from 'react'
 import {connect} from 'react-redux';
-import {Tabs, Tab, Table, Modal, Button, FormControl, FormGroup, ControlLabel, Form, Col} from 'react-bootstrap'
+import {Tabs, Tab, Table, Modal, Button, FormControl, FormGroup, ControlLabel, Form, Col, Image} from 'react-bootstrap'
 import {deleteCandidate, editCandidate} from './CandidateManagerActions'
 
 class CandidateManagerTable extends React.Component {
@@ -113,7 +113,23 @@ class CandidateManagerTable extends React.Component {
                       </FormControl>
                     </FormGroup>
                   </td>
-                  <td>一些图案</td>
+                  <td>
+                    <Col xs={6} md={1}>
+                      <Image src="../../images/1.png" width={20} height={20} alt="20x20"/>
+                    </Col>
+                    <Col xs={6} md={1}>
+                      <Image src="../../images/2.png" width={20} height={20} alt="20x20"/>
+                    </Col>
+                    <Col xs={6} md={1}>
+                      <Image src="../../images/3.png" width={15} height={15} alt="15x15"/>
+                    </Col>
+                    <Col xs={6} md={1}>
+                      <Image src="../../images/4.png" width={15} height={15} alt="15x15"/>
+                    </Col>
+                    <Col xs={6} md={1}>
+                      <Image src="../../images/5.png" width={18} height={18} alt="18x18"/>
+                    </Col>
+                  </td>
                   <td>{candidate.status}</td>
                   <td><a onClick={() => this.openEditModal(candidate)}>编辑</a> | <a onClick={() => this.open(candidate.id)}>删除</a></td>
                 </tr>)}
