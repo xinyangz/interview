@@ -1,6 +1,3 @@
-/**
- * Created by 薛凯韬 on 2016/11/1.
- */
 import React, {PropTypes}from 'react'
 import {connect} from 'react-redux';
 import {Tabs, Tab, Table, Modal, Button, FormControl, FormGroup, ControlLabel, Form, Col} from 'react-bootstrap'
@@ -13,7 +10,11 @@ class CandidateManagerTable extends React.Component {
       showModal: false,
       selectedCandidate: null,
       showEditModal: false,
-      selectedEditCandidate: null
+      selectedEditCandidate: null,
+      nameChange: null,
+      emailChange: null,
+      phoneChange: null,
+      roomChange: null,
     };
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
@@ -35,8 +36,9 @@ class CandidateManagerTable extends React.Component {
     this.setState({showEditModal: false});
   }
 
-  openEditModal(candidate_id) {
-    this.setState({showEditModal: true, selectedEditCandidate: candidate_id});
+  openEditModal(candidate) {
+    this.setState({showEditModal: true, selectedEditCandidate: candidate,
+                    nameChange:candidate.name, emailChange:candidate.email, phoneChange:candidate.phone, roomChange:candidate.roomId});
   }
 
   onDeleteCandidateClick() {
@@ -45,7 +47,18 @@ class CandidateManagerTable extends React.Component {
   }
 
   onEditCandidateClick() {
-    this.props.editCandidate(this.state.selectedEditCandidate);
+    console.log(this.state.selectedEditCandidate);
+    var termCandidate = {
+      "id" : this.state.selectedEditCandidate.id,
+      "name" : this.state.nameChange,
+      "email" : this.state.emailChange,
+      "roomId" : this.state.roomChange,
+      "phone" : this.state.phoneChange,
+      "record" : this.state.selectedEditCandidate.record,
+      "status" : this.state.selectedEditCandidate.status,
+    };
+    console.log(termCandidate);
+    this.props.editCandidate(termCandidate);
     this.closeEditModal();
   }
 
@@ -103,18 +116,29 @@ class CandidateManagerTable extends React.Component {
                   <Form horizontal>
                     <FormGroup controlId="candidateName">
                       <Col componentClass={ControlLabel} sm={2}>候选人姓名</Col>
-                      <Col sm={10}><FormControl type="text" placeholder="请输入候选人姓名" /></Col>
+                      <Col sm={10}><FormControl type="text" placeholder={this.state.nameChange}/></Col>
                     </FormGroup>
 
                     <FormGroup controlId="candidateEmail">
                       <Col componentClass={ControlLabel} sm={2}>候选人邮箱</Col>
-                      <Col sm={10}><FormControl type="email" placeholder="请输入候选人邮箱" /></Col>
+                      <Col sm={10}><FormControl type="email" placeholder={this.state.emailChange} /></Col>
                     </FormGroup>
 
-                    <FormGroup controlId="candidateEmail">
+                    <FormGroup controlId="candidatePhone">
                       <Col componentClass={ControlLabel} sm={2}>候选人手机</Col>
-                      <Col sm={10}><FormControl type="text" placeholder="请输入候选人手机" /></Col>
+                      <Col sm={10}><FormControl type="text" placeholder={this.state.phoneChange}/></Col>
                     </FormGroup>
+
+                    <FormGroup controlId="candidateRoom">
+                      <Col componentClass={ControlLabel} sm={2}>候选人房间</Col>
+                      <Col sm={10}>
+                        <FormControl componentClass="select" placeholder="select">
+                          {this.props.rooms.map(room =>
+                            <option key={room.id}>{room.name}</option>)}
+                        </FormControl>
+                      </Col>
+                    </FormGroup>
+
                   </Form>
                 </Modal.Body>
                 <Modal.Footer>
@@ -144,5 +168,5 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {deleteCandidate})(CandidateManagerTable);
+export default connect(mapStateToProps, {deleteCandidate, editCandidate})(CandidateManagerTable);
 

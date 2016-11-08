@@ -1,6 +1,3 @@
-/**
- * Created by 薛凯韬 on 2016/11/2.
- */
 import * as types from './Consts';
 
 import axios from 'axios';
@@ -89,18 +86,11 @@ export function deleteCandidate(candidateId) {
 export function editCandidate(candidate) {
   return dispatch => {
     dispatch(beginEditCandidate());
-    return axios.put('/candidate/' + candidate.id + '?token=' + token,{
-      "phone": candidate.phone,
-      "record": candidate.record,
-      "name": "Mike",
-      "id": "3001",
-      "email": "example@example.com",
-      "roomId": "1001",
-      "status": "aeiou"
-    })
+    return axios.put('/candidate/' + candidate.id + '?token=' + token, candidate)
       .then(response => {
         if (response.status === 200) {
           dispatch(editCandidateSuccess(candidate.id));
+          dispatch(loadAllCandidates());
         }
         else {
           dispatch(editCandidateError(response.data.error));
