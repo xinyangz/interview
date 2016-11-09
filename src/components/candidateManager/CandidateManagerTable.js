@@ -1,6 +1,6 @@
 import React, {PropTypes}from 'react'
 import {connect} from 'react-redux';
-import {Tabs, Tab, Table, Modal, Button, FormControl, FormGroup, ControlLabel, Form, Col, Image} from 'react-bootstrap'
+import {Tabs, Tab, Table, Modal, Button, FormControl, FormGroup, ControlLabel, Form, Col, Image, NavDropdown, MenuItem} from 'react-bootstrap'
 import {deleteCandidate, editCandidate} from './CandidateManagerActions'
 
 class CandidateManagerTable extends React.Component {
@@ -15,13 +15,21 @@ class CandidateManagerTable extends React.Component {
       emailChange: null,
       phoneChange: null,
       roomChange: null,
+      showAddModal: null,
+      showListModal: null,
     };
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
     this.closeEditModal = this.closeEditModal.bind(this);
     this.openEditModal = this.openEditModal.bind(this);
+    this.closeAddModal = this.closeAddModal.bind(this);
+    this.openAddModal = this.openAddModal.bind(this);
+    this.closeListModal = this.closeListModal.bind(this);
+    this.openListModal = this.openListModal.bind(this);
     this.onDeleteCandidateClick = this.onDeleteCandidateClick.bind(this);
     this.onEditCandidateClick = this.onEditCandidateClick.bind(this);
+    this.onAddCandidateClick = this.onEditCandidateClick.bind(this);
+    this.onListCandidateClick = this.onEditCandidateClick.bind(this);
     this.changeName = this.changeName.bind(this);
     this.changeEmail = this.changeEmail.bind(this);
     this.changeRoom = this.changeRoom.bind(this);
@@ -61,13 +69,28 @@ class CandidateManagerTable extends React.Component {
                     nameChange:candidate.name, emailChange:candidate.email, phoneChange:candidate.phone, roomChange:candidate.roomId});
   }
 
+  closeAddModal() {
+    this.setState({showAddModal: false});
+  }
+
+  openAddModal() {
+    this.setState({showAddModal: true});
+  }
+
+  closeListModal() {
+    this.setState({showListModal: false});
+  }
+
+  openListModal() {
+    this.setState({showListModal: true});
+  }
+
   onDeleteCandidateClick() {
     this.props.deleteCandidate(this.state.selectedCandidate);
     this.close();
   }
 
   onEditCandidateClick() {
-    console.log(this.state.selectedEditCandidate);
     var termCandidate = {
       "id" : this.state.selectedEditCandidate.id,
       "name" : this.state.nameChange,
@@ -77,9 +100,16 @@ class CandidateManagerTable extends React.Component {
       "record" : this.state.selectedEditCandidate.record,
       "status" : this.state.selectedEditCandidate.status,
     };
-    console.log(termCandidate);
     this.props.editCandidate(termCandidate);
     this.closeEditModal();
+  }
+
+  onAddCandidateClick() {
+    this.closeAddModal();
+  }
+
+  onListCandidateClick() {
+    this.closeListModal();
   }
 
   render() {
@@ -114,20 +144,20 @@ class CandidateManagerTable extends React.Component {
                     </FormGroup>
                   </td>
                   <td>
-                    <Col xs={6} md={1}>
-                      <Image src="../../images/1.png" width={20} height={20} alt="20x20"/>
+                    <Col xs={5} md={1}>
+                      <Image src="../../images/1.png" width={20} height={20}/>
                     </Col>
-                    <Col xs={6} md={1}>
-                      <Image src="../../images/2.png" width={20} height={20} alt="20x20"/>
+                    <Col xs={5} md={1}>
+                      <Image src="../../images/2.png" width={20} height={20}/>
                     </Col>
-                    <Col xs={6} md={1}>
-                      <Image src="../../images/3.png" width={15} height={15} alt="15x15"/>
+                    <Col xs={5} md={1}>
+                      <Image src="../../images/3.png" width={15} height={15}/>
                     </Col>
-                    <Col xs={6} md={1}>
-                      <Image src="../../images/4.png" width={15} height={15} alt="15x15"/>
+                    <Col xs={5} md={1}>
+                      <Image src="../../images/4.png" width={15} height={15}/>
                     </Col>
-                    <Col xs={6} md={1}>
-                      <Image src="../../images/5.png" width={18} height={18} alt="18x18"/>
+                    <Col xs={5} md={1}>
+                      <Image src="../../images/5.png" width={18} height={18}/>
                     </Col>
                   </td>
                   <td>{candidate.status}</td>
@@ -184,6 +214,50 @@ class CandidateManagerTable extends React.Component {
               </Modal>
             </tbody>
           </Table>
+
+          <NavDropdown className="pull-right" title="添加候选人">
+            <MenuItem eventKey={1} onClick={this.openAddModal}>添加候选人</MenuItem>
+            <MenuItem eventKey={2} onClick={this.openListModal}>导入候选人列表</MenuItem>
+          </NavDropdown>
+
+          <Modal show={this.state.showAddModal} onHide={this.closeAddModal} style={{width: '800px', margin: '0 auto'}}>
+            <Modal.Header closeButton>
+              <Modal.Title>添加候选人</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form horizontal>
+                <FormGroup controlId="candidateName">
+                  <Col componentClass={ControlLabel} sm={3}>候选人姓名</Col>
+                  <Col sm={9}><FormControl type="text" placeholder="请输入候选人姓名（必填）" onChange={this.changeName}/></Col>
+                </FormGroup>
+
+                <FormGroup controlId="candidateEmail">
+                  <Col componentClass={ControlLabel} sm={3}>候选人邮箱</Col>
+                  <Col sm={9}><FormControl type="email" placeholder="请输入候选人邮箱（必填）" onChange={this.changeEmail}/></Col>
+                </FormGroup>
+
+                <FormGroup controlId="candidatePhone">
+                  <Col componentClass={ControlLabel} sm={3}>候选人手机</Col>
+                  <Col sm={9}><FormControl type="text" placeholder="请输入候选人电话（必填）"  onChange={this.changePhone}/></Col>
+                </FormGroup>
+
+                <FormGroup controlId="candidateRoom">
+                  <Col componentClass={ControlLabel} sm={3}>候选人房间</Col>
+                  <Col sm={9}>
+                    <FormControl componentClass="select" placeholder="select"  onChange={this.changeRoom}>
+                      {this.props.rooms.map(room =>
+                        <option key={room.id}>{room.name}</option>)}
+                    </FormControl>
+                  </Col>
+                </FormGroup>
+
+              </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button onClick={this.closeEditModal}>取消</Button>
+              <Button bsStyle="primary" onClick={this.onEditCandidateClick}>确认</Button>
+            </Modal.Footer>
+          </Modal>
         </Tab>
       </Tabs>
     )
