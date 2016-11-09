@@ -45,8 +45,18 @@ export function login(data) {
     return axios.get('/user/login?username=' + username + '&password=' + password)
       .then(response => {
         if ( response.status === 200 ) {
+          const {user, token} = response.data;
+          const {type} = user;
           dispatch(loginSuccess(response.data));
-          dispatch(push('/hr'));
+          if (type === 'hr') {
+            dispatch(push('/hr'));
+          }
+          else if (type === 'interviewer') {
+            dispatch(push('/interviewer'));
+          }
+          else {
+            dispatch(push('/not-found'));
+          }
         }
         else if (response.status === 400) {
           dispatch(loginError('wrong password'));
