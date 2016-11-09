@@ -87,6 +87,7 @@
     "isparta": "4.0.0",
     "js-yaml": "3.6.1",
     "mocha": "3.0.2",
+    "mocha-jsdom": "1.1.0",
     "mockdate": "1.0.4",
     "node-sass": "3.8.0",
     "npm-run-all": "3.0.0",

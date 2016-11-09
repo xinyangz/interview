@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {login} from '../actions/userActions';
 import {push} from 'react-router-redux';
 
-class RedirectPage extends React.Component {
+export class RedirectPage extends React.Component {
   constructor(props) {
     super(props);
   }
