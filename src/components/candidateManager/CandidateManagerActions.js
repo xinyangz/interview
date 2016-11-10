@@ -67,20 +67,20 @@ export function loadAllCandidatesError(error) {
   };
 }
 
-export function addCandidatesBegin() {
+export function addCandidateBegin() {
   return {
     type: types.ADD_CANDIDATE_BEGIN
   };
 }
 
-export function addCandidatesSuccess(candidates) {
+export function addCandidateSuccess(candidates) {
   return {
     type: types.ADD_CANDIDATE_SUCCESS,
     candidates
   };
 }
 
-export function addCandidatesError(error) {
+export function addCandidateError(error) {
   return {
     type: types.ADD_CANDIDATE_ERROR,
     error
@@ -99,7 +99,7 @@ export function deleteCandidate(candidateId) {
           dispatch(deleteCandidateError(response.data.error));
         }
       })
-      .catch(error => dispatch(deleteCandidateError(error.response.data.error || error)));
+      .catch(error => dispatch(deleteCandidateError(error)));
   };
 }
 
@@ -116,24 +116,24 @@ export function editCandidate(candidate) {
           dispatch(editCandidateError(response.data.error));
         }
       })
-      .catch(error => dispatch(editCandidateError(error.response.data.error || error)));
+      .catch(error => dispatch(editCandidateError(error)));
   };
 }
 
 export function addCandidate(candidate) {
   return dispatch => {
-    dispatch(beginEditCandidate());
-    return axios.put('/candidate/' + candidate.id + '?token=' + token, candidate)
+    dispatch(addCandidateBegin());
+    return axios.post('/candidate?token=' + token, candidate)
       .then(response => {
         if (response.status === 200) {
-          dispatch(editCandidateSuccess(candidate.id));
+          dispatch(addCandidateSuccess(candidate));
           dispatch(loadAllCandidates());
         }
         else {
-          dispatch(editCandidateError(response.data.error));
+          dispatch(addCandidateError(response.data.error));
         }
       })
-      .catch(error => dispatch(editCandidateError(error.response.data.error || error)));
+      .catch(error => dispatch(addCandidateError(error)));
   };
 }
 

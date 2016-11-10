@@ -7,6 +7,8 @@ const candidates = (state = initialState.candidatesStates.candidates, action) =>
     case types.DELETE_CANDIDATE_SUCCESS:
       return state.filter(candidate => candidate.id != action.candidateId);
     case types.LOAD_ALL_CANDIDATE_SUCCESS:
+    case types.ADD_CANDIDATE_SUCCESS:
+    case types.EDIT_CANDIDATE_SUCCESS:
       return action.candidates;
     default:
       return state;
@@ -17,6 +19,8 @@ const isWaiting = (state = initialState.candidatesStates.isWaiting, action) => {
   switch (action.type) {
     case types.LOAD_ALL_CANDIDATE_BEGIN:
     case types.DELETE_CANDIDATE_BEGIN:
+    case types.ADD_CANDIDATE_BEGIN:
+    case types.EDIT_CANDIDATE_BEGIN:
       return true;
     case types.DELETE_CANDIDATE_SUCCESS:
     case types.DELETE_CANDIDATE_ERROR:

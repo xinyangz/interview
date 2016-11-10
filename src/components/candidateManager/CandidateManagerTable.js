@@ -1,7 +1,7 @@
 import React, {PropTypes}from 'react'
 import {connect} from 'react-redux';
 import {Tabs, Tab, Table, Modal, Button, FormControl, FormGroup, ControlLabel, Form, Col, Image, NavDropdown, MenuItem} from 'react-bootstrap'
-import {deleteCandidate, editCandidate} from './CandidateManagerActions'
+import {deleteCandidate, editCandidate, addCandidate} from './CandidateManagerActions'
 
 class CandidateManagerTable extends React.Component {
   constructor(props) {
@@ -15,6 +15,7 @@ class CandidateManagerTable extends React.Component {
       emailChange: null,
       phoneChange: null,
       roomChange: null,
+      statusChange: null,
       showAddModal: null,
       showListModal: null,
     };
@@ -34,6 +35,11 @@ class CandidateManagerTable extends React.Component {
     this.changeEmail = this.changeEmail.bind(this);
     this.changeRoom = this.changeRoom.bind(this);
     this.changePhone = this.changePhone.bind(this);
+    this.changeStatus = this.changeStatus.bind(this);
+  }
+
+  changeStatus(e) {
+    this.setState({statueChange: e.target.value});
   }
 
   changeName(e) {
@@ -100,11 +106,20 @@ class CandidateManagerTable extends React.Component {
       "record" : this.state.selectedEditCandidate.record,
       "status" : this.state.selectedEditCandidate.status,
     };
+    console.log(termCandidate);
     this.props.editCandidate(termCandidate);
     this.closeEditModal();
   }
 
   onAddCandidateClick() {
+    var termCandidate = {
+      "name" : this.state.nameChange,
+      "email" : this.state.emailChange,
+      "roomId" : this.state.roomChange,
+      "phone" : this.state.phoneChange,
+      "status" : this.state.statusChange,
+    };
+    this.props.addCandidate(termCandidate);
     this.closeAddModal();
   }
 
@@ -114,7 +129,7 @@ class CandidateManagerTable extends React.Component {
 
   render() {
     return (
-      <Tabs>
+      <Tabs id="tab">
         <Tab eventKey={1} title="房间管理">nothing</Tab>
         <Tab eventKey={2} title="候选人管理">
           <Table responsive>
@@ -135,14 +150,7 @@ class CandidateManagerTable extends React.Component {
                   <td>{candidate.name}</td>
                   <td>{candidate.email}</td>
                   <td>{candidate.phone}</td>
-                  <td>
-                    <FormGroup controlId={candidate.id}>
-                      <FormControl componentClass="select" placeholder="select">
-                        {this.props.rooms.map(room =>
-                          <option key={room.id}>{room.name}</option>)}
-                      </FormControl>
-                    </FormGroup>
-                  </td>
+                  <td>{this.props.rooms.find(room => room.id === candidate.roomId).name}</td>
                   <td>
                     <Col sm={1}>
                       <Image src="../../images/1.png" width={20} height={20}/>
@@ -242,6 +250,17 @@ class CandidateManagerTable extends React.Component {
                 </FormGroup>
 
                 <FormGroup controlId="candidateRoom">
+                  <Col componentClass={ControlLabel} sm={3}>候选人状态</Col>
+                  <Col sm={9}>
+                    <FormControl componentClass="select" placeholder="未面试"  onChange={this.changeStatus}>
+                        <option key={0}>未面试</option>
+                        <option key={1}>未通过</option>
+                        <option key={2}>通过</option>
+                    </FormControl>
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="candidateRoom">
                   <Col componentClass={ControlLabel} sm={3}>候选人房间</Col>
                   <Col sm={9}>
                     <FormControl componentClass="select" placeholder="select"  onChange={this.changeRoom}>
@@ -286,6 +305,7 @@ CandidateManagerTable.PropTypes = {
   candidateManager: PropTypes.arrayOf(PropTypes.object).isRequired,
   deleteCandidate: PropTypes.func,
   editCandidate: PropTypes.func,
+  addCandidate: PropTypes.func,
   rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
@@ -296,5 +316,5 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {deleteCandidate, editCandidate})(CandidateManagerTable);
+export default connect(mapStateToProps, {deleteCandidate, editCandidate, addCandidate})(CandidateManagerTable);
 
