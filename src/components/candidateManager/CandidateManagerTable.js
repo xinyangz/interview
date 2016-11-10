@@ -28,8 +28,8 @@ class CandidateManagerTable extends React.Component {
     this.openListModal = this.openListModal.bind(this);
     this.onDeleteCandidateClick = this.onDeleteCandidateClick.bind(this);
     this.onEditCandidateClick = this.onEditCandidateClick.bind(this);
-    this.onAddCandidateClick = this.onEditCandidateClick.bind(this);
-    this.onListCandidateClick = this.onEditCandidateClick.bind(this);
+    this.onAddCandidateClick = this.onAddCandidateClick.bind(this);
+    this.onListCandidateClick = this.onListCandidateClick.bind(this);
     this.changeName = this.changeName.bind(this);
     this.changeEmail = this.changeEmail.bind(this);
     this.changeRoom = this.changeRoom.bind(this);
@@ -254,8 +254,25 @@ class CandidateManagerTable extends React.Component {
               </Form>
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={this.closeEditModal}>取消</Button>
-              <Button bsStyle="primary" onClick={this.onEditCandidateClick}>确认</Button>
+              <Button onClick={this.closeAddModal}>取消</Button>
+              <Button bsStyle="primary" onClick={this.onAddCandidateClick}>确认</Button>
+            </Modal.Footer>
+          </Modal>
+
+          <Modal show={this.state.showListModal} onHide={this.closeListModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>
+                导入候选人列表
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              请下载并编辑<a>样例.csv</a>文件，按照其中格式填入候选人信息后上传，并点击导入即可。上传的文件后缀名应为“.csv”，大小不超过500kb。
+              <br/>
+              <Button onClick={this.closeListModal} style={{align : "center",}}>选择要上传的文件</Button>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button onClick={this.closeListModal}>取消</Button>
+              <Button bsStyle="primary" onClick={this.onListCandidateClick}>确认</Button>
             </Modal.Footer>
           </Modal>
         </Tab>
