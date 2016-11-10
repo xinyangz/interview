@@ -1,0 +1,132 @@
+%!TEX program = xelatex
+
+\documentclass[letterpaper,11pt]{article}
+\newlength{\outerbordwidth}
+\pagestyle{empty}
+\raggedbottom
+\raggedright
+\usepackage[svgnames]{xcolor}
+\usepackage{framed}
+\usepackage{tocloft}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage[utf8]{inputenc}
+\usepackage{tabularx}
+\usepackage{ctex}
+\usepackage{CJK}
+\title{Jisuanke-Report}
+
+\setlength{\outerbordwidth}{3pt}
+\definecolor{shadecolor}{gray}{0.75}
+\definecolor{shadecolorB}{gray}{0.93}
+
+\setlength{\evensidemargin}{-0.25in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\oddsidemargin}{-0.25in}
+\setlength{\paperheight}{11in}
+\setlength{\paperwidth}{8.5in}
+\setlength{\tabcolsep}{0in}
+\setlength{\textheight}{9.5in}
+\setlength{\textwidth}{7in}
+\setlength{\topmargin}{-0.3in}
+\setlength{\topskip}{0in}
+\setlength{\voffset}{0.1in}
+
+\newcommand{\resitem}[1]{\item #1 \vspace{-2pt}}
+\newcommand{\resheading}[1]{\vspace{8pt}
+  \parbox{\textwidth}{\setlength{\FrameSep}{\outerbordwidth}
+    \begin{shaded}
+\setlength{\fboxsep}{0pt}\framebox[\textwidth][l]{\setlength{\fboxsep}{4pt}\fcolorbox{shadecolorB}{shadecolorB}{\textbf{\sffamily{\mbox{~}\makebox[6.762in][l]{\large #1} \vphantom{p\^{E}}}}}}
+    \end{shaded}
+  }\vspace{-5pt}
+}
+\newcommand{\ressubheading}[4]{
+\begin{tabular*}{6.5in}{l@{\cftdotfill{\cftsecdotsep}\extracolsep{\fill}}r}
+		\textbf{#1} & #2 \\
+		\textit{#3} & \textit{#4} \\
+\end{tabular*}\vspace{-6pt}}
+
+\begin{document}
+
+\begin{tabular*}{7in}{l@{\extracolsep{\fill}}r}
+  & \multirow{4}{*}{\includegraphics[scale=0.19]{iitmlogo}}\\
+  & \\
+  \textbf{\Large Candidate\_name $|$ Candidate\_id } & \\
+  Candidate\_organization & \\
+  面试者手机号  \\
+  Candidate\_email \\
+\end{tabular*}
+\\
+
+\resheading{\Large{面试结果: 通过 / 未通过}}
+
+\rule[3pt]{17.8cm}{0.05em}
+
+\resheading{HR 与面试官信息}
+\begin{itemize}
+\item
+	\ressubheading{HR}{}{HR\_name}{HR\_email}
+\item
+	\ressubheading{Interviewer}{}{Interviewer\_name}{Interviewer\_email}
+\end{itemize}
+
+\resheading{面试记录与面试官评价}
+  \begin{center}
+  \parbox{6.762in}{Report text here. For example, a government of the people, by the people, for the people shall never perish from the earth. 另外如果你看到这句话，说明中文支持还不错。}
+  \end{center}
+
+
+\resheading{面试题记录}
+\begin{itemize}
+\item
+	\ressubheading{选择题}{}{Passed}{}
+	\begin{itemize}
+		\resitem{标题，带有指向该题的超链接}
+		\resitem{Title 2. etc.}
+	\end{itemize}
+
+\item 
+	\ressubheading{填空题}{}{Passed}{}
+	\begin{itemize}
+		\resitem{Title 1.}
+		\resitem{Title 2.}
+	\end{itemize}
+
+\item
+	\ressubheading{编程题}{}{Passed}{}
+	\begin{itemize}
+		\resitem{某种形式的结果}
+	\end{itemize}
+\end{itemize}
+
+\resheading{视频与音频记录}
+\begin{itemize}
+\item
+	白板过程记录
+	\begin{itemize}
+		\resitem{{\bf .mp4 file:} A hyperlink}
+	\end{itemize}
+
+\item
+	面试者原始视频、音频
+	\begin{itemize}
+		\resitem{{\bf .mp4 file} A hyperlink}
+		\resitem{{\bf .wav file} A hyperlink}
+	\end{itemize}
+
+\item
+	面试官原始视频、音频
+	\begin{itemize}
+		\resitem{{\bf .mp4 file} A hyperlink}
+		\resitem{{\bf .wav file} A hyperlink}
+	\end{itemize}
+
+\item 
+	合成后的面试过程视频
+	\begin{itemize}
+		\resitem{{\bf .mp4 file} A hyperlink}
+	\end{itemize}
+\end{itemize}
+
+\end{document}

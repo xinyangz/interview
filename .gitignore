@@ -1,3 +1,9 @@
+# Back-end
+*.pyc
+*.pkl
+*.pdf
+
+
 # Logs
 logs
 *.log*

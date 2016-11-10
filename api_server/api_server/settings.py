@@ -135,3 +135,7 @@ CORS_ORIGIN_WHITELIST = (
     'localhost',
     '127.0.0.1'
 )
+
+REPORT_PATH = 'report/'
+
+TEX_PATH = 'report_tex/'
