@@ -1,5 +1,4 @@
 import * as types from '../constants/actionTypes';
-
 import axios from 'axios';
 
 // token should be read from state
@@ -65,6 +64,26 @@ export function modifyRoomError(error) {
   };
 }
 
+export function uploadImage() {
+  return {
+    type: types.UPLOAD_IMAGE
+  };
+}
+
+export function uploadImageSuccess(file) {
+  return {
+    type: types.UPLOAD_IMAGE_SUCCESS,
+    image: file
+  };
+}
+
+export function uploadImageError(error) {
+  return {
+    type: types.UPLOAD_IMAGE_ERROR,
+    error
+  };
+}
+
 export function deleteRoom(roomId) {
   return dispatch => {
     dispatch(beginDeleteRoom());
@@ -98,17 +117,17 @@ export function loadAllRooms() {
 }
 
 export function modifyRoom(data) {
-  return dispatch  => {
+  return (dispatch, getState)  => {
     dispatch(beginModifyRoom());
     const room_id = data.room_id;
     const room = data.newRoom;
+    const formData = new FormData();
+    formData.append('image', data.logo);
 
-    /*
-    console.log("In modifyRoom after beginModifyRoom");
-    console.log(room_id);
-    console.log(room);
-    */
-    return axios.put('/room/' + room_id + '?token=' + token, room)
+    //console.log('getState is:');
+    //console.log(getState());
+    //调用实时token而非固定的token
+    return axios.put('/room/' + room_id + '?token=' + token, {room, formData})
       .then(response => {
         if(response.status === 200) {
           //console.log("response status 200");
@@ -121,4 +140,8 @@ export function modifyRoom(data) {
       })
       .catch(error => dispatch(modifyRoomError(error.response.data.error || error)));
   };
+}
+
+export function uploadLogo(file) {
+  return ()
 }

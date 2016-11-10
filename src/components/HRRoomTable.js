@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
-import {Table, Modal, Button, Form, FormControl, FormGroup, Col, ControlLabel} from 'react-bootstrap';
+import {Table, Modal, Button, Form, FormControl, FormGroup, Col, ControlLabel, Label} from 'react-bootstrap';
 import {deleteRoom, modifyRoom} from '../actions/roomsActions';
 import '../styles/hrroomtable.css';
 import 'babel-polyfill';
@@ -47,7 +47,13 @@ class HRRoomTable extends React.Component{
     //alert('Edit room click!');
     event.preventDefault();
     const name = ReactDOM.findDOMNode(this.refs.name).value;
+    var logo = ReactDOM.findDOMNode(this.refs.logo).files[0];
+    //var logo = document.getElementById("imageLogo").files[0];
     const room_id = this.state.selectedRoom;
+    var path = document.getElementById("imageLogo").value;
+    console.log("local file upload path :");
+    console.log(path);
+
 
     function clone(obj) {
       // Handle the 2 simple types, and null or undefined
@@ -78,7 +84,7 @@ class HRRoomTable extends React.Component{
     //console.log(newRoom.name);
     //console.log(roomToChange.name);
     //console.log(newRoom.interviewer);
-    this.props.modifyRoom({newRoom,room_id});
+    this.props.modifyRoom({newRoom,room_id,logo});
     this.closeModify();
   }
 
@@ -119,7 +125,7 @@ class HRRoomTable extends React.Component{
           </Modal.Header>
 
           <Modal.Body>
-            <Form horizontal>
+            <Form horizontal encType="multipart/form-data" method="put" name="roomInfo">
               <FormGroup controlId="formHorizontalRoomName">
                 <Col componentClass = {ControlLabel} sm={2}>
                   房间名
@@ -143,7 +149,7 @@ class HRRoomTable extends React.Component{
                   LOGO
                 </Col>
                 <Col sm={10}>
-                  <input type="file" ref="logo" accept="image/*"/>
+                  <input type="file" id="imageLogo" accept="image/*"/>
                 </Col>
                 <Col xs={6} md={4}>
                   <img src={this.props.rooms.find(room => room.id === this.state.selectedRoom) && this.props.rooms.find(room => room.id === this.state.selectedRoom).logo} width="100%"/>
