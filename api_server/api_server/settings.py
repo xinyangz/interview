@@ -133,7 +133,9 @@ DB_PORT = 27017
 
 CORS_ORIGIN_WHITELIST = (
     'localhost',
-    '127.0.0.1'
+    '127.0.0.1',
+    '127.0.0.1:3000',
+    'localhost:3000',
 )
 
 # File storage

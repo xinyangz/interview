@@ -121,6 +121,8 @@ def logo(request, room_id, **kwargs):
     img_file = request.data['image']
     _, extension = os.path.splitext(img_file.name)
     file_path = os.path.join(settings.FILE_ROOT, str(room_id), 'logo' + extension)
+    if not os.path.exists(os.path.dirname(file_path)):
+        os.makedirs(os.path.dirname(file_path))
     destination = open(file_path, 'wb+')
     for chunk in img_file.chunks():
         destination.write(chunk)
