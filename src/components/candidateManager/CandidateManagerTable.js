@@ -114,7 +114,7 @@ class CandidateManagerTable extends React.Component {
 
   render() {
     return (
-      <Tabs id="lll" defaultActiveKey={2}>
+      <Tabs>
         <Tab eventKey={1} title="房间管理">nothing</Tab>
         <Tab eventKey={2} title="候选人管理">
           <Table responsive>
@@ -144,19 +144,19 @@ class CandidateManagerTable extends React.Component {
                     </FormGroup>
                   </td>
                   <td>
-                    <Col xs={5} md={1}>
+                    <Col sm={1}>
                       <Image src="../../images/1.png" width={20} height={20}/>
                     </Col>
-                    <Col xs={5} md={1}>
+                    <Col sm={1}>
                       <Image src="../../images/2.png" width={20} height={20}/>
                     </Col>
-                    <Col xs={5} md={1}>
+                    <Col sm={1}>
                       <Image src="../../images/3.png" width={15} height={15}/>
                     </Col>
-                    <Col xs={5} md={1}>
+                    <Col sm={1}>
                       <Image src="../../images/4.png" width={15} height={15}/>
                     </Col>
-                    <Col xs={5} md={1}>
+                    <Col sm={1}>
                       <Image src="../../images/5.png" width={18} height={18}/>
                     </Col>
                   </td>

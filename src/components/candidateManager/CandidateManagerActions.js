@@ -67,6 +67,26 @@ export function loadAllCandidatesError(error) {
   };
 }
 
+export function addCandidatesBegin() {
+  return {
+    type: types.ADD_CANDIDATE_BEGIN
+  };
+}
+
+export function addCandidatesSuccess(candidates) {
+  return {
+    type: types.ADD_CANDIDATE_SUCCESS,
+    candidates
+  };
+}
+
+export function addCandidatesError(error) {
+  return {
+    type: types.ADD_CANDIDATE_ERROR,
+    error
+  };
+}
+
 export function deleteCandidate(candidateId) {
   return dispatch => {
     dispatch(beginDeleteCandidate());
@@ -84,6 +104,23 @@ export function deleteCandidate(candidateId) {
 }
 
 export function editCandidate(candidate) {
+  return dispatch => {
+    dispatch(beginEditCandidate());
+    return axios.put('/candidate/' + candidate.id + '?token=' + token, candidate)
+      .then(response => {
+        if (response.status === 200) {
+          dispatch(editCandidateSuccess(candidate.id));
+          dispatch(loadAllCandidates());
+        }
+        else {
+          dispatch(editCandidateError(response.data.error));
+        }
+      })
+      .catch(error => dispatch(editCandidateError(error.response.data.error || error)));
+  };
+}
+
+export function addCandidate(candidate) {
   return dispatch => {
     dispatch(beginEditCandidate());
     return axios.put('/candidate/' + candidate.id + '?token=' + token, candidate)
