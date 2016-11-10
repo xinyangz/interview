@@ -142,6 +142,3 @@ export function modifyRoom(data) {
   };
 }
 
-export function uploadLogo(file) {
-  return ()
-}
