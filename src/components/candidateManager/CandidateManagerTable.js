@@ -250,7 +250,6 @@ class CandidateManagerTable extends React.Component {
                     </FormControl>
                   </Col>
                 </FormGroup>
-
               </Form>
             </Modal.Body>
             <Modal.Footer>
@@ -268,7 +267,9 @@ class CandidateManagerTable extends React.Component {
             <Modal.Body>
               请下载并编辑<a>样例.csv</a>文件，按照其中格式填入候选人信息后上传，并点击导入即可。上传的文件后缀名应为“.csv”，大小不超过500kb。
               <br/>
-              <Button onClick={this.closeListModal} style={{align : "center",}}>选择要上传的文件</Button>
+              <label>
+                <input id='img' type='file' multiple accept='.csv' />
+              </label>
             </Modal.Body>
             <Modal.Footer>
               <Button onClick={this.closeListModal}>取消</Button>
