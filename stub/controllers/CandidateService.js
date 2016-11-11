@@ -39,7 +39,7 @@ exports.candidateCandidate_idGET = function(args, res, next) {
   else {
     res.end();
   }
-  
+
 }
 
 exports.candidateCandidate_idPUT = function(args, res, next) {
@@ -61,7 +61,7 @@ exports.candidateCandidate_idPUT = function(args, res, next) {
   },
   "name" : "Mike",
   "id" : "3001",
-  "email" : "example@example.com",
+  "email" : "asdfasdf@example.com",
   "roomId" : "1001",
   "status" : "aeiou"
 };
@@ -72,7 +72,7 @@ exports.candidateCandidate_idPUT = function(args, res, next) {
   else {
     res.end();
   }
-  
+
 }
 
 exports.candidateCandidate_idStatusPUT = function(args, res, next) {
@@ -94,7 +94,7 @@ exports.candidateCandidate_idStatusPUT = function(args, res, next) {
   },
   "name" : "Mike",
   "id" : "3001",
-  "email" : "example@example.com",
+  "email" : "dsfsdf@example.com",
   "roomId" : "1001",
   "status" : "aeiou"
 };
@@ -105,7 +105,7 @@ exports.candidateCandidate_idStatusPUT = function(args, res, next) {
   else {
     res.end();
   }
-  
+
 }
 
 exports.candidateGET = function(args, res, next) {
@@ -128,7 +128,7 @@ exports.candidateGET = function(args, res, next) {
     },
     "name" : "Mike",
     "id" : "3001",
-    "email" : "example@example.com",
+    "email" : "asdfasdf@example.com",
     "roomId" : "1001",
     "status" : "aeiou"
   } ],
@@ -143,7 +143,7 @@ exports.candidateGET = function(args, res, next) {
   else {
     res.end();
   }
-  
+
 }
 
 exports.candidatePOST = function(args, res, next) {
@@ -175,6 +175,6 @@ exports.candidatePOST = function(args, res, next) {
   else {
     res.end();
   }
-  
+
 }
 

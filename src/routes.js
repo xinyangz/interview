@@ -9,7 +9,7 @@ import NotFoundPage from './components/NotFoundPage.js';
 import HRRoomTable from './components/HRRoomTable';
 import InterviewerPage from './components/InterviewerPage/InterviewerPage';
 import LoginPage from './components/LoginPage';
-import RegisterPage from './components/registerpage/RegisterPage'
+import RegisterPage from './components/RegisterPage/RegisterPage'
 
 export default (
   <Route path="/" component={App}>

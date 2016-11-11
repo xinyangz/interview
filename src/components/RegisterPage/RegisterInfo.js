@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {FormGroup, FormControl, ControlLabel, Button, Form, Col} from 'react-bootstrap';
+import {FormGroup, FormControl, ControlLabel, Button, Form, Col, Overlay, Tooltip, HelpBlock} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {register} from '../../actions/registerActions'
 
@@ -20,6 +20,8 @@ class RegisterInfo extends React.Component {
     this.getEmailValState = this.getEmailValState.bind(this);
     this.getPassValState = this.getPassValState.bind(this);
 
+    //this.getPassTipShow = this.getPassTipShow.bind(this);
+
     this.handleClick = this.handleClick.bind(this);
     this.render = this.render.bind(this);
 
@@ -30,7 +32,8 @@ class RegisterInfo extends React.Component {
       confirmPass: "",
       orgName: "",
       contact: "",
-      caf: ""
+      caf: "",
+      message:"",
     }
   }
 
@@ -79,7 +82,13 @@ class RegisterInfo extends React.Component {
 
   getPassValState(){
     const length = this.state.pass.length;
-    if (length > 0) return 'success';
+    if (length > 6) {
+      return 'success';
+    }
+    else if(length > 0) {
+      this.setState({showPassTip: true});
+      return 'warning';
+    }
   }
 
   getConPassValState() {
@@ -105,7 +114,7 @@ class RegisterInfo extends React.Component {
       && (this.getConPassValState() == "success") && (this.getOrgValState() == "success")
       && (this.getUserValState() == "success") && (this.getContactValState() == "success")) {
 
-      this.props.Register({
+      this.props.register({
         "username": this.state.userName,
         "type": "hr",
         "email": this.state.userEmail,
@@ -181,7 +190,7 @@ class RegisterInfo extends React.Component {
 }
 
 RegisterInfo.propTypes = {
-  Register: PropTypes.func.isRequired,
+  register: PropTypes.func.isRequired,
 };
 
 function mapStateToProps() {
