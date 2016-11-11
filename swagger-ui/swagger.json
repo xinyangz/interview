@@ -473,9 +473,6 @@
       "required": true
      }
     ],
-    "consumes": [
-     "application/json"
-    ],
     "produces": [
      "application/json"
     ],
@@ -1211,7 +1208,7 @@
       "name": "candidate_id",
       "in": "path",
       "description": "面试者id",
-      "type": "string",
+      "type": "integer",
       "required": true
      },
      {
@@ -1773,7 +1770,7 @@
     },
     "interviewer": {
      "description": "面试官ID，若不存在则置空",
-     "type": "string"
+     "type": "integer"
     },
     "candidates": {
      "description": "候选人ID列表",
@@ -1948,23 +1945,23 @@
      "properties": {
       "video": {
        "description": "视频记录",
-       "type": "string"
+       "type": "integer"
       },
       "board": {
        "description": "白板",
-       "type": "string"
+       "type": "integer"
       },
       "chat": {
        "description": "聊天文件",
-       "type": "string"
+       "type": "integer"
       },
       "code": {
        "description": "代码",
-       "type": "string"
+       "type": "integer"
       },
       "report": {
        "description": "报告",
-       "type": "string"
+       "type": "integer"
       }
      }
     }

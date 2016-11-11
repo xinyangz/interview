@@ -817,7 +817,7 @@ paths:
         - name: "candidate_id"
           in: "path"
           description: "面试者id"
-          type: "string"
+          type: "integer"
           required: true
         - name: "token"
           in: "query"
@@ -1200,7 +1200,7 @@ definitions:
         example: "http://example.com/examplepage"
       interviewer:
         description: "面试官ID，若不存在则置空"
-        type: "string"
+        type: "integer"
       candidates:
         description: "候选人ID列表"
         type: "array"
@@ -1328,19 +1328,19 @@ definitions:
         properties:
           video:
             description: "视频记录"
-            type: "string"
+            type: "integer"
           board:
             description: "白板"
-            type: "string"
+            type: "integer"
           chat:
             description: "聊天文件"
-            type: "string"
+            type: "integer"
           code:
             description: "代码"
-            type: "string"
+            type: "integer"
           report:
             description: "报告"
-            type: "string"
+            type: "integer"
   CandidateList:
     type: object
     required:
