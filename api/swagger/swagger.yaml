@@ -320,8 +320,6 @@ paths:
           in: query
           type: string
           required: true
-      consumes:
-        - application/json
       produces:
         - application/json
       responses:
