@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
 import RoomTitle from './RoomTitle';
 import ControlTab from './ControlTab';
 

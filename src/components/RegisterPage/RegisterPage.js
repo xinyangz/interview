@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import RegisterInfo from './RegisterInfo';
-import * as RegisterActions from '../../actions/registerActions'
-import { Panel } from  'react-bootstrap'
+import * as RegisterActions from '../../actions/registerActions';
+import { Panel } from  'react-bootstrap';
 
 class RegisterPage extends React.Component {
     render() {
@@ -11,7 +11,7 @@ class RegisterPage extends React.Component {
             <RegisterInfo
               clickAction={RegisterActions.register}/>
           </Panel>
-        )
+        );
     }
 }
 

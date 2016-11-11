@@ -15,8 +15,6 @@ export function loadAllProblemsSuccess(problems) {
 }
 
 export function loadAllProblemsError(error) {
-  // DEBUG
-  console.log(error);
   return {
     type: types.LOAD_ALL_PROBLEMS_ERROR,
     error
@@ -34,20 +32,19 @@ export function deleteProblemError(error) {
   return {
     type: types.DELETE_PROBLEM_ERROR,
     error
-  }
+  };
 }
 
 export function beginDeleteProblem() {
   return {
     type: types.DELETE_PROBLEM
-  }
+  };
 }
 
 export function deleteProblem(problemId) {
   return (dispatch, getState) => {
     dispatch(beginDeleteProblem());
-    // TODO: fetch token from store
-    const token = "233";
+    const token = getState().user.token;
     return axios.delete('/problem/' + problemId, {
       params: {
         token
@@ -69,14 +66,13 @@ export function deleteProblem(problemId) {
       })
       .catch(err => {
         dispatch(deleteProblemError(err));
-      })
-  }
+      });
+  };
 }
 
 export function loadAllProblems(roomId) {
   return (dispatch, getState) => {
-    // TODO: fetch token from store
-    const token = "123";
+    const token = getState().user.token;
     dispatch(beginLoadAllProblems());
     return axios.get('/problem/room/' + roomId, {
       params: {

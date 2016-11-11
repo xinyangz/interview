@@ -10,7 +10,7 @@ import InterviewerPage from './components/InterviewerPage/InterviewerPage';
 import WelcomePage from './components/WelcomePage';
 import LoginPage from './components/LoginPage';
 import RedirectPage from './components/RedirectPage';
-import RegisterPage from './components/RegisterPage/RegisterPage'
+import RegisterPage from './components/RegisterPage/RegisterPage';
 
 const routes = (store) => {
   const requireHR = (nextState, replace, callback) => {

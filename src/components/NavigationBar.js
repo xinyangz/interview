@@ -15,7 +15,9 @@ class NavigationBar extends React.Component {
           <LinkContainer to="/login">
             <NavItem eventKey={5}>登录</NavItem>
           </LinkContainer>
-          <NavItem eventKey={6}>注册</NavItem>
+          <LinkContainer to="/register">
+            <NavItem eventKey={6}>注册</NavItem>
+          </LinkContainer>
         </Nav>
       );
     }
