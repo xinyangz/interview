@@ -9,7 +9,6 @@ import NotFoundPage from './components/NotFoundPage.js';
 import HRRoomTable from './components/HRRoomTable';
 import InterviewerPage from './components/InterviewerPage/InterviewerPage';
 import CandidateManagerTable from './components/candidateManager/CandidateManagerTable'
-import CandidateManagerPage from './components/candidateManager/CandidateManagerPage'
 import LoginPage from './components/LoginPage';
 
 export default (
