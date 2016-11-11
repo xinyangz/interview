@@ -20,7 +20,8 @@ class RegisterInfo extends React.Component {
     this.getEmailValState = this.getEmailValState.bind(this);
     this.getPassValState = this.getPassValState.bind(this);
 
-    //this.getPassTipShow = this.getPassTipShow.bind(this);
+    this.getPassHelpBlock = this.getPassHelpBlock.bind(this);
+    this.getConPassHelpBlock = this.getConPassHelpBlock.bind(this);
 
     this.handleClick = this.handleClick.bind(this);
     this.render = this.render.bind(this);
@@ -33,8 +34,24 @@ class RegisterInfo extends React.Component {
       orgName: "",
       contact: "",
       caf: "",
-      message:"",
     }
+  }
+
+  getPassHelpBlock() {
+    if(this.getPassValState() == 'warning') {
+      return (<HelpBlock>密码必须大于6位</HelpBlock>);
+    }
+    else if(this.getPassValState() == 'error') {
+      return (<HelpBlock>密码中含有非法字符</HelpBlock>);
+    }
+    return undefined;
+  }
+
+  getConPassHelpBlock() {
+    if(this.getConPassValState() == 'error') {
+      return (<HelpBlock>两次密码不一致</HelpBlock>);
+    }
+    return undefined;
   }
 
   contactChange(e) {
@@ -66,7 +83,6 @@ class RegisterInfo extends React.Component {
     if (length > 0)
     {
       var pattern = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
-      pattern.test(this.state.userEmail);
       if(pattern.test(this.state.userEmail)) {
         return 'success';
       }
@@ -83,11 +99,18 @@ class RegisterInfo extends React.Component {
   getPassValState(){
     const length = this.state.pass.length;
     if (length > 6) {
-      return 'success';
+      let pattern = /^([a-zA-Z0-9_-])+/;
+      if(pattern.test(this.state.pass)) {
+        return 'success';
+      }
+      return 'error';
     }
     else if(length > 0) {
-      this.setState({showPassTip: true});
-      return 'warning';
+      let pattern = /^([a-zA-Z0-9_-])+/;
+      if(pattern.test(this.state.pass)) {
+        return 'warning';
+      }
+      return 'error';
     }
   }
 
@@ -152,6 +175,7 @@ class RegisterInfo extends React.Component {
           <Col sm={8}>
             <FormControl type="password"  value = {this.state.pass} onChange = {this.passChange} placeholder="请输入您的密码"/>
             <FormControl.Feedback />
+            {this.getPassHelpBlock()}
           </Col>
         </FormGroup>
 
@@ -160,6 +184,7 @@ class RegisterInfo extends React.Component {
           <Col sm={8}>
             <FormControl type="password" value = {this.state.confirmPass} onChange = {this.confirmPassChange} placeholder="请确认您的密码"/>
             <FormControl.Feedback />
+            {this.getConPassHelpBlock()}
           </Col>
         </FormGroup>
 
