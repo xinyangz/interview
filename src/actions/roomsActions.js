@@ -50,10 +50,10 @@ export function beginModifyRoom() {
   };
 }
 
-export function modifyRoomSuccess(data) {
+export function modifyRoomSuccess(room) {
   return {
     type: types.MODIFY_ROOM_SUCCESS,
-    room: data
+    room
   };
 }
 
@@ -64,16 +64,15 @@ export function modifyRoomError(error) {
   };
 }
 
-export function uploadImage() {
+export function beginUploadImage() {
   return {
     type: types.UPLOAD_IMAGE
   };
 }
 
-export function uploadImageSuccess(file) {
+export function uploadImageSuccess() {
   return {
-    type: types.UPLOAD_IMAGE_SUCCESS,
-    image: file
+    type: types.UPLOAD_IMAGE_SUCCESS
   };
 }
 
@@ -117,28 +116,35 @@ export function loadAllRooms() {
 }
 
 export function modifyRoom(data) {
-  return (dispatch, getState)  => {
+  return (dispatch, getState) => {
     dispatch(beginModifyRoom());
     const room_id = data.room_id;
     const room = data.newRoom;
-    const formData = new FormData();
-    formData.append('image', data.logo);
-
-    //console.log('getState is:');
-    //console.log(getState());
-    //调用实时token而非固定的token
-    return axios.put('/room/' + room_id + '?token=' + token, {room, formData})
+    const image = new FormData();
+    image.append('logo', data.logo);
+    const token = getState().user.token;
+    return axios.put('/room/' + room_id +'?token=' + token, room)
       .then(response => {
         if(response.status === 200) {
-          //console.log("response status 200");
-          //console.log(response.data);
-          dispatch(modifyRoomSuccess(response.data));
+          dispatch(modifyRoomSuccess(response.data.room));
+          dispatch(beginUploadImage());
+          return axios.put('/room/' + room_id + '/logo' + '?token=' + token, image);
         }
         else {
-          dispatch(modifyRoomError(response.data.error));
+          throw (response.data);
         }
       })
-      .catch(error => dispatch(modifyRoomError(error.response.data.error || error)));
+      .then(response => {
+        if(response.status === 200) {
+          dispatch(uploadImageSuccess());
+        }
+        else {
+          throw (response.data);
+        }
+      })
+      .catch(error => {
+        dispatch(modifyRoomError(error.response.data.error || error ));
+        dispatch(uploadImageError(error.response.data.error || error ));
+      });
   };
 }
-

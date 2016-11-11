@@ -13,9 +13,7 @@ const rooms = (state = initialState.roomsStates.rooms, action) => {
       return action.rooms;
     case types.MODIFY_ROOM_SUCCESS:
      {
-       //console.log(action.room.name);
        state.find(isChangedRoom).name = action.room.name;
-       //console.log(state.find(isChangedRoom));
        return state;
      }
     default:

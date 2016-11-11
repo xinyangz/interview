@@ -44,21 +44,14 @@ class HRRoomTable extends React.Component{
   }
 
   onEditRoomClick(event) {
-    //alert('Edit room click!');
     event.preventDefault();
     const name = ReactDOM.findDOMNode(this.refs.name).value;
     var logo = ReactDOM.findDOMNode(this.refs.logo).files[0];
-    //var logo = document.getElementById("imageLogo").files[0];
     const room_id = this.state.selectedRoom;
-    var path = document.getElementById("imageLogo").value;
-    console.log("local file upload path :");
-    console.log(path);
-
 
     function clone(obj) {
       // Handle the 2 simple types, and null or undefined
       if (null == obj || "object" != typeof obj) return obj;
-      // Handle Array
       if (obj instanceof Array) {
         var copy = [];
         for (var i = 0; i < obj.length; ++i) {
@@ -66,7 +59,6 @@ class HRRoomTable extends React.Component{
         }
         return copy;
       }
-      // Handle Object
       if (obj instanceof Object) {
         copy = {};
         for (var attr in obj) {
@@ -74,16 +66,11 @@ class HRRoomTable extends React.Component{
         }
         return copy;
       }
-      //throw new Error("Unable to copy obj! Its type isn't supported.");
     }
     const roomToChange = this.props.rooms.find(room => room.id === room_id);
     const nameToChange = {"name": name};
-    //let newRoom = Object.Assign(roomToChange,nameToChange);
     let newRoom = clone(roomToChange);
     newRoom.name = nameToChange.name;
-    //console.log(newRoom.name);
-    //console.log(roomToChange.name);
-    //console.log(newRoom.interviewer);
     this.props.modifyRoom({newRoom,room_id,logo});
     this.closeModify();
   }
@@ -149,7 +136,7 @@ class HRRoomTable extends React.Component{
                   LOGO
                 </Col>
                 <Col sm={10}>
-                  <input type="file" id="imageLogo" accept="image/*"/>
+                  <input type="file" ref="logo" id="imageLogo" accept="image/*"/>
                 </Col>
                 <Col xs={6} md={4}>
                   <img src={this.props.rooms.find(room => room.id === this.state.selectedRoom) && this.props.rooms.find(room => room.id === this.state.selectedRoom).logo} width="100%"/>
