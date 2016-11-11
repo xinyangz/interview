@@ -309,6 +309,62 @@ paths:
           description: "用户无访问权限"
           schema:
             $ref: '#/definitions/Error'
+  /candidate/file:
+    get:
+      summary: "获取批量添加候选人模板文件链接"
+      description: "批量添加候选人时，首先用户应下载样例模板文件，再按照模板文件格式填写。本API提供模板文件下载链接，包括csv和xlsx两种格式"
+      tags:
+        - "candidate"
+      parameters:
+        - name: token
+          in: query
+          type: string
+          required: true
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: "获取文件链接成功，返回两种文件下载链接"
+          schema:
+            $ref: '#/definitions/ExampleFileLink'
+        400:
+          description: "获取链接失败"
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: "上传文件批量添加候选人"
+      tags:
+        - "candidate"
+      parameters:
+        - name: token
+          in: query
+          type: string
+          required: true
+        - name: file
+          in: body
+          type: file
+          required: true
+      produces:
+        - application/json
+      responses:
+        200:
+          description: "批量添加候选人成功，返回添加的候选人列表"
+          schema:
+            $ref: '#/definitions/AddedCandidateList'
+        400:
+          description: "批量添加候选人失败"
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: '#/definitions/Error'
   /candidate/{candidate_id}:
     get:
       tags:
@@ -1314,6 +1370,10 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Candidate'
+  AddedCandidateList:
+    type: array
+    items:
+      $ref: '#/definitions/Candidate'
   Report:
     type: object
     required:
@@ -1390,6 +1450,15 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Chat'
+  Option:
+    type: object
+    properties:
+      content:
+        type: string
+        description: "选项内容"
+      correct:
+        type: boolean
+        description: "本选项是否正确"
   ProblemContent:
     type: object
     required:
@@ -1408,8 +1477,9 @@ definitions:
         type: array
         description: 选择题选项
         items:
-          type: string
-          example: "选项1"
+          type: object
+          schema:
+            $ref: '#/definitions/Option'
       sampleInput:
         type: string
         description: 编程题样例输入
@@ -1485,3 +1555,17 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Problem'
+  ExampleFileLink:
+    type: object
+    required:
+      - csv
+      - xlsx
+    properties:
+      csv:
+        type: string
+        description: "csv样例文件下载链接"
+        example: "https://example.com/example.csv"
+      xlsx:
+        type: string
+        descritpion: "xlsx样例文件下载链接"
+        example: "https://example.com/example.xlsx"

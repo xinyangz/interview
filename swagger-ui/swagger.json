@@ -47,16 +47,16 @@
      {
       "name": "offset",
       "in": "query",
-      "description": "从第几个房间开始读\n",
-      "default": 0,
-      "minimum": 0,
+      "description": "从第几个房间开始读",
+      "default": "0",
+      "minimum": "0",
       "type": "integer",
       "format": "int32"
      },
      {
       "name": "limit",
       "in": "query",
-      "description": "读取数量\n",
+      "description": "读取数量",
       "default": 10,
       "maximum": 100,
       "type": "integer",
@@ -445,6 +445,92 @@
      },
      "400": {
       "description": "添加候选人失败",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     },
+     "403": {
+      "description": "用户无访问权限",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     }
+    }
+   }
+  },
+  "/candidate/file": {
+   "get": {
+    "summary": "获取批量添加候选人模板文件链接",
+    "description": "批量添加候选人时，首先用户应下载样例模板文件，再按照模板文件格式填写。本API提供模板文件下载链接，包括csv和xlsx两种格式",
+    "tags": [
+     "candidate"
+    ],
+    "parameters": [
+     {
+      "name": "token",
+      "in": "query",
+      "type": "string",
+      "required": true
+     }
+    ],
+    "consumes": [
+     "application/json"
+    ],
+    "produces": [
+     "application/json"
+    ],
+    "responses": {
+     "200": {
+      "description": "获取文件链接成功，返回两种文件下载链接",
+      "schema": {
+       "$ref": "#/definitions/ExampleFileLink"
+      }
+     },
+     "400": {
+      "description": "获取链接失败",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     },
+     "403": {
+      "description": "用户无访问权限",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     }
+    }
+   },
+   "post": {
+    "summary": "上传文件批量添加候选人",
+    "tags": [
+     "candidate"
+    ],
+    "parameters": [
+     {
+      "name": "token",
+      "in": "query",
+      "type": "string",
+      "required": true
+     },
+     {
+      "name": "file",
+      "in": "body",
+      "type": "file",
+      "required": true
+     }
+    ],
+    "produces": [
+     "application/json"
+    ],
+    "responses": {
+     "200": {
+      "description": "批量添加候选人成功，返回添加的候选人列表",
+      "schema": {
+       "$ref": "#/definitions/AddedCandidateList"
+      }
+     },
+     "400": {
+      "description": "批量添加候选人失败",
       "schema": {
        "$ref": "#/definitions/Error"
       }
@@ -1373,7 +1459,7 @@
       "in": "body",
       "description": "添加的题目",
       "schema": {
-       "$ref": "#/definitions/Problem"
+       "$ref": "#/definitions/ProblemIn"
       },
       "required": true
      },
@@ -1392,7 +1478,10 @@
     ],
     "responses": {
      "200": {
-      "description": "面试题添加成功"
+      "description": "面试题添加成功",
+      "schema": {
+       "$ref": "#/definitions/Problem"
+      }
      },
      "400": {
       "description": "面试题添加失败",
@@ -1916,12 +2005,18 @@
     }
    }
   },
+  "AddedCandidateList": {
+   "type": "array",
+   "items": {
+    "$ref": "#/definitions/Candidate"
+   }
+  },
   "Report": {
    "type": "object",
    "required": [
     "id",
     "candidateId",
-    "text"
+    "url"
    ],
    "properties": {
     "id": {
@@ -1934,25 +2029,19 @@
      "description": "报告所属面试者id",
      "example": "101"
     },
-    "text": {
+    "url": {
      "type": "string",
-     "description": "报告文本"
+     "description": "下载报告url",
+     "example": "example.com/report/123.pdf"
     }
    }
   },
   "ReportIn": {
    "type": "object",
    "required": [
-    "id",
-    "candidateId",
     "text"
    ],
    "properties": {
-    "candidateId": {
-     "type": "integer",
-     "description": "报告所属面试者id",
-     "example": "101"
-    },
     "text": {
      "type": "string",
      "description": "报告文本"
@@ -2023,6 +2112,19 @@
     }
    }
   },
+  "Option": {
+   "type": "object",
+   "properties": {
+    "content": {
+     "type": "string",
+     "description": "选项内容"
+    },
+    "correct": {
+     "type": "boolean",
+     "description": "本选项是否正确"
+    }
+   }
+  },
   "ProblemContent": {
    "type": "object",
    "required": [
@@ -2044,8 +2146,10 @@
      "type": "array",
      "description": "选择题选项",
      "items": {
-      "type": "string",
-      "example": "选项1"
+      "type": "object",
+      "schema": {
+       "$ref": "#/definitions/Option"
+      }
      }
     },
     "sampleInput": {
@@ -2098,6 +2202,38 @@
     }
    }
   },
+  "ProblemIn": {
+   "type": "object",
+   "required": [
+    "roomId",
+    "type",
+    "content"
+   ],
+   "properties": {
+    "roomId": {
+     "type": "integer",
+     "description": "题目所属房间id",
+     "example": "1001"
+    },
+    "type": {
+     "type": "string",
+     "enum": [
+      "choice",
+      "blank",
+      "answer",
+      "code"
+     ],
+     "description": "题目类型(choice, blank, answer, code)",
+     "example": "choice"
+    },
+    "content": {
+     "description": "题目内容",
+     "schema": {
+      "$ref": "#/definitions/ProblemContent"
+     }
+    }
+   }
+  },
   "ProblemList": {
    "type": "object",
    "required": [
@@ -2124,6 +2260,25 @@
      "items": {
       "$ref": "#/definitions/Problem"
      }
+    }
+   }
+  },
+  "ExampleFileLink": {
+   "type": "object",
+   "required": [
+    "csv",
+    "xlsx"
+   ],
+   "properties": {
+    "csv": {
+     "type": "string",
+     "description": "csv样例文件下载链接",
+     "example": "https://example.com/example.csv"
+    },
+    "xlsx": {
+     "type": "string",
+     "descritpion": "xlsx样例文件下载链接",
+     "example": "https://example.com/example.xlsx"
     }
    }
   }
