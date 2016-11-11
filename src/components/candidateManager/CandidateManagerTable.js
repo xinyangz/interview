@@ -1,6 +1,6 @@
 import React, {PropTypes}from 'react'
 import {connect} from 'react-redux';
-import {Tabs, Tab, Table, Modal, Button, FormControl, FormGroup, ControlLabel, Form, Col, Image, NavDropdown, MenuItem} from 'react-bootstrap'
+import {Tabs, Tab, Table, Modal, Button, FormControl, FormGroup, ControlLabel, Form, Col, Image, NavDropdown, MenuItem, HelpBlock} from 'react-bootstrap'
 import {deleteCandidate, editCandidate, addCandidate} from './CandidateManagerActions'
 
 class CandidateManagerTable extends React.Component {
@@ -11,13 +11,13 @@ class CandidateManagerTable extends React.Component {
       selectedCandidate: null,
       showEditModal: false,
       selectedEditCandidate: null,
-      nameChange: null,
-      emailChange: null,
-      phoneChange: null,
-      roomChange: null,
-      statusChange: null,
-      showAddModal: null,
-      showListModal: null,
+      nameChange: "",
+      emailChange: "",
+      phoneChange: "",
+      roomChange: "",
+      statusChange: "",
+      showAddModal: false,
+      showListModal: false,
     };
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
@@ -33,12 +33,35 @@ class CandidateManagerTable extends React.Component {
     this.onAddCandidateClick = this.onAddCandidateClick.bind(this);
     this.onListCandidateClick = this.onListCandidateClick.bind(this);
 
+    this.getPhoneHelpBlock = this.getPhoneHelpBlock.bind(this);
+    this.getEmailHelpBlock = this.getEmailHelpBlock.bind(this);
+
     this.changeName = this.changeName.bind(this);
     this.changeEmail = this.changeEmail.bind(this);
     this.changeRoom = this.changeRoom.bind(this);
     this.changePhone = this.changePhone.bind(this);
     this.changeStatus = this.changeStatus.bind(this);
   }
+
+  getEmailHelpBlock(e) {
+    const length = this.state.emailChange.length;
+    if (length > 0)
+    {
+      const pattern = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+      if(pattern.test(this.state.emailChange)) {
+        return undefined;
+      }
+      return (<HelpBlock>请输入正确的邮箱</HelpBlock>);
+    }
+  }
+
+  getPhoneHelpBlock() {
+    if(this.getConPassValState() == 'error') {
+      return (<HelpBlock>两次密码不一致</HelpBlock>);
+    }
+    return undefined;
+  }
+
 
   changeStatus(e) {
     this.setState({statueChange: e.target.value});
