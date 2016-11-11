@@ -38,6 +38,7 @@
   "dependencies": {
     "axios": "0.15.2",
     "gulp": "3.9.1",
+    "js-md5": "0.4.1",
     "object-assign": "4.1.0",
     "react": "15.3.2",
     "react-bootstrap": "0.30.5",

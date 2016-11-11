@@ -6,7 +6,7 @@ import { Panel } from  'react-bootstrap'
 class RegisterPage extends React.Component {
     render() {
         return (
-          <Panel>
+          <Panel style={{width: '700px', margin: '0 auto'}}>
             <h3>注册主考方账号</h3>
             <RegisterInfo
               clickAction={RegisterActions.register}/>

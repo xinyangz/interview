@@ -1,7 +1,8 @@
 import React, {PropTypes} from 'react';
-import {FormGroup, FormControl, ControlLabel, Button, Form, Col, Overlay, Tooltip, HelpBlock} from 'react-bootstrap';
+import {FormGroup, FormControl, ControlLabel, Button, Form, Col, HelpBlock} from 'react-bootstrap';
 import {connect} from 'react-redux';
-import {register} from '../../actions/registerActions'
+import {register} from '../../actions/registerActions';
+import md5 from 'js-md5';
 
 class RegisterInfo extends React.Component {
   constructor(props) {
@@ -34,7 +35,7 @@ class RegisterInfo extends React.Component {
       orgName: "",
       contact: "",
       caf: "",
-    }
+    };
   }
 
   getPassHelpBlock() {
@@ -82,7 +83,7 @@ class RegisterInfo extends React.Component {
     const length = this.state.userEmail.length;
     if (length > 0)
     {
-      var pattern = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+      const pattern = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
       if(pattern.test(this.state.userEmail)) {
         return 'success';
       }
@@ -141,7 +142,7 @@ class RegisterInfo extends React.Component {
         "username": this.state.userName,
         "type": "hr",
         "email": this.state.userEmail,
-        "password": this.state.pass,
+        "password": md5(this.state.pass),
         "organization": this.state.orgName,
         "contact": this.state.contact,
       });
@@ -205,12 +206,12 @@ class RegisterInfo extends React.Component {
         </FormGroup>
 
         <FormGroup>
-          <Col smOffset={5} sm={10}>
+          <Col smOffset={2} sm={10}>
             <Button bsStyle="primary" type="button" onClick = {this.handleClick}>注册</Button>
           </Col>
         </FormGroup>
       </Form>
-    )
+    );
   }
 }
 

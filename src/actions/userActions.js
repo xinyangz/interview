@@ -1,6 +1,7 @@
 import * as types from '../constants/actionTypes';
 import { push } from 'react-router-redux';
 import axios from 'axios';
+import md5 from 'js-md5';
 
 
 export function beginLogin() {
@@ -28,7 +29,7 @@ export function login(data) {
   return dispatch => {
     dispatch(beginLogin());
     const username = data.username;
-    const password = data.password;
+    const password = md5(data.password);
     axios.get('/user/login?username=' + username + '&password=' + password)
       .then(response => {
         if ( response.status === 200 ) {
