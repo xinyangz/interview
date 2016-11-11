@@ -56,10 +56,15 @@ class CandidateManagerTable extends React.Component {
   }
 
   getPhoneHelpBlock() {
-    if(this.getConPassValState() == 'error') {
-      return (<HelpBlock>两次密码不一致</HelpBlock>);
+    const length = this.state.phoneChange.length;
+    if (length > 0)
+    {
+      const pattern = /^([0-9])+/;
+      if(pattern.test(this.state.phoneChange)) {
+        return undefined;
+      }
+      return (<HelpBlock>请输入正确的电话</HelpBlock>);
     }
-    return undefined;
   }
 
 
@@ -216,17 +221,19 @@ class CandidateManagerTable extends React.Component {
                   <Form horizontal>
                     <FormGroup controlId="candidateName">
                       <Col componentClass={ControlLabel} sm={3}>候选人姓名</Col>
-                      <Col sm={9}><FormControl type="text" placeholder={this.state.nameChange} onChange={this.changeName}/></Col>
+                      <Col sm={9}><FormControl type="text" placeholder={this.state.selectedEditCandidate.name} onChange={this.changeName}/></Col>
                     </FormGroup>
 
-                    <FormGroup controlId="candidateEmail">
-                      <Col componentClass={ControlLabel} sm={3}>候选人邮箱</Col>
-                      <Col sm={9}><FormControl type="email" placeholder={this.state.emailChange}  onChange={this.changeEmail}/></Col>
-                    </FormGroup>
+                      <FormGroup controlId="candidateEmail">
+                        <Col componentClass={ControlLabel} sm={3}>候选人邮箱</Col>
+                        <Col sm={9}><FormControl type="email" placeholder={this.state.selectedEditCandidate.email}  onChange={this.changeEmail}/></Col>
+                        {this.getEmailHelpBlock()}
+                      </FormGroup>
 
                     <FormGroup controlId="candidatePhone">
                       <Col componentClass={ControlLabel} sm={3}>候选人手机</Col>
-                      <Col sm={9}><FormControl type="text" placeholder={this.state.phoneChange}  onChange={this.changePhone}/></Col>
+                      <Col sm={9}><FormControl type="text" placeholder={this.state.selectedEditCandidate.phone}  onChange={this.changePhone}/></Col>
+                      {this.getPhoneHelpBlock()}
                     </FormGroup>
 
                     <FormGroup controlId="candidateRoom">
