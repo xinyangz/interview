@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {Modal, Button, FormGroup, ControlLabel, FormControl, InputGroup} from 'react-bootstrap';
+import {Modal, Button, FormGroup, ControlLabel, FormControl, InputGroup, HelpBlock} from 'react-bootstrap';
 
 const OptionControl = ({checked, content, onContentChange, onCheckedChange, onDelete}) => {
   return (
@@ -38,6 +38,7 @@ export class ChoiceModal extends React.Component {
     this.onOptionContentChange = this.onOptionContentChange.bind(this);
     this.onOptionCheckedChange = this.onOptionCheckedChange.bind(this);
     this.onOptionDelete = this.onOptionDelete.bind(this);
+    this.getHelpBlock = this.getHelpBlock.bind(this);
   }
 
   onAddOption() {
@@ -102,6 +103,27 @@ export class ChoiceModal extends React.Component {
     };
   }
 
+  getValidationState () {
+    if (this.state.editOptionContent && this.state.editOptionContent.length > 0 &&
+      this.state.options.find(option => option.content === this.state.editOptionContent) != undefined)
+      return 'error';
+  }
+
+  getHelpBlock() {
+    if (this.getValidationState() === 'error')
+      return (
+        <HelpBlock>此选项与已有选项重复</HelpBlock>
+      );
+    else
+      return undefined;
+  }
+
+  disableSave() {
+    return this.state.title === undefined || this.state.title.length === 0 ||
+      this.state.description === undefined || this.state.description.length === 0 ||
+      this.state.options.length === 0;
+  }
+
   render() {
     return (
       <Modal {...this.props}>
@@ -119,7 +141,7 @@ export class ChoiceModal extends React.Component {
             <FormControl componentClass="textarea" placeholder="在此添加题目描述" style={{height: 200}}
               value={this.state.description || ''} onChange={(e) => {this.setState({description: e.target.value});}}/>
           </FormGroup>
-          <FormGroup controlId="add_option">
+          <FormGroup controlId="add_option" validationState={this.getValidationState()}>
             <ControlLabel>选项</ControlLabel>
             <InputGroup>
               <InputGroup.Addon>
@@ -130,9 +152,12 @@ export class ChoiceModal extends React.Component {
                            value={this.state.editOptionContent || ''}
                            onChange={(e) => {this.setState({editOptionContent: e.target.value});}}/>
               <InputGroup.Button>
-                <Button onClick={this.onAddOption}>添加</Button>
+                <Button onClick={this.onAddOption}
+                        disabled={this.state.editOptionContent === undefined || this.state.editOptionContent.length === 0
+                        ||this.getValidationState() === 'error'}>添加</Button>
               </InputGroup.Button>
             </InputGroup>
+            {this.getHelpBlock()}
           </FormGroup>
           {
             this.state.options.length > 0 &&
@@ -151,7 +176,8 @@ export class ChoiceModal extends React.Component {
 
         </Modal.Body>
         <Modal.Footer>
-          <Button bsStyle="primary">保存</Button>
+          <Button bsStyle="primary"
+            disabled={this.disableSave()}>保存</Button>
           <Button onClick={this.props.onHide}>关闭</Button>
         </Modal.Footer>
       </Modal>
