@@ -10,6 +10,7 @@ import InterviewerPage from './components/InterviewerPage/InterviewerPage';
 import WelcomePage from './components/WelcomePage';
 import LoginPage from './components/LoginPage';
 import RedirectPage from './components/RedirectPage';
+import RegisterPage from './components/RegisterPage/RegisterPage'
 
 const routes = (store) => {
   const requireHR = (nextState, replace, callback) => {
@@ -43,6 +44,7 @@ const routes = (store) => {
       <Route path="interviewer" component={InterviewerPage} />
       <Route path="not-found" component={NotFoundPage} />
       <Route path="login" component={LoginPage} />
+      <Route path="register" component={RegisterPage}/>
       <Route path="redirect" component={RedirectPage} />
       <Route path="*" component={NotFoundPage}/>
     </Route>
