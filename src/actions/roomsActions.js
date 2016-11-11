@@ -1,5 +1,4 @@
 import * as types from '../constants/actionTypes';
-
 import axios from 'axios';
 
 // token should be read from state
@@ -45,6 +44,45 @@ export function loadAllRoomsError(error) {
   };
 }
 
+export function beginModifyRoom() {
+  return {
+    type: types.MODIFY_ROOM
+  };
+}
+
+export function modifyRoomSuccess(room) {
+  return {
+    type: types.MODIFY_ROOM_SUCCESS,
+    room
+  };
+}
+
+export function modifyRoomError(error) {
+  return {
+    type: types.MODIFY_ROOM_ERROR,
+    error
+  };
+}
+
+export function beginUploadImage() {
+  return {
+    type: types.UPLOAD_IMAGE
+  };
+}
+
+export function uploadImageSuccess() {
+  return {
+    type: types.UPLOAD_IMAGE_SUCCESS
+  };
+}
+
+export function uploadImageError(error) {
+  return {
+    type: types.UPLOAD_IMAGE_ERROR,
+    error
+  };
+}
+
 export function deleteRoom(roomId) {
   return dispatch => {
     dispatch(beginDeleteRoom());
@@ -77,3 +115,36 @@ export function loadAllRooms() {
   };
 }
 
+export function modifyRoom(data) {
+  return (dispatch, getState) => {
+    dispatch(beginModifyRoom());
+    const room_id = data.room_id;
+    const room = data.newRoom;
+    const image = new FormData();
+    image.append('logo', data.logo);
+    const token = getState().user.token;
+    return axios.put('/room/' + room_id +'?token=' + token, room)
+      .then(response => {
+        if(response.status === 200) {
+          dispatch(modifyRoomSuccess(response.data.room));
+          dispatch(beginUploadImage());
+          return axios.put('/room/' + room_id + '/logo' + '?token=' + token, image);
+        }
+        else {
+          throw (response.data);
+        }
+      })
+      .then(response => {
+        if(response.status === 200) {
+          dispatch(uploadImageSuccess());
+        }
+        else {
+          throw (response.data);
+        }
+      })
+      .catch(error => {
+        dispatch(modifyRoomError(error));
+        dispatch(uploadImageError(error));
+      });
+  };
+}
