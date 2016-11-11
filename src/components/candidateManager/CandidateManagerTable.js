@@ -27,10 +27,12 @@ class CandidateManagerTable extends React.Component {
     this.openAddModal = this.openAddModal.bind(this);
     this.closeListModal = this.closeListModal.bind(this);
     this.openListModal = this.openListModal.bind(this);
+
     this.onDeleteCandidateClick = this.onDeleteCandidateClick.bind(this);
     this.onEditCandidateClick = this.onEditCandidateClick.bind(this);
     this.onAddCandidateClick = this.onAddCandidateClick.bind(this);
     this.onListCandidateClick = this.onListCandidateClick.bind(this);
+
     this.changeName = this.changeName.bind(this);
     this.changeEmail = this.changeEmail.bind(this);
     this.changeRoom = this.changeRoom.bind(this);
@@ -119,6 +121,7 @@ class CandidateManagerTable extends React.Component {
       "phone" : this.state.phoneChange,
       "status" : this.state.statusChange,
     };
+    console.log(termCandidate);
     this.props.addCandidate(termCandidate);
     this.closeAddModal();
   }

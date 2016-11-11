@@ -121,6 +121,7 @@ export function editCandidate(candidate) {
 }
 
 export function addCandidate(candidate) {
+  console.log(candidate);
   return dispatch => {
     dispatch(addCandidateBegin());
     return axios.post('/candidate?token=' + token, candidate)

@@ -81,7 +81,7 @@ paths:
         description: "添加的候选人信息\n"
         required: true
         schema:
-          $ref: "#/definitions/Candidate"
+          $ref: "#/definitions/PostCandidate"
       - name: "token"
         in: "query"
         required: true
@@ -93,6 +93,109 @@ paths:
             $ref: "#/definitions/Candidate"
         400:
           description: "添加候选人失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Candidate"
+  /candidate/file:
+    get:
+      tags:
+      - "candidate"
+      summary: "获取批量添加候选人模板文件链接"
+      description: "批量添加候选人时，首先用户应下载样例模板文件，再按照模板文件格式填写。本API提供模板文件下载链接，包括csv和xlsx两种\
+        格式"
+      operationId: "candidateFileGET"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "获取文件链接成功，返回两种文件下载链接"
+          schema:
+            $ref: "#/definitions/ExampleFileLink"
+        400:
+          description: "获取链接失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Candidate"
+    post:
+      tags:
+      - "candidate"
+      summary: "上传文件批量添加候选人"
+      operationId: "candidateFilePOST"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "批量添加候选人成功，返回添加的候选人列表"
+          schema:
+            $ref: "#/definitions/AddedCandidateList"
+        400:
+          description: "批量添加候选人失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Candidate"
+  /candidate/room/{room_id}:
+    get:
+      tags:
+      - "candidate"
+      summary: "获取属于某个房间的候选人列表"
+      operationId: "candidateRoomRoom_idGET"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "room_id"
+        in: "path"
+        description: "房间id"
+        required: true
+        type: "integer"
+      - name: "offset"
+        in: "query"
+        description: "从第几个候选人开始读\n"
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+        format: "int32"
+      - name: "limit"
+        in: "query"
+        description: "读取数量\n"
+        required: false
+        type: "integer"
+        default: 10
+        maximum: 100
+        format: "int32"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "候选人列表"
+          schema:
+            $ref: "#/definitions/CandidateList"
+        400:
+          description: "候选人列表获取失败"
           schema:
             $ref: "#/definitions/Error"
         403:
@@ -113,7 +216,7 @@ paths:
         in: "path"
         description: "候选人 id\n"
         required: true
-        type: "string"
+        type: "integer"
       - name: "token"
         in: "query"
         required: true
@@ -150,7 +253,7 @@ paths:
         in: "path"
         description: "候选人 id\n"
         required: true
-        type: "string"
+        type: "integer"
       - in: "body"
         name: "candidate"
         description: "更改后的候选人信息\n"
@@ -191,7 +294,7 @@ paths:
         in: "path"
         description: "候选人 id\n"
         required: true
-        type: "string"
+        type: "integer"
       - name: "token"
         in: "query"
         required: true
@@ -225,7 +328,7 @@ paths:
         in: "path"
         description: "候选人 id\n"
         required: true
-        type: "string"
+        type: "integer"
       - name: "status"
         in: "query"
         description: "候选人新的面试状态\n"
@@ -267,7 +370,7 @@ paths:
         in: "path"
         description: "面试者id"
         required: true
-        type: "string"
+        type: "integer"
       - name: "offset"
         in: "query"
         description: "偏移\n"
@@ -320,7 +423,7 @@ paths:
         in: "path"
         description: "面试者id"
         required: true
-        type: "string"
+        type: "integer"
       - in: "body"
         name: "chat"
         description: "聊天记录"
@@ -360,7 +463,7 @@ paths:
         in: "path"
         description: "房间id"
         required: true
-        type: "string"
+        type: "integer"
       - name: "offset"
         in: "query"
         description: "偏移\n"
@@ -412,13 +515,13 @@ paths:
         in: "path"
         description: "房间id"
         required: true
-        type: "string"
+        type: "integer"
       - in: "body"
         name: "problem"
         description: "添加的题目"
         required: true
         schema:
-          $ref: "#/definitions/Problem"
+          $ref: "#/definitions/ProblemIn"
       - name: "token"
         in: "query"
         required: true
@@ -426,6 +529,8 @@ paths:
       responses:
         200:
           description: "面试题添加成功"
+          schema:
+            $ref: "#/definitions/Problem"
         400:
           description: "面试题添加失败"
           schema:
@@ -453,7 +558,7 @@ paths:
         in: "path"
         description: "面试题id"
         required: true
-        type: "string"
+        type: "integer"
       - name: "token"
         in: "query"
         required: true
@@ -490,7 +595,7 @@ paths:
         in: "path"
         description: "面试题id"
         required: true
-        type: "string"
+        type: "integer"
       - in: "body"
         name: "problem"
         description: "更改后的题目"
@@ -533,7 +638,7 @@ paths:
         in: "path"
         description: "面试题id"
         required: true
-        type: "string"
+        type: "integer"
       - name: "token"
         in: "query"
         required: true
@@ -567,7 +672,7 @@ paths:
         in: "path"
         description: "面试者id"
         required: true
-        type: "string"
+        type: "integer"
       - name: "token"
         in: "query"
         required: true
@@ -600,13 +705,13 @@ paths:
         in: "path"
         description: "面试者id"
         required: true
-        type: "string"
+        type: "integer"
       - in: "body"
-        name: "text"
+        name: "body"
         description: "新的报告文本"
         required: true
         schema:
-          $ref: "#/definitions/Report"
+          $ref: "#/definitions/ReportIn"
       - name: "token"
         in: "query"
         required: true
@@ -637,7 +742,7 @@ paths:
         in: "path"
         description: "面试者id"
         required: true
-        type: "string"
+        type: "integer"
       - name: "token"
         in: "query"
         required: true
@@ -663,6 +768,21 @@ paths:
       produces:
       - "application/json"
       parameters:
+      - name: "offset"
+        in: "query"
+        description: "从第几个房间开始读"
+        required: false
+        type: "integer"
+        default: 0
+        format: "int32"
+      - name: "limit"
+        in: "query"
+        description: "读取数量"
+        required: false
+        type: "integer"
+        default: 10
+        maximum: 100
+        format: "int32"
       - name: "token"
         in: "query"
         required: true
@@ -674,6 +794,37 @@ paths:
             $ref: "#/definitions/RoomList"
         400:
           description: "读取错误"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Room"
+    post:
+      tags:
+      - "room"
+      summary: "添加面试房间"
+      operationId: "roomPOST"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "room"
+        required: true
+        schema:
+          $ref: "#/definitions/RoomPost"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "创建房间成功，返回房间信息"
+          schema:
+            $ref: "#/definitions/Room"
+        400:
+          description: "创建房间失败"
           schema:
             $ref: "#/definitions/Error"
         403:
@@ -694,7 +845,7 @@ paths:
         in: "path"
         description: "面试房间id"
         required: true
-        type: "string"
+        type: "integer"
       - name: "token"
         in: "query"
         required: true
@@ -728,13 +879,13 @@ paths:
         in: "path"
         description: "面试房间id\n"
         required: true
-        type: "string"
+        type: "integer"
       - in: "body"
-        name: "body"
+        name: "room"
         description: "面试房间信息\n"
         required: true
         schema:
-          $ref: "#/definitions/Room"
+          $ref: "#/definitions/RoomPost"
       - name: "token"
         in: "query"
         required: true
@@ -769,7 +920,7 @@ paths:
         in: "path"
         description: "面试房间id\n"
         required: true
-        type: "string"
+        type: "integer"
       - name: "token"
         in: "query"
         required: true
@@ -787,6 +938,40 @@ paths:
             $ref: "#/definitions/Error"
         404:
           description: "房间不存在"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Room"
+  /room/{room_id}/logo:
+    put:
+      tags:
+      - "room"
+      summary: "上传面试房间logo"
+      operationId: "roomRoom_idLogoPUT"
+      consumes:
+      - "image/*"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "room_id"
+        in: "path"
+        description: "面试房间id"
+        required: true
+        type: "integer"
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "更改logo成功，返回房间信息"
+          schema:
+            $ref: "#/definitions/Room"
+        400:
+          description: "更改logo失败"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "用户无访问权限"
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "Room"
@@ -983,14 +1168,6 @@ paths:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "User"
 definitions:
-  Status:
-    type: "object"
-    required:
-    - "status"
-    properties:
-      status:
-        type: "integer"
-        format: "int32"
   _Error:
     type: "object"
     required:
@@ -1000,7 +1177,6 @@ definitions:
         type: "string"
   Error:
     allOf:
-    - $ref: "#/definitions/Status"
     - $ref: "#/definitions/_Error"
   User:
     type: "object"
@@ -1013,6 +1189,10 @@ definitions:
         type: "string"
       type:
         type: "string"
+        enum:
+        - "hr"
+        - "interviewer"
+        - "candidate"
       email:
         type: "string"
       password:
@@ -1046,8 +1226,8 @@ definitions:
     - "problems"
     properties:
       id:
-        type: "string"
-        example: "1001"
+        type: "integer"
+        example: 1001
         description: "面试房间ID"
       name:
         type: "string"
@@ -1058,24 +1238,43 @@ definitions:
         example: "http://example.com/examplepage"
         description: "面试房间企业logo Url"
       interviewer:
-        type: "string"
+        type: "integer"
         description: "面试官ID，若不存在则置空"
       candidates:
         type: "array"
         description: "候选人ID列表"
         items:
-          type: "string"
+          type: "integer"
       problems:
         type: "array"
         description: "面试题ID列表"
         items:
-          type: "string"
+          type: "integer"
+  RoomPost:
+    type: "object"
+    required:
+    - "interviewer"
+    - "name"
+    properties:
+      name:
+        type: "string"
+        example: "计蒜课秋招（前端）"
+        description: "面试房间名称"
+      interviewer:
+        type: "integer"
+        description: "面试官ID，若不存在则置空"
+      candidates:
+        type: "array"
+        description: "候选人ID列表"
+        items:
+          type: "integer"
   RoomList:
     type: "object"
     required:
     - "count"
     - "limit"
     - "offset"
+    - "rooms"
     properties:
       offset:
         type: "integer"
@@ -1099,6 +1298,33 @@ definitions:
         description: "面试房间列表"
         items:
           $ref: "#/definitions/Room"
+  PostCandidate:
+    type: "object"
+    required:
+    - "email"
+    - "name"
+    - "status"
+    properties:
+      name:
+        type: "string"
+        example: "Mike"
+        description: "候选人姓名"
+      email:
+        type: "string"
+        example: "example@example.com"
+        description: "候选人邮箱"
+      phone:
+        type: "string"
+        example: "1300000000"
+        description: "候选人手机号"
+      status:
+        type: "string"
+        description: "候选人状态"
+        default: "未面试"
+      roomId:
+        type: "integer"
+        example: 1001
+        description: "候选人被分配的唯一的面试房间 id"
   Candidate:
     type: "object"
     required:
@@ -1108,8 +1334,8 @@ definitions:
     - "status"
     properties:
       id:
-        type: "string"
-        example: "3001"
+        type: "integer"
+        example: 3001
         description: "候选人id"
       name:
         type: "string"
@@ -1128,8 +1354,8 @@ definitions:
         description: "候选人状态"
         default: "未面试"
       roomId:
-        type: "string"
-        example: "1001"
+        type: "integer"
+        example: 1001
         description: "候选人被分配的唯一的面试房间 id"
       record:
         $ref: "#/definitions/Candidate_record"
@@ -1160,20 +1386,34 @@ definitions:
         description: "候选人列表"
         items:
           $ref: "#/definitions/Candidate"
+  AddedCandidateList:
+    type: "array"
+    items:
+      $ref: "#/definitions/Candidate"
   Report:
     type: "object"
     required:
+    - "candidateId"
     - "id"
-    - "text"
+    - "url"
     properties:
       id:
-        type: "string"
-        example: "7001"
+        type: "integer"
+        example: 7001
         description: "报告id"
-      roomId:
-        type: "string"
-        example: "101"
+      candidateId:
+        type: "integer"
+        example: 101
         description: "报告所属面试者id"
+      url:
+        type: "string"
+        example: "example.com/report/123.pdf"
+        description: "下载报告url"
+  ReportIn:
+    type: "object"
+    required:
+    - "text"
+    properties:
       text:
         type: "string"
         description: "报告文本"
@@ -1186,11 +1426,11 @@ definitions:
     - "time"
     properties:
       id:
-        type: "string"
-        example: "10001"
+        type: "integer"
+        example: 10001
       candidateId:
-        type: "string"
-        example: "101"
+        type: "integer"
+        example: 101
         description: "聊天所属面试者id"
       time:
         type: "string"
@@ -1203,6 +1443,7 @@ definitions:
       sender:
         type: "boolean"
         description: "消息发送方,false代表面试官,true代表面试者"
+        default: true
   ChatList:
     type: "object"
     required:
@@ -1225,6 +1466,15 @@ definitions:
         description: "聊天记录列表"
         items:
           $ref: "#/definitions/Chat"
+  Option:
+    type: "object"
+    properties:
+      content:
+        type: "string"
+        description: "选项内容"
+      correct:
+        type: "boolean"
+        description: "本选项是否正确"
   ProblemContent:
     type: "object"
     required:
@@ -1243,8 +1493,8 @@ definitions:
         type: "array"
         description: "选择题选项"
         items:
-          type: "string"
-          example: "选项1"
+          type: "object"
+          properties: {}
       sampleInput:
         type: "string"
         example: "1 2"
@@ -1261,17 +1511,41 @@ definitions:
     - "type"
     properties:
       id:
-        type: "string"
-        example: "3901"
+        type: "integer"
+        example: 3901
         description: "题目id"
       roomId:
-        type: "string"
-        example: "1001"
+        type: "integer"
+        example: 1001
         description: "题目所属房间id"
       type:
         type: "string"
         example: "choice"
         description: "题目类型(choice, blank, answer, code)"
+        enum:
+        - "choice"
+        - "blank"
+        - "answer"
+        - "code"
+  ProblemIn:
+    type: "object"
+    required:
+    - "roomId"
+    - "type"
+    properties:
+      roomId:
+        type: "integer"
+        example: 1001
+        description: "题目所属房间id"
+      type:
+        type: "string"
+        example: "choice"
+        description: "题目类型(choice, blank, answer, code)"
+        enum:
+        - "choice"
+        - "blank"
+        - "answer"
+        - "code"
   ProblemList:
     type: "object"
     required:
@@ -1294,21 +1568,34 @@ definitions:
         description: "面试题列表"
         items:
           $ref: "#/definitions/Problem"
+  ExampleFileLink:
+    type: "object"
+    required:
+    - "csv"
+    - "xlsx"
+    properties:
+      csv:
+        type: "string"
+        example: "https://example.com/example.csv"
+        description: "csv样例文件下载链接"
+      xlsx:
+        type: "string"
+        example: "https://example.com/example.xlsx"
   Candidate_record:
     properties:
       video:
-        type: "string"
+        type: "integer"
         description: "视频记录"
       board:
-        type: "string"
+        type: "integer"
         description: "白板"
       chat:
-        type: "string"
+        type: "integer"
         description: "聊天文件"
       code:
-        type: "string"
+        type: "integer"
         description: "代码"
       report:
-        type: "string"
+        type: "integer"
         description: "报告"
     description: "面试记录文件"
