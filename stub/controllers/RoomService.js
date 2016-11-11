@@ -4,30 +4,18 @@ exports.roomGET = function(args, res, next) {
   /**
    * parameters expected in the args:
   * token (String)
+  * offset (Integer)
+  * limit (Integer)
   **/
     var examples = {};
   examples['application/json'] = {
   "rooms" : [ {
-    "interviewer" : "Jason Yip",
-    "candidates" : [ "1", "2" ],
+    "interviewer" : "",
+    "candidates" : [ "" ],
     "name" : "计蒜课秋招（前端）",
     "logo" : "http://example.com/examplepage",
-    "id" : "1001",
-    "problems" : [ "2001", "2002" ]
-  }, {
-    "interviewer" : "Jiang Ma",
-    "candidates" : [],
-    "name" : "计蒜课秋招（后端）",
-    "logo" : "http://example.com/examplepage",
-    "id" : "1002",
-    "problems" : [ "2011", "2012", "2013" ]
-  }, {
-    "interviewer" : "Mo Ha",
-    "candidates" : [ "5", "6", "7", "8", "9" ],
-    "name" : "计蒜课秋招（测试）",
-    "logo" : "http://example.com/examplepage",
-    "id" : "1003",
-    "problems" : [ "2021", "2022", "2023", "2024" ]
+    "id" : 1001,
+    "problems" : [ "" ]
   } ],
   "offset" : 0,
   "limit" : 20,
@@ -40,13 +28,38 @@ exports.roomGET = function(args, res, next) {
   else {
     res.end();
   }
+  
+}
 
+exports.roomPOST = function(args, res, next) {
+  /**
+   * parameters expected in the args:
+  * room (RoomPost)
+  * token (String)
+  **/
+    var examples = {};
+  examples['application/json'] = {
+  "interviewer" : "",
+  "candidates" : [ "" ],
+  "name" : "计蒜课秋招（前端）",
+  "logo" : "http://example.com/examplepage",
+  "id" : 1001,
+  "problems" : [ "" ]
+};
+  if(Object.keys(examples).length > 0) {
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(examples[Object.keys(examples)[0]] || {}, null, 2));
+  }
+  else {
+    res.end();
+  }
+  
 }
 
 exports.roomRoom_idDELETE = function(args, res, next) {
   /**
    * parameters expected in the args:
-  * room_id (String)
+  * room_id (Integer)
   * token (String)
   **/
   // no response value expected for this operation
@@ -56,17 +69,17 @@ exports.roomRoom_idDELETE = function(args, res, next) {
 exports.roomRoom_idGET = function(args, res, next) {
   /**
    * parameters expected in the args:
-  * room_id (String)
+  * room_id (Integer)
   * token (String)
   **/
     var examples = {};
   examples['application/json'] = {
-  "interviewer" : "aeiou",
-  "candidates" : [ "aeiou" ],
+  "interviewer" : "",
+  "candidates" : [ "" ],
   "name" : "计蒜课秋招（前端）",
   "logo" : "http://example.com/examplepage",
-  "id" : "1001",
-  "problems" : [ "aeiou" ]
+  "id" : 1001,
+  "problems" : [ "" ]
 };
   if(Object.keys(examples).length > 0) {
     res.setHeader('Content-Type', 'application/json');
@@ -75,24 +88,49 @@ exports.roomRoom_idGET = function(args, res, next) {
   else {
     res.end();
   }
+  
+}
 
+exports.roomRoom_idLogoPUT = function(args, res, next) {
+  /**
+   * parameters expected in the args:
+  * room_id (Integer)
+  * token (String)
+  **/
+    var examples = {};
+  examples['application/json'] = {
+  "interviewer" : "",
+  "candidates" : [ "" ],
+  "name" : "计蒜课秋招（前端）",
+  "logo" : "http://example.com/examplepage",
+  "id" : 1001,
+  "problems" : [ "" ]
+};
+  if(Object.keys(examples).length > 0) {
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(examples[Object.keys(examples)[0]] || {}, null, 2));
+  }
+  else {
+    res.end();
+  }
+  
 }
 
 exports.roomRoom_idPUT = function(args, res, next) {
   /**
    * parameters expected in the args:
-  * room_id (String)
-  * body (Room)
+  * room_id (Integer)
+  * room (RoomPost)
   * token (String)
   **/
     var examples = {};
   examples['application/json'] = {
-  "interviewer" : "aeiou",
-  "candidates" : [ "aeiou" ],
+  "interviewer" : "",
+  "candidates" : [ "" ],
   "name" : "计蒜课秋招（前端）",
   "logo" : "http://example.com/examplepage",
-  "id" : "1001",
-  "problems" : [ "aeiou" ]
+  "id" : 1001,
+  "problems" : [ "" ]
 };
   if(Object.keys(examples).length > 0) {
     res.setHeader('Content-Type', 'application/json');
@@ -101,6 +139,6 @@ exports.roomRoom_idPUT = function(args, res, next) {
   else {
     res.end();
   }
-
+  
 }
 
