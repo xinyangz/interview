@@ -3,6 +3,7 @@ import {Row, Col, Tab, Nav, NavItem, NavDropdown, MenuItem, ControlLabel, Modal,
 import CandidateManagerTable from './CandidateManagerTable';
 import {connect} from 'react-redux';
 import {addCandidate, listCandidate} from '../../actions/candidateManagerActions'
+import ReactDOM from 'react-dom';
 
 class CandidateManagerPage extends React.Component {
   constructor(props) {
@@ -72,6 +73,9 @@ class CandidateManagerPage extends React.Component {
   }
 
   onListCandidateClick() {
+    let image = new FormData();
+    image.append('logo', ReactDOM.findDOMNode(this.refs.picture).files[0]);
+    this.props.listCandidate(image);
     this.closeListModal();
   }
 
@@ -85,11 +89,6 @@ class CandidateManagerPage extends React.Component {
     };
     console.log(termCandidate);
     this.props.addCandidate(termCandidate);
-    this.closeAddModal();
-  }
-
-  onAddCandidateClick(fileContent) {
-    this.props.addCandidate(fileContent);
     this.closeAddModal();
   }
 
@@ -184,7 +183,7 @@ class CandidateManagerPage extends React.Component {
                 请下载并编辑<a>样例.csv</a>文件，按照其中格式填入候选人信息后上传，并点击导入即可。上传的文件后缀名应为“.csv”或者“.xlsx”，大小不超过500kb。
                 <br/>
                 <label className="center">
-                  <input id='img' type='file' multiple accept='.csv, .xlsx' />
+                  <input id='img' type='file' ref="picture" multiple accept='.csv, .xlsx'/>
                 </label>
               </Modal.Body>
               <Modal.Footer>
