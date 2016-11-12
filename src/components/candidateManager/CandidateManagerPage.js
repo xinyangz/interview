@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react';
 import {Row, Col, Tab, Nav, NavItem, NavDropdown, MenuItem, ControlLabel, Modal, Form, FormControl, FormGroup, Button} from 'react-bootstrap';
 import CandidateManagerTable from './CandidateManagerTable';
 import {connect} from 'react-redux';
-import {addCandidate, listCandidate} from './CandidateManagerActions'
+import {addCandidate, listCandidate} from '../../actions/candidateManagerActions'
 
 class CandidateManagerPage extends React.Component {
   constructor(props) {

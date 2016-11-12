@@ -1,10 +1,7 @@
-/**
- * Created by 薛凯韬 on 2016/11/2.
- */
 import {expect} from 'chai';
-import reducer from './CandidateManagerReducer';
-import * as types from './Consts';
-import init from '../../reducers/initialState';
+import reducer from './candidateManagerReducer';
+import * as types from '../constants/actionTypes';
+import init from './initialState';
 
 describe('Reducers: candidates', () => {
   const initialState = init.candidatesStates;

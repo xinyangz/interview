@@ -1,10 +1,7 @@
-/**
- * Created by 薛凯韬 on 2016/11/2.
- */
-import * as actions from './CandidateManagerActions';
+import * as actions from './candidateManagerActions';
 import {expect} from 'chai';
-import * as types from './Consts';
-import init from '../../reducers/initialState';
+import * as types from '../constants/actionTypes';
+import init from '../reducers/initialState';
 import configureStore from 'redux-mock-store';
 import axios from 'axios';
 import thunk from 'redux-thunk';

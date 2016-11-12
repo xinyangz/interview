@@ -1,5 +1,5 @@
-import initialState from '../../reducers/initialState';
-import * as types from './Consts';
+import initialState from './initialState';
+import * as types from '../constants/actionTypes';
 import {combineReducers} from 'redux';
 
 const candidates = (state = initialState.candidatesStates.candidates, action) => {

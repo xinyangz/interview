@@ -1,5 +1,4 @@
-import * as types from './Consts';
-
+import * as types from '../constants/actionTypes';
 import axios from 'axios';
 
 // token should be read from state

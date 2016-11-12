@@ -1,7 +1,7 @@
 import React, {PropTypes}from 'react'
 import {connect} from 'react-redux';
 import {Table, Modal, Button, FormControl, FormGroup, ControlLabel, Form, Col, Image, HelpBlock} from 'react-bootstrap'
-import {deleteCandidate, editCandidate, addCandidate} from './CandidateManagerActions'
+import {deleteCandidate, editCandidate, addCandidate} from '../../actions/candidateManagerActions'
 
 class CandidateManagerTable extends React.Component {
   constructor(props) {
