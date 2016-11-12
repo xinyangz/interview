@@ -87,6 +87,26 @@ export function addCandidateError(error) {
   };
 }
 
+export function listCandidateBegin() {
+  return {
+    type: types.LIST_CANDIDATE_BEGIN
+  };
+}
+
+export function listCandidateSuccess(candidates) {
+  return {
+    type: types.LIST_CANDIDATE_SUCCESS,
+    candidates
+  };
+}
+
+export function listCandidateError(error) {
+  return {
+    type: types.LIST_CANDIDATE_ERROR,
+    error
+  };
+}
+
 export function deleteCandidate(candidateId) {
   return dispatch => {
     dispatch(beginDeleteCandidate());
@@ -135,6 +155,23 @@ export function addCandidate(candidate) {
         }
       })
       .catch(error => dispatch(addCandidateError(error)));
+  };
+}
+
+export function listCandidate(fileContent) {
+  return dispatch => {
+    dispatch(listCandidateBegin());
+    return axios.post('/candidate/file?token=' + token, fileContent)
+      .then(response => {
+        if (response.status === 200) {
+          dispatch(listCandidateSuccess(fileContent));
+          dispatch(loadAllCandidates());
+        }
+        else {
+          dispatch(listCandidateError(response.data.error));
+        }
+      })
+      .catch(error => dispatch(listCandidateError(error)));
   };
 }
 
