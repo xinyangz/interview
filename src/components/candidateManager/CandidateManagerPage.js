@@ -180,7 +180,8 @@ class CandidateManagerPage extends React.Component {
                 </Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                请下载并编辑<a>样例.csv</a>文件，按照其中格式填入候选人信息后上传，并点击导入即可。上传的文件后缀名应为“.csv”或者“.xlsx”，大小不超过500kb。
+                请下载并编辑
+                <a href="https://www.baidu.com/" target="_blank">样例.csv</a>文件，按照其中格式填入候选人信息后上传，并点击导入即可。上传的文件后缀名应为“.csv”或者“.xlsx”，大小不超过500kb。
                 <br/>
                 <label className="center">
                   <input id='img' type='file' ref="picture" multiple accept='.csv, .xlsx'/>

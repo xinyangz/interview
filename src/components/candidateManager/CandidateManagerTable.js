@@ -140,19 +140,19 @@ class CandidateManagerTable extends React.Component {
                   <td>{this.props.rooms.find(room => room.id === candidate.roomId).name}</td>
                   <td>
                     <Col sm={1}>
-                      <Image src="../../images/1.png" width={20} height={20}/>
+                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/1.png" width={20} height={20} /></a>
                     </Col>
                     <Col sm={1}>
-                      <Image src="../../images/2.png" width={20} height={20}/>
+                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/2.png" width={20} height={20} /></a>
                     </Col>
                     <Col sm={1}>
-                      <Image src="../../images/3.png" width={15} height={15}/>
+                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/3.png" width={15} height={15} /></a>
                     </Col>
                     <Col sm={1}>
-                      <Image src="../../images/4.png" width={15} height={15}/>
+                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/4.png" width={15} height={15} /></a>
                     </Col>
                     <Col sm={1}>
-                      <Image src="../../images/5.png" width={18} height={18}/>
+                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/5.png" width={18} height={18} /></a>
                     </Col>
                   </td>
                   <td>{candidate.status}</td>
