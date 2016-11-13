@@ -26,17 +26,17 @@ describe('Reducers: rooms', () => {
 
   it('should handle LOAD_ALL_ROOMS', () => {
     expect(reducer(undefined, {type: types.LOAD_ALL_ROOMS}))
-      .to.deep.equal({isWaiting: true, rooms: []});
+      .to.deep.equal({isWaiting: true, rooms: [], room: initialState.room});
   });
 
   it('should handle LOAD_ALL_ROOMS_SUCCESS', () => {
     expect(reducer(undefined, {type: types.LOAD_ALL_ROOMS_SUCCESS, rooms: rooms}))
-      .to.deep.equal({isWaiting: false, rooms: rooms});
+      .to.deep.equal({isWaiting: false, rooms: rooms, room: initialState.room});
   });
 
   it('should handle DELETE_ROOM', () => {
     expect(reducer(undefined, {type: types.DELETE_ROOM}))
-      .to.deep.equal({isWaiting: true, rooms: []});
+      .to.deep.equal({isWaiting: true, rooms: [], room: initialState.room});
   });
 
   it('should handle DELETE_ROOM_SUCCESS', () => {
@@ -49,7 +49,8 @@ describe('Reducers: rooms', () => {
         "logo": "http://example.com/examplepage",
         "id": "1001",
         "problems": ["2001", "2002"]
-      }]
+      }],
+      room: initialState.room
     };
     expect(reducer({isWaiting: true, rooms}, {type: types.DELETE_ROOM_SUCCESS, roomId: "1002"}))
       .to.deep.equal(expectedState);

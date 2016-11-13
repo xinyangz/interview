@@ -154,7 +154,7 @@ export class ChoiceModal extends React.Component {
 
   render() {
     return (
-      <Modal {...this.props}>
+      <Modal onHide={this.props.onHide} show={this.props.show}>
         <Modal.Header closeButton>
           <Modal.Title >题目信息</Modal.Title>
         </Modal.Header>
