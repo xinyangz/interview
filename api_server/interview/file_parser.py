@@ -4,9 +4,15 @@ from openpyxl import load_workbook
 import csv
 import uuid
 
-def file_parser(file_path):
-    ext_name = file_path.split('.')[-1].lower()
 
+def file_parser(file_path):
+    '''
+    Parse candidate data from csv and xlsx files.
+    Caution: candidate id is not generated here.
+    '''
+
+    ext_name = file_path.split('.')[-1].lower()
+    candidate_list = []
     if ext_name == 'csv':
         with open(file_path, newline='') as csvfile:
             spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
@@ -16,10 +22,10 @@ def file_parser(file_path):
                 if line_counter <= 1:
                     continue
                 row = raw_row[0].split(',')
-                if row[0] == '' or row[0] == None:
+                if row[0] == '' or row[0] is None:
                     continue
                 candidate_data = {
-                    'id': uuid.uuid4(), # TODO: Check duplicate
+                    'id': '',
                     'name': row[0],
                     'email': row[1],
                     'phone': row[2],
@@ -32,10 +38,8 @@ def file_parser(file_path):
                         'code': 0,
                         'report': 9
                     }
-
                 }
-                print ("CSV Example")
-                print (candidate_data)
+                candidate_list.append(candidate_data)
     elif ext_name == 'xlsx':
         wb = load_workbook(filename=r'example1.xlsx')
         sheets = wb.get_sheet_names()
@@ -48,10 +52,10 @@ def file_parser(file_path):
             if line_counter <= 2:
                 continue
             line = [col.value for col in row]
-            if line[0] == '' or line[0] == None:
+            if line[0] == '' or line[0] is None:
                 continue
             candidate_data = {
-                'id': uuid.uuid4(), # TODO: Check duplicate
+                'id': '',
                 'name': line[0],
                 'email': line[1],
                 'phone': line[2],
@@ -64,12 +68,12 @@ def file_parser(file_path):
                     'code': 0,
                     'report': 9
                 }
-            }# TODO: Write into database directly?
-            print ("XLSX example")
-            print (candidate_data)
+            }
+            candidate_list.append(candidate_data)
     else:
         print ("Unknown file format.")
-        return
+        return None
+    return candidate_list
 
 if __name__ == "__main__":
     file_parser('example1.xlsx')

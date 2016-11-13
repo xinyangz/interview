@@ -11,7 +11,8 @@ api_patterns = [
     url(r'^candidate$', candidate_views.get_set_candidate, name='get-set-candidate'),
     url(r'^candidate/(?P<candidate_id>([0-9]+))$', candidate_views.workon_candidate, name='workon-candidate'),
     url(r'^candidate/(?P<candidate_id>([0-9]+))/status$', candidate_views.change_status_candidate, name='status-candidate'),
-    url(r'^report/(?P<candidate_id>([0-9]+))$', report_views.all_report, name='put-report'),
+    url(r'^candidate/file$', candidate_views.batch_candidate, name='batch-candidate'),
+    url(r'^report/(?P<candidate_id>([0-9]+))$', report_views.all_report, name='put-report')
 ]
 
 urlpatterns = [

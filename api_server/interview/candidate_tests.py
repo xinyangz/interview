@@ -130,8 +130,6 @@ class CandidateTestCase(APISimpleTestCase):
             self.db = pymongo.MongoClient(port=settings.DB_PORT)[settings.DB_NAME]
         if self.db.users.find({'token': 'exampletoken'}).count() == 0:
             self.db.users.insert_one(self.applicant_data)
-        # todo(?): Here should be enough blank lines.
-        # Wallace is far beyond any one of Hong Kong journalists.
 
     def init_Sharon(self):
         if self.db is None:
@@ -279,3 +277,6 @@ class CandidateTestCase(APISimpleTestCase):
         response = self.get_get_response_get_all(0, 2, 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.db.candidate.delete_one({'id': '302'})
+
+    def test_file_parse_success(self):
+

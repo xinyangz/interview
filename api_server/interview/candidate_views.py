@@ -6,8 +6,10 @@ import pymongo
 import datetime
 import uuid
 import jsonschema
+import copy
 from . import permissions
 from .schemas import swagger_schema
+from file_parser import file_parser
 
 
 candidate_keys = ('id', 'name', 'email', 'phone', 'status', 'roomId', 'record')
@@ -102,7 +104,6 @@ def get_set_candidate(request, **kwargs):
         if offset + limit - 1 > int(sorted_candidate.count()):
             return Response(
                 {
-                    'status': '30',
                     'error': 'Index out of boundary'
                 },
                 status.HTTP_400_BAD_REQUEST
@@ -119,7 +120,6 @@ def get_set_candidate(request, **kwargs):
     else:
         return Response(
             {
-                'status': '30',
                 'error': 'Unknown method'
             },
             status.HTTP_400_BAD_REQUEST
@@ -132,7 +132,6 @@ def workon_candidate(request, candidate_id, **kwargs):
     if permissions.check(request, ('hr', 'interviewer')) != permissions.PASS:
         return Response(
             {
-                'status': '30',
                 'error': 'Access denied.'
             },
             status.HTTP_403_FORBIDDEN
@@ -146,7 +145,6 @@ def workon_candidate(request, candidate_id, **kwargs):
     if data.count() == 0:
         return Response(
             {
-                'status': '30',
                 'error': 'Candidate not found.'
             },
             status.HTTP_404_NOT_FOUND
@@ -154,7 +152,6 @@ def workon_candidate(request, candidate_id, **kwargs):
     elif data.count() > 1:  # Should never occur
         return Response(
             {
-                'status': '30',
                 'error': 'Candidate id duplicated'
             },
             status.HTTP_400_BAD_REQUEST
@@ -179,7 +176,6 @@ def workon_candidate(request, candidate_id, **kwargs):
                 if dulp_list.count() > 0:
                     return Response(
                         {
-                            'status': '30',
                             'error': 'Trying to generate candidates with same id'
                          },
                         status.HTTP_400_BAD_REQUEST
@@ -266,3 +262,63 @@ def change_status_candidate(request, candidate_id, **kwargs):
                 response_dict,
                 status.HTTP_200_OK
             )
+
+@api_view(['GET', 'POST'])
+def batch_candidate(request, **kwargs):
+    if permissions.check(request, ('hr', 'interviewer')) != permissions.PASS:
+        return Response(
+            {
+                'status': '30',
+                'error': 'Access denied.'
+            },
+            status.HTTP_403_FORBIDDEN
+        )
+
+    client = pymongo.MongoClient()
+    db = client[settings.DB_NAME]
+
+    if request.method == 'POST':
+        if request.FILES == None:
+            return Response(
+                {
+                    'error': "No available file"
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+        name = request.FILES['file'].name
+        candidate_list = file_parser(name)
+        if candidate_list is None:
+            return Response(
+                {
+                    'error': "Illegal file format"
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+        for item in candidate_list:
+            candidate_to_be_added = item.copy()
+            tmp_id = uuid.uuid4()
+            while db.candidate.find({'id': tmp_id}).count() > 0:
+                tmp_id = uuid.uuid4()
+            candidate_to_be_added['id'] = tmp_id
+            db.candidate.insert_one(candidate_to_be_added)
+
+        return Response(
+            status.HTTP_200_OK
+        )
+
+    elif request.method == 'GET':
+        return Response(
+            {
+                'csv': '../file_example/example2.csv',
+                'xlsx': '../file_example/example1.xlsx'
+            },
+            status.HTTP_200_OK
+        )
+
+    else:
+        return Response(
+            {
+                'error': 'No such request type'
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
