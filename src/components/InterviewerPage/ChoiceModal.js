@@ -129,8 +129,6 @@ export class ChoiceModal extends React.Component {
   }
 
   onSaveClick() {
-    // TODO: fetch roomId from store
-    const roomId = 123;
     const problemOptions = this.state.options.map(option => {
       return {
         content: option.content,
@@ -143,7 +141,7 @@ export class ChoiceModal extends React.Component {
       option: problemOptions
     };
     const problemInfo = {
-      roomId: roomId,
+      roomId: this.props.roomId,
       type: "choice",
       content: problemContent
     };
@@ -222,7 +220,7 @@ ChoiceModal.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    // TODO: fetch roomId from store
+    roomId: state.roomsStates.room.roomId
   };
 }
 

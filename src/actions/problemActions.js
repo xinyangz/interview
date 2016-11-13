@@ -50,10 +50,6 @@ export function beginAddChoiceProblem(problem) {
   };
 }
 
-export function addChoiceProblemSuccess() {
-  //TODO
-}
-
 export function addChoiceProblemError(error) {
   return {
     type: types.ADD_CHOICE_PROBLEM_ERROR
@@ -67,9 +63,6 @@ export function addChoiceProblem(problem) {
     return axios.post('/problem/room/' + problem.roomId + '?token=' + token, problem)
       .then(res => {
         if (res.status === 200) {
-          // TODO: fetch roomId from store
-          // only one of the dispatch functions bellow should be kept
-          dispatch(addChoiceProblemSuccess());
           dispatch(loadAllProblems(problem.roomId));
         }
         else if (res.status === 403) {
@@ -120,8 +113,7 @@ export function deleteProblem(problemId) {
 
 export function loadAllProblems(roomId) {
   return (dispatch, getState) => {
-    // TODO: fetch token from store
-    const token = "123";
+    const token = getState().user.token;
     dispatch(beginLoadAllProblems());
     return axios.get('/problem/room/' + roomId, {
       params: {
