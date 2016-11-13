@@ -65,6 +65,12 @@
       "schema": {
        "$ref": "#/definitions/InterviewerRoom"
       }
+     },
+     "400": {
+      "description": "查询失败",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
      }
     }
    }

@@ -42,6 +42,10 @@ paths:
           description: "查询成功"
           schema:
             $ref: '#/definitions/InterviewerRoom'
+        400:
+          description: "查询失败"
+          schema:
+            $ref: '#/definitions/Error'
   /room:
     get:
       tags:
