@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {Modal, Button, FormGroup, ControlLabel, FormControl, InputGroup, HelpBlock} from 'react-bootstrap';
+import {addChoiceProblem} from '../../actions/problemActions';
 
 const OptionControl = ({checked, content, onContentChange, onCheckedChange, onDelete}) => {
   return (
@@ -24,21 +25,24 @@ OptionControl.propTypes = {
   onDelete: PropTypes.func
 };
 
+const initialState = {
+  editOptionContent: undefined,
+  editOptionChecked: false,
+  title: '',
+  description: '',
+  options: []
+};
+
 export class ChoiceModal extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      editOptionContent: undefined,
-      editOptionChecked: false,
-      title: '',
-      description: '',
-      options: []
-    };
+    this.state = initialState;
     this.onAddOption = this.onAddOption.bind(this);
     this.onOptionContentChange = this.onOptionContentChange.bind(this);
     this.onOptionCheckedChange = this.onOptionCheckedChange.bind(this);
     this.onOptionDelete = this.onOptionDelete.bind(this);
     this.getHelpBlock = this.getHelpBlock.bind(this);
+    this.onSaveClick = this.onSaveClick.bind(this);
   }
 
   onAddOption() {
@@ -124,6 +128,30 @@ export class ChoiceModal extends React.Component {
       this.state.options.length === 0;
   }
 
+  onSaveClick() {
+    // TODO: fetch roomId from store
+    const roomId = 123;
+    const problemOptions = this.state.options.map(option => {
+      return {
+        content: option.content,
+        correct: option.checked
+      }
+    });
+    const problemContent = {
+      title: this.state.title,
+      description: this.state.description,
+      option: problemOptions
+    };
+    const problemInfo = {
+      roomId: roomId,
+      type: "choice",
+      content: problemContent
+    };
+    this.props.addChoiceProblem(problemInfo);
+    this.setState(initialState);
+    this.props.onHide();
+  }
+
   render() {
     return (
       <Modal {...this.props}>
@@ -177,7 +205,8 @@ export class ChoiceModal extends React.Component {
         </Modal.Body>
         <Modal.Footer>
           <Button bsStyle="primary"
-            disabled={this.disableSave()}>保存</Button>
+            disabled={this.disableSave()}
+            onClick={this.onSaveClick}>保存</Button>
           <Button onClick={this.props.onHide}>关闭</Button>
         </Modal.Footer>
       </Modal>
@@ -187,7 +216,14 @@ export class ChoiceModal extends React.Component {
 }
 
 ChoiceModal.propTypes = {
-  onHide: PropTypes.func.isRequired
+  onHide: PropTypes.func.isRequired,
+  addChoiceProblem: PropTypes.func.isRequired
 };
 
-export default ChoiceModal;
+function mapStateToProps(state) {
+  return {
+    // TODO: fetch roomId from store
+  };
+}
+
+export default connect(mapStateToProps, {addChoiceProblem})(ChoiceModal);

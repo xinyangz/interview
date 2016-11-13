@@ -43,11 +43,56 @@ export function beginDeleteProblem() {
   }
 }
 
+export function beginAddChoiceProblem(problem) {
+  return {
+    type: types.ADD_CHOICE_PROBLEM,
+    problem
+  };
+}
+
+export function addChoiceProblemSuccess() {
+  //TODO
+}
+
+export function addChoiceProblemError(error) {
+  return {
+    type: types.ADD_CHOICE_PROBLEM_ERROR
+  }
+}
+
+export function addChoiceProblem(problem) {
+  return (dispatch, getState) => {
+    dispatch(beginAddChoiceProblem(problem));
+    const token = getState().user.token;
+    return axios.post('/problem/room/' + problem.roomId + '?token=' + token, problem)
+      .then(res => {
+        if (res.status === 200) {
+          // TODO: fetch roomId from store
+          // only one of the dispatch functions bellow should be kept
+          dispatch(addChoiceProblemSuccess());
+          dispatch(loadAllProblems(problem.roomId));
+        }
+        else if (res.status === 403) {
+          dispatch(addChoiceProblemError('用户无访问权限'));
+        }
+        else if (res.status === 404) {
+          dispatch(addChoiceProblemError('房间不存在'));
+        }
+        else {
+          dispatch(addChoiceProblemError(res.data));
+        }
+      })
+      .catch(err => {
+          dispatch(addChoiceProblemError(err));
+        }
+      );
+  }
+}
+
 export function deleteProblem(problemId) {
   return (dispatch, getState) => {
     dispatch(beginDeleteProblem());
-    // TODO: fetch token from store
-    const token = "233";
+    const token = getState().user.token;
     return axios.delete('/problem/' + problemId, {
       params: {
         token

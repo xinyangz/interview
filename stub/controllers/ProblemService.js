@@ -3,7 +3,7 @@
 exports.problemProblem_idDELETE = function(args, res, next) {
   /**
    * parameters expected in the args:
-  * problem_id (String)
+  * problem_id (Integer)
   * token (String)
   **/
   // no response value expected for this operation
@@ -13,15 +13,25 @@ exports.problemProblem_idDELETE = function(args, res, next) {
 exports.problemProblem_idGET = function(args, res, next) {
   /**
    * parameters expected in the args:
-  * problem_id (String)
+  * problem_id (Integer)
   * token (String)
   **/
     var examples = {};
   examples['application/json'] = {
-  "id" : "3901",
-  "type" : "choice",
-  "roomId" : "1001"
-};
+    "id": "3901",
+    "roomId": "1001",
+    "type": "choice",
+    "content": {
+      "title": "题目1",
+      "description": "这是一个面试题样例",
+      "option": [
+        {
+          "content": "string",
+          "correct": true
+        }
+      ]
+    }
+  };
   if(Object.keys(examples).length > 0) {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(examples[Object.keys(examples)[0]] || {}, null, 2));
@@ -35,16 +45,26 @@ exports.problemProblem_idGET = function(args, res, next) {
 exports.problemProblem_idPUT = function(args, res, next) {
   /**
    * parameters expected in the args:
-  * problem_id (String)
+  * problem_id (Integer)
   * problem (Problem)
   * token (String)
   **/
     var examples = {};
   examples['application/json'] = {
-  "id" : "3901",
-  "type" : "choice",
-  "roomId" : "1001"
-};
+    "id": "3901",
+    "roomId": "1001",
+    "type": "choice",
+    "content": {
+      "title": "题目1",
+      "description": "这是一个面试题样例",
+      "option": [
+        {
+          "content": "string",
+          "correct": true
+        }
+      ]
+    }
+  };
   if(Object.keys(examples).length > 0) {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(examples[Object.keys(examples)[0]] || {}, null, 2));
@@ -58,37 +78,44 @@ exports.problemProblem_idPUT = function(args, res, next) {
 exports.problemRoomRoom_idGET = function(args, res, next) {
   /**
    * parameters expected in the args:
-  * room_id (String)
+  * room_id (Integer)
   * token (String)
   * offset (Integer)
   * limit (Integer)
   **/
     var examples = {};
   examples['application/json'] = {
-  "offset" : 123,
-  "limit" : 123,
-  "problems" : [
-    {
-      id: "12345",
-      roomId: "2412",
-      type: "choice",
-      content: {
-        title: "这是一道选择题",
-        description: "按M可",
-        option: ["安轨", "赛艇", "吟诗", "拿衣服"]
+    "offset": 0,
+    "limit": 0,
+    "problems": [
+      {
+        "id": "3901",
+        "roomId": "1001",
+        "type": "choice",
+        "content": {
+          "title": "选择题1",
+          "description": "这是一个面试题样例",
+          "option": [
+            {
+              "content": "string",
+              "correct": true
+            }
+          ],
+          "sampleInput": "1 2",
+          "sampleOutput": "-1"
+        }
+      },
+      {
+        "id": "3902",
+        "roomId": "1001",
+        "type": "blank",
+        "content": {
+          "title": "填空题1  ",
+          "description": "这是一个面试题样例"
+        }
       }
-    },
-    {
-      id: "2333",
-      roomId: "2341",
-      type: "blank",
-      content: {
-        title: "这是一道填空题",
-        description: "美国的【】，比你们高到不知道哪里去了"
-      }
-    }
-  ]
-};
+    ]
+  };
   if(Object.keys(examples).length > 0) {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(examples[Object.keys(examples)[0]] || {}, null, 2));
@@ -102,11 +129,35 @@ exports.problemRoomRoom_idGET = function(args, res, next) {
 exports.problemRoomRoom_idPOST = function(args, res, next) {
   /**
    * parameters expected in the args:
-  * room_id (String)
-  * problem (Problem)
+  * room_id (Integer)
+  * problem (ProblemIn)
   * token (String)
   **/
-  // no response value expected for this operation
-  res.end();
+    var examples = {};
+  examples['application/json'] = {
+    "id": "3901",
+    "roomId": "1001",
+    "type": "choice",
+    "content": {
+      "title": "题目1",
+      "description": "这是一个面试题样例",
+      "option": [
+        {
+          "content": "string",
+          "correct": true
+        }
+      ],
+      "sampleInput": "1 2",
+      "sampleOutput": "-1"
+    }
+  };
+  if(Object.keys(examples).length > 0) {
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(examples[Object.keys(examples)[0]] || {}, null, 2));
+  }
+  else {
+    res.end();
+  }
+
 }
 
