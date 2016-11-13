@@ -11,6 +11,7 @@ class ProblemTable extends React.Component {
     this.closeDeleteModal = this.closeDeleteModal.bind(this);
     this.openDeleteModal = this.openDeleteModal.bind(this);
     this.onDeleteRoomClick = this.onDeleteRoomClick.bind(this);
+    this.openEditModal = this.openEditModal.bind(this);
   }
 
   componentWillMount() {
@@ -23,6 +24,10 @@ class ProblemTable extends React.Component {
 
   closeDeleteModal() {
     this.setState({showDeleteModal:false});
+  }
+
+  openEditModal(id) {
+    this.setState({showEditModal:true, selectedProblem:id});
   }
 
   onDeleteRoomClick() {
@@ -66,7 +71,7 @@ class ProblemTable extends React.Component {
                       {this.mapProblemType(problem.type)}
                     </td>
                     <td className="aln-right">
-                      <a className="link">编辑</a> | <a
+                      <a className="link" onClick={() => {this.openEditModal(problem.id)}}>编辑</a> | <a
                       className="link" onClick={() => {this.openDeleteModal(problem.id);}}>删除</a>
                     </td>
                   </tr>)

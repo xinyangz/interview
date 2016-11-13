@@ -60,10 +60,13 @@ export function addChoiceProblem(problem) {
   return (dispatch, getState) => {
     dispatch(beginAddChoiceProblem(problem));
     const token = getState().user.token;
-    return axios.post('/problem/room/' + problem.roomId + '?token=' + token, problem)
+    const roomId = getState().roomsStates.room.id;
+    return axios.post('/problem/room/' + roomId + '?token=' + token, {
+      problem
+    })
       .then(res => {
         if (res.status === 200) {
-          dispatch(loadAllProblems(problem.roomId));
+          dispatch(loadAllProblems(roomId));
         }
         else if (res.status === 403) {
           dispatch(addChoiceProblemError('用户无访问权限'));

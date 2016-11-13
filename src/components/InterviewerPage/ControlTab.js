@@ -1,28 +1,25 @@
 import React from 'react';
 import {Row, Col, Tab, Nav, NavItem, NavDropdown, MenuItem, Modal} from 'react-bootstrap';
 import ProblemTable from './ProblemTable';
-import ChoiceModal from './ChoiceModal';
+import ChoiceModal from './AddProblemModal';
 
 class ControlTab extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       key: 1,
-      choiceShow: false
+      modalShow: false,
+      modalType: 'choice'
     };
     this.onTabSelect = this.onTabSelect.bind(this);
     this.onAddChoiceClick = this.onAddChoiceClick.bind(this);
-    this.choiceClose = () => {this.setState({choiceShow: false})};
+    this.choiceClose = () => {this.setState({modalShow: false})};
   }
 
   onTabSelect(key) {
     if (key > 2)
       key = 1;
     this.setState({key});
-  }
-
-  onAddChoiceClick(e) {
-    this.setState({choiceShow: true})
   }
 
   render() {
@@ -41,10 +38,10 @@ class ControlTab extends React.Component {
                 {
                   this.state.key === 1 &&
                   <NavDropdown className="pull-right" title="添加面试题">
-                    <MenuItem eventKey={3} onClick={() => {this.setState({choiceShow: true})}}>选择题</MenuItem>
-                    <MenuItem eventKey={4} onClick={this.onAddChoiceClick}>填空题</MenuItem>
-                    <MenuItem>编程题</MenuItem>
-                    <MenuItem>简答题</MenuItem>
+                    <MenuItem eventKey={3} onClick={() => {this.setState({modalShow: true, modalType: 'choice'});}}>选择题</MenuItem>
+                    <MenuItem eventKey={4} onClick={() => {this.setState({modalShow: true, modalType: 'blank'});}}>填空题</MenuItem>
+                    <MenuItem eventKey={5} onClick={() => {this.setState({modalShow: true, modalType: 'code'});}}>编程题</MenuItem>
+                    <MenuItem eventKey={6} onClick={() => {this.setState({modalShow: true, modalType: 'answer'});}}>简答题</MenuItem>
                   </NavDropdown>
                 }
               </Nav>
@@ -61,7 +58,7 @@ class ControlTab extends React.Component {
             </Col>
           </Row>
         </Tab.Container>
-        <ChoiceModal show={this.state.choiceShow} onHide={this.choiceClose}/>
+        <ChoiceModal show={this.state.modalShow} onHide={this.choiceClose} type={this.state.modalType}/>
       </div>
     );
   }
