@@ -31,12 +31,44 @@
   {
    "name": "problem",
    "description": "面试题相关API"
+  },
+  {
+   "name": "interviewer",
+   "description": "面试官相关API"
   }
  ],
  "schemes": [
   "https"
  ],
  "paths": {
+  "/interviewer": {
+   "get": {
+    "tags": [
+     "interviewer"
+    ],
+    "summary": "获取面试官所在房间ID",
+    "description": "调用API时传入token，根据token返回登录的面试官所在的房间号",
+    "parameters": [
+     {
+      "name": "token",
+      "in": "query",
+      "type": "string",
+      "required": true
+     }
+    ],
+    "produces": [
+     "application/json"
+    ],
+    "responses": {
+     "200": {
+      "description": "查询成功",
+      "schema": {
+       "$ref": "#/definitions/InterviewerRoom"
+      }
+     }
+    }
+   }
+  },
   "/room": {
    "get": {
     "tags": [
@@ -2276,6 +2308,19 @@
      "type": "string",
      "descritpion": "xlsx样例文件下载链接",
      "example": "https://example.com/example.xlsx"
+    }
+   }
+  },
+  "InterviewerRoom": {
+   "type": "object",
+   "required": [
+    "roomId"
+   ],
+   "properties": {
+    "roomId": {
+     "type": "integer",
+     "description": "面试官所在房间roomId",
+     "example": 101
     }
    }
   }
