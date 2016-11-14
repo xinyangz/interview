@@ -2,6 +2,7 @@ import React, {PropTypes}from 'react'
 import {connect} from 'react-redux';
 import {Table, Modal, Button, FormControl, FormGroup, ControlLabel, Form, Col, Image, HelpBlock} from 'react-bootstrap'
 import {deleteCandidate, editCandidate, addCandidate} from '../../actions/candidateManagerActions'
+import '../../styles/CandidateManagerPage/candidate-manager-icon.css'
 
 class CandidateManagerTable extends React.Component {
   constructor(props) {
@@ -138,22 +139,12 @@ class CandidateManagerTable extends React.Component {
                   <td>{candidate.email}</td>
                   <td>{candidate.phone}</td>
                   <td>{this.props.rooms.find(room => room.id === candidate.roomId).name}</td>
-                  <td>
-                    <Col sm={1}>
-                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/1.png" width={20} height={20} /></a>
-                    </Col>
-                    <Col sm={1}>
-                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/2.png" width={20} height={20} /></a>
-                    </Col>
-                    <Col sm={1}>
-                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/3.png" width={15} height={15} /></a>
-                    </Col>
-                    <Col sm={1}>
-                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/4.png" width={15} height={15} /></a>
-                    </Col>
-                    <Col sm={1}>
-                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/5.png" width={18} height={18} /></a>
-                    </Col>
+                  <td className="icon">
+                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/1.png" width={17} height={17} /></a>
+                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/2.png" width={17} height={17} /></a>
+                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/3.png" width={13} height={13} /></a>
+                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/4.png" width={13} height={13} /></a>
+                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/5.png" width={15} height={15} /></a>
                   </td>
                   <td>{candidate.status}</td>
                   <td><a onClick={() => this.openEditModal(candidate)}>编辑</a> | <a onClick={() => this.open(candidate.id)}>删除</a></td>
