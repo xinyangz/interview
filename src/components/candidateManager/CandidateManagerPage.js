@@ -37,7 +37,7 @@ class CandidateManagerPage extends React.Component {
   }
 
   changeStatus(e) {
-    this.setState({statueChange: e.target.value});
+    this.setState({statusChange: e.target.value});
   }
 
   changeName(e) {
@@ -107,8 +107,10 @@ class CandidateManagerPage extends React.Component {
               {
                 this.state.key === 1 &&
                 <NavDropdown className="pull-right" title="添加房间">
-                  <MenuItem eventKey={3} onClick={this.openAddModal}>添加候选人</MenuItem>
-                  <MenuItem eventKey={4} onClick={this.openListModal}>导入候选人列表</MenuItem>
+                  <MenuItem eventKey={3} onClick={this.onAddChoiceClick}>选择题</MenuItem>
+                  <MenuItem eventKey={4} onClick={this.onAddChoiceClick}>填空题</MenuItem>
+                  <MenuItem>编程题</MenuItem>
+                  <MenuItem>简答题</MenuItem>
                 </NavDropdown>
               }
               <NavItem eventKey={2}>候选人管理</NavItem>
