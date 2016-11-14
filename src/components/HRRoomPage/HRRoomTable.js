@@ -3,17 +3,19 @@ import {connect} from 'react-redux';
 import {Table, Modal, Button} from 'react-bootstrap';
 import {deleteRoom} from '../../actions/roomsActions';
 import ModifyModal from './ModifyModal';
+import AddModal from './AddModal';
 import '../../styles/hrroomtable.css';
 import 'babel-polyfill';
 
 class HRRoomTable extends React.Component{
   constructor(props) {
     super(props);
-    this.state = {showModal: false, showModify: false, selectedRoom: null};
+    this.state = {showModal: false, showAdd: false, showModify: false, selectedRoom: null};
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
     this.onDeleteRoomClick = this.onDeleteRoomClick.bind(this);
     this.onModifyClicked = this.onModifyClicked.bind(this);
+    this.onAddClose = () => {this.setState({showAdd: false});};
     this.ModifyClose = () => {this.setState({showModify: false});};
   }
 
@@ -23,6 +25,10 @@ class HRRoomTable extends React.Component{
 
   open(room_id) {
     this.setState({showModal: true, selectedRoom: room_id});
+  }
+
+  onAddClicked() {
+    this.setState({showAdd: true});
   }
 
   onModifyClicked(room_id) {
@@ -37,6 +43,9 @@ class HRRoomTable extends React.Component{
   render() {
     return(
       <div>
+        <Button className="addRoom" onClick={() => this.onAddClicked()}>
+          添加房间
+        </Button>
         <Table>
           <tbody>
             {this.props.rooms.map(room =>
@@ -64,6 +73,8 @@ class HRRoomTable extends React.Component{
             <Button bsStyle="primary" onClick={this.onDeleteRoomClick}>确认</Button>
           </Modal.Footer>
         </Modal>
+
+        <AddModal show={this.state.showAdd} onHide={this.onAddClose}/>
 
         <ModifyModal show={this.state.showModify} onHide={this.ModifyClose}
                      rooms={this.props.rooms} roomId={this.state.selectedRoom}/>
