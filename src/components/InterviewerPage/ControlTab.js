@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react';
 import {Row, Col, Tab, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import ProblemTable from './ProblemTable';
+import InterviewerCandidateTable from './InterviewerCandidateTable'
 import {connect} from 'react-redux';
 
 class ControlTab extends React.Component {
@@ -52,7 +53,7 @@ class ControlTab extends React.Component {
                 <ProblemTable/>
               </Tab.Pane>
               <Tab.Pane eventKey={2}>
-                Tab 2 content
+                <InterviewerCandidateTable/>
               </Tab.Pane>
             </Tab.Content>
           </Col>
