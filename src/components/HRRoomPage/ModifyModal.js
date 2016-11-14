@@ -101,7 +101,7 @@ export class ModifyModal extends React.Component {
 ModifyModal.propTypes = {
   rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
   modifyRoom: PropTypes.func,
-  roomId: PropTypes.string,
+  roomId: PropTypes.number,
   show: PropTypes.bool,
   onHide: PropTypes.func.isRequired
 };

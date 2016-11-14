@@ -33,7 +33,7 @@ class AddCandidateModal extends React.Component {
 
   getEmailHelpBlock() {
     if(this.getEmailValState() == 'error') {
-      return (<HelpBlock>请输入正确的邮箱</HelpBlock>);
+      return (<Col smOffset={3}><HelpBlock style={{"padding-left" : "16px"}}>请输入正确的邮箱</HelpBlock></Col>);
     }
     return undefined;
   }

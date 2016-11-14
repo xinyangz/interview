@@ -71,8 +71,10 @@ class CandidateManagerPage extends React.Component {
   }
 
   onTabSelect(key) {
-    if (key > 2)
+    if (key === 3)
       key = 1;
+    else if (key === 4 || key === 5)
+      key = 2;
     this.setState({key});
   }
 
@@ -144,8 +146,8 @@ class CandidateManagerPage extends React.Component {
               {
               this.state.key === 2 &&
               <NavDropdown className="pull-right" title="添加候选人">
-                <MenuItem eventKey={5} onClick={this.openAddCandidateModal}>添加候选人</MenuItem>
-                <MenuItem eventKey={6} onClick={this.openListCandidateModal}>导入候选人列表</MenuItem>
+                <MenuItem eventKey={4} onClick={this.openAddCandidateModal}>添加候选人</MenuItem>
+                <MenuItem eventKey={5} onClick={this.openListCandidateModal}>导入候选人列表</MenuItem>
               </NavDropdown>
             }
             </Nav>

@@ -58,7 +58,8 @@ class CandidateManagerTable extends React.Component {
           <td>{candidate.name}</td>
           <td>{candidate.email}</td>
           <td>{candidate.phone}</td>
-          <td>{this.props.rooms.find(room => room.id === candidate.roomId).name}</td>
+          <td>{this.props.rooms.find(room => room.id === candidate.roomId) === undefined ||
+          this.props.rooms.find(room => room.id === candidate.roomId).name}</td>
           <td className="icon">
             <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/1.png" width={17} height={17} /></a>
             <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/2.png" width={17} height={17} /></a>
@@ -70,7 +71,7 @@ class CandidateManagerTable extends React.Component {
           <td><a onClick={() => this.openEditModal(candidate)}>编辑</a> | <a onClick={() => this.open(candidate.id)}>删除</a></td>
         </tr>)}</tbody>);
     }
-    return (<tbody><label>暂无候选人</label></tbody>);
+    return (<tbody><tr><td>暂无候选人</td></tr></tbody>);
   }
 
   getEmailHelpBlock() {
