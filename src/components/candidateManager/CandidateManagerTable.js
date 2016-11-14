@@ -34,6 +34,30 @@ class CandidateManagerTable extends React.Component {
     this.changeRoom = this.changeRoom.bind(this);
     this.changePhone = this.changePhone.bind(this);
     this.changeStatus = this.changeStatus.bind(this);
+
+    this.checkNull = this.checkNull.bind(this);
+  }
+
+  checkNull() {
+    if(this.props.candidateManager.length) {
+      return (<tbody>{this.props.candidateManager.map(candidate =>
+        <tr key={candidate.id}>
+          <td>{candidate.name}</td>
+          <td>{candidate.email}</td>
+          <td>{candidate.phone}</td>
+          <td>{this.props.rooms.find(room => room.id === candidate.roomId).name}</td>
+          <td className="icon">
+            <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/1.png" width={17} height={17} /></a>
+            <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/2.png" width={17} height={17} /></a>
+            <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/3.png" width={13} height={13} /></a>
+            <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/4.png" width={13} height={13} /></a>
+            <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/5.png" width={15} height={15} /></a>
+          </td>
+          <td>{candidate.status}</td>
+          <td><a onClick={() => this.openEditModal(candidate)}>编辑</a> | <a onClick={() => this.open(candidate.id)}>删除</a></td>
+        </tr>)}</tbody>);
+    }
+    return (<tbody><label>暂无候选人</label></tbody>);
   }
 
   getEmailHelpBlock() {
@@ -132,75 +156,59 @@ class CandidateManagerTable extends React.Component {
               <th>操作</th>
             </tr>
             </thead>
-            <tbody>
-              {this.props.candidateManager.map(candidate =>
-                <tr key={candidate.id}>
-                  <td>{candidate.name}</td>
-                  <td>{candidate.email}</td>
-                  <td>{candidate.phone}</td>
-                  <td>{this.props.rooms.find(room => room.id === candidate.roomId).name}</td>
-                  <td className="icon">
-                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/1.png" width={17} height={17} /></a>
-                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/2.png" width={17} height={17} /></a>
-                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/3.png" width={13} height={13} /></a>
-                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/4.png" width={13} height={13} /></a>
-                      <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/5.png" width={15} height={15} /></a>
-                  </td>
-                  <td>{candidate.status}</td>
-                  <td><a onClick={() => this.openEditModal(candidate)}>编辑</a> | <a onClick={() => this.open(candidate.id)}>删除</a></td>
-                </tr>)}
 
-                <Modal show={this.state.showModal} onHide={this.close}>
-                  <Modal.Header closeButton>
-                    <Modal.Title>确认删除候选人？</Modal.Title>
-                    </Modal.Header>
-                  <Modal.Footer>
-                    <Button onClick={this.close}>取消</Button>
-                    <Button bsStyle="primary" onClick={this.onDeleteCandidateClick}>确认</Button>
-                  </Modal.Footer>
-                </Modal>
+            {this.checkNull()}
 
-              <Modal show={this.state.showEditModal} onHide={this.closeEditModal} style={{width: '800px', margin: '0 auto'}}>
-                <Modal.Header closeButton>
-                  <Modal.Title>编辑候选人</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  <Form horizontal>
-                    <FormGroup controlId="candidateName">
-                      <Col componentClass={ControlLabel} sm={3}>候选人姓名</Col>
-                      <Col sm={9}><FormControl type="text" placeholder={this.state.selectedEditCandidate.name} onChange={this.changeName}/></Col>
-                    </FormGroup>
+            <Modal show={this.state.showModal} onHide={this.close}>
+              <Modal.Header closeButton>
+                <Modal.Title>确认删除候选人？</Modal.Title>
+              </Modal.Header>
+              <Modal.Footer>
+                <Button onClick={this.close}>取消</Button>
+                <Button bsStyle="primary" onClick={this.onDeleteCandidateClick}>确认</Button>
+              </Modal.Footer>
+            </Modal>
 
-                      <FormGroup controlId="candidateEmail">
-                        <Col componentClass={ControlLabel} sm={3}>候选人邮箱</Col>
-                        <Col sm={9}><FormControl type="email" placeholder={this.state.selectedEditCandidate.email}  onChange={this.changeEmail}/></Col>
-                        {this.getEmailHelpBlock()}
-                      </FormGroup>
+            <Modal show={this.state.showEditModal} onHide={this.closeEditModal} style={{width: '800px', margin: '0 auto'}}>
+              <Modal.Header closeButton>
+                <Modal.Title>编辑候选人</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Form horizontal>
+                  <FormGroup controlId="candidateName">
+                    <Col componentClass={ControlLabel} sm={3}>候选人姓名</Col>
+                    <Col sm={9}><FormControl type="text" placeholder={this.state.selectedEditCandidate.name} onChange={this.changeName}/></Col>
+                  </FormGroup>
 
-                    <FormGroup controlId="candidatePhone">
-                      <Col componentClass={ControlLabel} sm={3}>候选人手机</Col>
-                      <Col sm={9}><FormControl type="text" placeholder={this.state.selectedEditCandidate.phone}  onChange={this.changePhone}/></Col>
-                      {this.getPhoneHelpBlock()}
-                    </FormGroup>
+                  <FormGroup controlId="candidateEmail">
+                    <Col componentClass={ControlLabel} sm={3}>候选人邮箱</Col>
+                    <Col sm={9}><FormControl type="email" placeholder={this.state.selectedEditCandidate.email}  onChange={this.changeEmail}/></Col>
+                    {this.getEmailHelpBlock()}
+                  </FormGroup>
 
-                    <FormGroup controlId="candidateRoom">
-                      <Col componentClass={ControlLabel} sm={3}>候选人房间</Col>
-                      <Col sm={9}>
-                        <FormControl componentClass="select" placeholder="select"  onChange={this.changeRoom}>
-                          {this.props.rooms.map(room =>
-                            <option key={room.id}>{room.name}</option>)}
-                        </FormControl>
-                      </Col>
-                    </FormGroup>
+                  <FormGroup controlId="candidatePhone">
+                    <Col componentClass={ControlLabel} sm={3}>候选人手机</Col>
+                    <Col sm={9}><FormControl type="text" placeholder={this.state.selectedEditCandidate.phone}  onChange={this.changePhone}/></Col>
+                    {this.getPhoneHelpBlock()}
+                  </FormGroup>
 
-                  </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button onClick={this.closeEditModal}>取消</Button>
-                  <Button bsStyle="primary" onClick={this.onEditCandidateClick}>确认</Button>
-                </Modal.Footer>
-              </Modal>
-            </tbody>
+                  <FormGroup controlId="candidateRoom">
+                    <Col componentClass={ControlLabel} sm={3}>候选人房间</Col>
+                    <Col sm={9}>
+                      <FormControl componentClass="select" placeholder="select"  onChange={this.changeRoom}>
+                        {this.props.rooms.map(room =>
+                          <option key={room.id}>{room.name}</option>)}
+                      </FormControl>
+                    </Col>
+                  </FormGroup>
+
+                </Form>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button onClick={this.closeEditModal}>取消</Button>
+                <Button bsStyle="primary" onClick={this.onEditCandidateClick}>确认</Button>
+              </Modal.Footer>
+            </Modal>
           </Table>
     )
   }
