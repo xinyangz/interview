@@ -160,7 +160,8 @@ class CandidateManagerPage extends React.Component {
               </Tab.Pane>
             </Tab.Content>
 
-            <AddCandidateModal showCandidateModal={this.state.showAddCandidateModal} omHideCandidateModal={this.closeAddCandidateModal}/>
+            <AddCandidateModal showCandidateModal={this.state.showAddCandidateModal} omHideCandidateModal={this.closeAddCandidateModal}
+                               rooms={this.props.rooms} roomId={this.state.selectedRoom}/>
             <ListCandidateModal showListCandidateModal={this.state.showListCandidateModal} omHideListCandidateModal={this.closeListCandidateModal} />
             <AddModal show={this.state.showAddRoomModal} onHide={this.closeAddRoomModal}/>
             <ModifyModal show={this.state.showModifyModal} onHide={this.closeModifyModal}

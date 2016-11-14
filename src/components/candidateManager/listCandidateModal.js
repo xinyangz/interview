@@ -11,14 +11,15 @@ class ListCandidateModal extends React.Component {
   }
 
   onListCandidateClick() {
-    let image = new FormData();
-    image.append('logo', ReactDOM.findDOMNode(this.refs.picture).files[0]);
-    this.props.listCandidate(image);
+    let candidateList = new FormData();
+    candidateList.append('logo', ReactDOM.findDOMNode(this.refs.logo).files[0]);
+    this.props.listCandidate(candidateList);
     this.props.omHideListCandidateModal();
   }
 
   render() {
-    return (<Modal show={this.props.showListCandidateModal} onHide={this.onListCandidateClick()}>
+    return (
+      <Modal show={this.props.showListCandidateModal} onHide={this.props.omHideListCandidateModal}>
     <Modal.Header closeButton>
       <Modal.Title>
         导入候选人列表
@@ -29,11 +30,11 @@ class ListCandidateModal extends React.Component {
       <a href="https://www.baidu.com/" target="_blank">样例.csv</a>文件，按照其中格式填入候选人信息后上传，并点击导入即可。上传的文件后缀名应为“.csv”或者“.xlsx”，大小不超过500kb。
       <br/>
       <label className="center">
-        <input id='img' type='file' ref="picture" multiple accept='.csv, .xlsx'/>
+        <input id='list' type='file' ref="logo" multiple accept='.csv, .xlsx'/>
       </label>
     </Modal.Body>
     <Modal.Footer>
-      <Button onClick={this.onListCandidateClick()}>取消</Button>
+      <Button onClick={this.props.omHideListCandidateModal}>取消</Button>
       <Button bsStyle="primary" onClick={this.onListCandidateClick}>确认</Button>
     </Modal.Footer>
   </Modal>)}
