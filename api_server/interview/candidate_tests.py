@@ -1,12 +1,12 @@
 from rest_framework import status
 from rest_framework.test import APISimpleTestCase, APIRequestFactory
-from rest_framework.test import APIRequestFactory
 from django.conf import settings
 import pymongo
 import random
 import string
 import uuid
 import datetime
+import os
 
 
 class CandidateTestCase(APISimpleTestCase):
@@ -124,6 +124,13 @@ class CandidateTestCase(APISimpleTestCase):
         url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/candidate/' + data['id']
         response = self.client.post(url, data, format='json')
         return response
+
+    def post_file_response(self, filepath, token):
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/candidate/file' + '?token=' +token
+        with open(filepath, 'rb') as data:
+            response = self.client.post(url, {'file': data}, format='multipart')
+            return response
+
 
     def init_Wallace(self):
         if self.db is None:
@@ -279,4 +286,23 @@ class CandidateTestCase(APISimpleTestCase):
         self.db.candidate.delete_one({'id': '302'})
 
     def test_file_parse_success(self):
+        self.init_Elder()
+        self.init_Wallace()
+        response = self.post_file_response('file_example/example2.csv', 'exampletoken')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.post_file_response('file_example/example1.xlsx', 'exampletoken')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_file_format_error(self):
+        self.init_Elder()
+        self.init_Wallace()
+        response = self.post_file_response('file_example/example3.numbers', 'exampletoken')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        response = self.post_file_response('file_example/example4.xlsx', 'exampletoken')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        response = self.post_file_response('file_example/example5.csv', 'exampletoken')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 

@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from rest_framework import status
-from rest_framework.test import APISimpleTestCase
+from rest_framework.test import APISimpleTestCase, APIRequestFactory
 from django.conf import settings
 import pymongo
 import random
@@ -70,8 +70,7 @@ class ReportTestCase(APISimpleTestCase):
             if test_db_name not in existing_db_names:
                 break
             # test_db_name = nr.bytes(10)
-            test_db_name = ''.join(
-                random.choice(string.lowercase) for i in range(10))
+            test_db_name = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(10))
         settings.DB_NAME = test_db_name
 
     @classmethod

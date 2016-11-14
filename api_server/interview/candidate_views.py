@@ -9,7 +9,7 @@ import jsonschema
 import copy
 from . import permissions
 from .schemas import swagger_schema
-from file_parser import file_parser
+from .file_parser import file_parser
 
 
 candidate_keys = ('id', 'name', 'email', 'phone', 'status', 'roomId', 'record')
@@ -285,8 +285,22 @@ def batch_candidate(request, **kwargs):
                 },
                 status.HTTP_400_BAD_REQUEST
             )
-        name = request.FILES['file'].name
-        candidate_list = file_parser(name)
+        file_name = request.FILES['file'].name
+        if '.' not in file_name:
+            return Response(
+                {
+                    'error': "Unknown file format"
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+        ext_name = file_name.split('.')[-1]
+        # print (request.FILES)
+        # print (dir(request.FILES))
+        file_content = request.FILES['file']
+
+        candidate_list = file_parser(ext_name, file_content)
+        #print ("Candidate_list:")
+        #print (candidate_list)
         if candidate_list is None:
             return Response(
                 {
