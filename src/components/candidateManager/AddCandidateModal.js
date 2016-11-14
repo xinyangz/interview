@@ -29,6 +29,17 @@ class AddCandidateModal extends React.Component {
 
     this.getEmailHelpBlock = this.getEmailHelpBlock.bind(this);
     this.getPhoneHelpBlock = this.getPhoneHelpBlock.bind(this);
+
+    this.closeModal = this.closeModal.bind(this);
+  }
+
+  closeModal() {
+    this.setState({nameChange: "",
+      emailChange: "",
+      phoneChange: "",
+      roomChange: "",
+      statusChange: "",});
+    this.props.onHideCandidateModal();
   }
 
   getEmailHelpBlock() {
@@ -40,7 +51,7 @@ class AddCandidateModal extends React.Component {
 
   getPhoneHelpBlock() {
     if(this.getPhoneValState() == 'error') {
-      return (<HelpBlock>请输入正确的电话</HelpBlock>);
+      return (<Col smOffset={3}><HelpBlock style={{"padding-left" : "16px"}}>请输入正确的电话</HelpBlock></Col>);
     }
     return undefined;
   }
@@ -104,7 +115,7 @@ class AddCandidateModal extends React.Component {
         "status" : this.state.statusChange,
       };
       this.props.addCandidate(termCandidate);
-      this.props.omHideCandidateModal();
+      this.closeModal();
     }
     else {
       alert("请先完善候选人信息！");
@@ -113,7 +124,7 @@ class AddCandidateModal extends React.Component {
 
   render() {
     return (
-      <Modal show={this.props.showCandidateModal} onHide={this.props.omHideCandidateModal} style={{width: '800px', margin: '0 auto'}}>
+      <Modal show={this.props.showCandidateModal} onHide={this.closeModal} style={{width: '800px', margin: '0 auto'}}>
         <Modal.Header closeButton>
           <Modal.Title>添加候选人</Modal.Title>
         </Modal.Header>
@@ -159,7 +170,7 @@ class AddCandidateModal extends React.Component {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.props.omHideCandidateModal}>取消</Button>
+          <Button onClick={this.closeModal}>取消</Button>
           <Button bsStyle="primary" onClick={this.onAddCandidateClick}>确认</Button>
         </Modal.Footer>
       </Modal>)
@@ -170,7 +181,7 @@ AddCandidateModal.propTypes = {
   candidateManager: PropTypes.arrayOf(PropTypes.object).isRequired,
   rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
   showCandidateModal:PropTypes.bool,
-  omHideCandidateModal:PropTypes.func.isRequired,
+  onHideCandidateModal:PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {

@@ -1,12 +1,12 @@
 import React, {PropTypes} from 'react';
 import {Row, Col, Tab, Nav, NavItem, NavDropdown, MenuItem, Table, Panel, Button, Modal} from 'react-bootstrap';
-import CandidateManagerTable from './CandidateManagerTable';
+import CandidateManagerTable from './candidateManager/CandidateManagerTable';
 import {connect} from 'react-redux';
-import AddCandidateModal from './AddCandidateModal'
-import ListCandidateModal from './ListCandidateModal'
-import ModifyModal from '../HRRoomPage/ModifyModal'
-import AddModal from '../HRRoomPage/AddModal'
-import {deleteRoom} from '../../actions/roomsActions';
+import AddCandidateModal from './candidateManager/AddCandidateModal'
+import ListCandidateModal from './candidateManager/listCandidateModal'
+import ModifyModal from './HRRoomPage/ModifyModal'
+import AddModal from './HRRoomPage/AddModal'
+import {deleteRoom} from '../actions/roomsActions';
 
 class CandidateManagerPage extends React.Component {
   constructor(props) {
@@ -162,9 +162,9 @@ class CandidateManagerPage extends React.Component {
               </Tab.Pane>
             </Tab.Content>
 
-            <AddCandidateModal showCandidateModal={this.state.showAddCandidateModal} omHideCandidateModal={this.closeAddCandidateModal}
+            <AddCandidateModal showCandidateModal={this.state.showAddCandidateModal} onHideCandidateModal={this.closeAddCandidateModal}
                                rooms={this.props.rooms} candidateManager={this.props.candidateManager}/>
-            <ListCandidateModal showListCandidateModal={this.state.showListCandidateModal} omHideListCandidateModal={this.closeListCandidateModal} />
+            <ListCandidateModal showListCandidateModal={this.state.showListCandidateModal} onHideListCandidateModal={this.closeListCandidateModal} />
             <AddModal show={this.state.showAddRoomModal} onHide={this.closeAddRoomModal}/>
             <ModifyModal show={this.state.showModifyModal} onHide={this.closeModifyModal}
                          rooms={this.props.rooms} roomId={this.state.selectedRoom}/>

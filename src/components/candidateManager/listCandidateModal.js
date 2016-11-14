@@ -14,12 +14,12 @@ class ListCandidateModal extends React.Component {
     let candidateList = new FormData();
     candidateList.append('logo', ReactDOM.findDOMNode(this.refs.logo).files[0]);
     this.props.listCandidate(candidateList);
-    this.props.omHideListCandidateModal();
+    this.props.onHideListCandidateModal();
   }
 
   render() {
     return (
-      <Modal show={this.props.showListCandidateModal} onHide={this.props.omHideListCandidateModal}>
+      <Modal show={this.props.showListCandidateModal} onHide={this.props.onHideListCandidateModal}>
     <Modal.Header closeButton>
       <Modal.Title>
         导入候选人列表
@@ -34,7 +34,7 @@ class ListCandidateModal extends React.Component {
       </label>
     </Modal.Body>
     <Modal.Footer>
-      <Button onClick={this.props.omHideListCandidateModal}>取消</Button>
+      <Button onClick={this.props.onHideListCandidateModal}>取消</Button>
       <Button bsStyle="primary" onClick={this.onListCandidateClick}>确认</Button>
     </Modal.Footer>
   </Modal>)}
@@ -42,7 +42,7 @@ class ListCandidateModal extends React.Component {
 
 ListCandidateModal.propTypes = {
   showListCandidateModal:PropTypes.bool,
-  omHideListCandidateModal:PropTypes.func.isRequired,
+  onHideListCandidateModal:PropTypes.func.isRequired,
 };
 
 function mapStateToProps() {
