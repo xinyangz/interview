@@ -12,7 +12,6 @@ class ControlTab extends React.Component {
       modalType: 'choice'
     };
     this.onTabSelect = this.onTabSelect.bind(this);
-    this.onAddChoiceClick = this.onAddChoiceClick.bind(this);
     this.choiceClose = () => {this.setState({modalShow: false})};
   }
 

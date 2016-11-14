@@ -100,9 +100,7 @@ exports.problemRoomRoom_idGET = function(args, res, next) {
               "content": "string",
               "correct": true
             }
-          ],
-          "sampleInput": "1 2",
-          "sampleOutput": "-1"
+          ]
         }
       },
       {
