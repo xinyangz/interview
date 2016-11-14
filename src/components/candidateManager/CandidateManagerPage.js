@@ -80,14 +80,13 @@ class CandidateManagerPage extends React.Component {
   }
 
   onAddCandidateClick() {
-    var termCandidate = {
+    let termCandidate = {
       "name" : this.state.nameChange,
       "email" : this.state.emailChange,
       "roomId" : this.state.roomChange,
       "phone" : this.state.phoneChange,
       "status" : this.state.statusChange,
     };
-    console.log(termCandidate);
     this.props.addCandidate(termCandidate);
     this.closeAddModal();
   }
@@ -215,7 +214,7 @@ CandidateManagerPage.PropTypes = {
 function mapStateToProps(state) {
   return {
     candidateManager: state.candidatesStates.candidates,
-    rooms: state.roomsStates.rooms
+    rooms: state.roomsStates.rooms,
   };
 }
 
