@@ -105,14 +105,21 @@ class CandidateManagerPage extends React.Component {
           <Col sm={12}>
             <Nav bsStyle="tabs">
               <NavItem eventKey={1}>房间管理</NavItem>
-              <NavItem eventKey={2}>候选人管理</NavItem>
               {
-                this.state.key === 2 &&
-                <NavDropdown className="pull-right" title="添加候选人">
-                  <MenuItem eventKey={1} onClick={this.openAddModal}>添加候选人</MenuItem>
-                  <MenuItem eventKey={2} onClick={this.openListModal}>导入候选人列表</MenuItem>
+                this.state.key === 1 &&
+                <NavDropdown className="pull-right" title="添加房间">
+                  <MenuItem eventKey={3} onClick={this.openAddModal}>添加候选人</MenuItem>
+                  <MenuItem eventKey={4} onClick={this.openListModal}>导入候选人列表</MenuItem>
                 </NavDropdown>
               }
+              <NavItem eventKey={2}>候选人管理</NavItem>
+              {
+              this.state.key === 2 &&
+              <NavDropdown className="pull-right" title="添加候选人">
+                <MenuItem eventKey={5} onClick={this.openAddModal}>添加候选人</MenuItem>
+                <MenuItem eventKey={6} onClick={this.openListModal}>导入候选人列表</MenuItem>
+              </NavDropdown>
+            }
             </Nav>
           </Col>
           <Col sm={12}>
