@@ -36,6 +36,19 @@ class CandidateManagerTable extends React.Component {
     this.changeStatus = this.changeStatus.bind(this);
 
     this.checkNull = this.checkNull.bind(this);
+    this.setStatusColor = this.setStatusColor.bind(this);
+  }
+
+  setStatusColor(status) {
+    if(status == "未通过") {
+      return (<label style={{color:"#FF0080"}}>未通过</label>);
+    }
+    else if(status == "通过") {
+      return (<label style={{color:"#28FF28"}}>通过</label>);
+    }
+    else {
+      return (<label style={{color:"##000000"}}>未面试</label>);
+    }
   }
 
   checkNull() {
@@ -53,7 +66,7 @@ class CandidateManagerTable extends React.Component {
             <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/4.png" width={13} height={13} /></a>
             <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/5.png" width={15} height={15} /></a>
           </td>
-          <td>{candidate.status}</td>
+          <td>{this.setStatusColor(candidate.status)}</td>
           <td><a onClick={() => this.openEditModal(candidate)}>编辑</a> | <a onClick={() => this.open(candidate.id)}>删除</a></td>
         </tr>)}</tbody>);
     }
