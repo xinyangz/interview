@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {Table, Modal, Button, Jumbotron, Panel} from 'react-bootstrap';
+import {Table, Modal, Button, Panel} from 'react-bootstrap';
 import {deleteRoom} from '../../actions/roomsActions';
 import ModifyModal from './ModifyModal';
 import AddModal from './AddModal';
