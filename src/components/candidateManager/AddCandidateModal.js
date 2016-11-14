@@ -167,10 +167,10 @@ class AddCandidateModal extends React.Component {
 }
 
 AddCandidateModal.propTypes = {
-  showCandidateModal:PropTypes.bool,
-  omHideCandidateModal:PropTypes.func.isRequired,
   candidateManager: PropTypes.arrayOf(PropTypes.object).isRequired,
   rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
+  showCandidateModal:PropTypes.bool,
+  omHideCandidateModal:PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
