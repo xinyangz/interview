@@ -104,7 +104,7 @@ class AddCandidateModal extends React.Component {
         "status" : this.state.statusChange,
       };
       this.props.addCandidate(termCandidate);
-      this.closeAddModal();
+      this.props.omHideCandidateModal();
     }
     else {
       alert("请先完善候选人信息！");
@@ -159,7 +159,7 @@ class AddCandidateModal extends React.Component {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.closeAddModal}>取消</Button>
+          <Button onClick={this.props.omHideCandidateModal}>取消</Button>
           <Button bsStyle="primary" onClick={this.onAddCandidateClick}>确认</Button>
         </Modal.Footer>
       </Modal>)

@@ -1,47 +1,130 @@
 import React, {PropTypes} from 'react';
-import {Row, Col, Tab, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
+import {Row, Col, Tab, Nav, NavItem, NavDropdown, MenuItem, Table, Panel, Button, Modal} from 'react-bootstrap';
 import CandidateManagerTable from './CandidateManagerTable';
 import {connect} from 'react-redux';
 import AddCandidateModal from './AddCandidateModal'
 import ListCandidateModal from './ListCandidateModal'
+import ModifyModal from '../HRRoomPage/ModifyModal'
+import AddModal from '../HRRoomPage/AddModal'
+import {deleteRoom} from '../../actions/roomsActions';
 
 class CandidateManagerPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       key: 1,
-      showAddModal: false,
-      showListModal: false,
+      showAddCandidateModal: false,
+      showListCandidateModal: false,
+      showDeleteRoomModal: false,
+      showAddRoomModal: false,
+      showModifyModal: false,
+      selectedRoom: null
     };
+
+    this.close = this.close.bind(this);
+    this.open = this.open.bind(this);
+    this.onDeleteRoomClick = this.onDeleteRoomClick.bind(this);
+    this.checkNoRoom = this.checkNoRoom.bind(this);
 
     this.onTabSelect = this.onTabSelect.bind(this);
 
-    this.closeAddModal = this.closeAddModal.bind(this);
-    this.openAddModal = this.openAddModal.bind(this);
-    this.closeListModal = this.closeListModal.bind(this);
-    this.openListModal = this.openListModal.bind(this);
+    this.closeAddCandidateModal = this.closeAddCandidateModal.bind(this);
+    this.openAddCandidateModal = this.openAddCandidateModal.bind(this);
+    this.closeListCandidateModal = this.closeListCandidateModal.bind(this);
+    this.openListCandidateModal = this.openListCandidateModal.bind(this);
+    this.openAddRoomModal = this.openAddRoomModal.bind(this);
+    this.closeAddRoomModal = this.closeAddRoomModal.bind(this);
+    this.openModifyModal = this.openModifyModal.bind(this);
+    this.closeModifyModal = this.closeModifyModal.bind(this);
   }
 
-  closeAddModal() {
-    this.setState({showAddModal: false});
+  closeAddCandidateModal() {
+    this.setState({showAddCandidateModal: false});
   }
 
-  openAddModal() {
-    this.setState({showAddModal: true});
+  openAddCandidateModal() {
+    this.setState({showAddCandidateModal: true});
   }
 
-  closeListModal() {
-    this.setState({showListModal: false});
+  closeListCandidateModal() {
+    this.setState({showListCandidateModal: false});
   }
 
-  openListModal() {
-    this.setState({showListModal: true});
+  openListCandidateModal() {
+    this.setState({showListCandidateModal: true});
+  }
+
+  closeAddRoomModal() {
+  this.setState({showAddRoomModal: false});
+}
+
+  openAddRoomModal() {
+    this.setState({showAddRoomModal: true});
+  }
+
+  closeModifyModal() {
+    this.setState({showModifyModal: false});
+  }
+
+  openModifyModal(room_id) {
+    this.setState({showModifyModal: true, selectedRoom: room_id});
   }
 
   onTabSelect(key) {
     if (key > 2)
       key = 1;
     this.setState({key});
+  }
+
+  close() {
+    this.setState({showDeleteRoomModal: false});
+  }
+
+  open(room_id) {
+    this.setState({showDeleteRoomModal: true, selectedRoom: room_id});
+  }
+
+  onDeleteRoomClick() {
+    this.props.deleteRoom(this.state.selectedRoom);
+    this.close();
+  }
+
+  checkNoRoom() {
+    if(!this.props.rooms.length) {
+      return(
+        <div style={{width: '800px', margin: '0 auto'}}>
+          <Panel>
+            <div style={{width: '168px', margin: '0 auto'}}>
+              <p style={{fontSize:'15px'}}>您需要先创建面试房间，</p>
+            </div>
+            <div style={{width: '260px', margin: '0 auto'}}>
+              <p>才可以导入面试候选人并为他们分配房间</p>
+            </div>
+            <div style={{width: '125px', margin: '0 auto'}}>
+              <p><Button bsStyle="primary" onClick={() => this.openAddRoomModal}>创建面试房间</Button></p>
+            </div>
+          </Panel>
+        </div>);
+    }
+    else {
+      return (<Table>
+        <tbody>
+        {this.props.rooms.map(room =>
+          <tr key={room.id}>
+            <td>
+              <a className="room-name" onClick={this.onEditRoomClick}>{room.name}</a>
+            </td>
+            <td>
+              面试官: {room.interviewer} | {room.candidates.length}人
+            </td>
+            <td>
+              <a className="link" onClick={() => this.openModifyModal(room.id)}>编辑</a> | <a className="link"
+                                                                                            onClick={() => this.open(room.id)}>删除</a>
+            </td>
+          </tr>)}
+        </tbody>
+      </Table>);
+    }
   }
 
   render() {
@@ -54,15 +137,15 @@ class CandidateManagerPage extends React.Component {
               {
                 this.state.key === 1 &&
                 <NavDropdown className="pull-right" title="添加房间">
-                  <MenuItem eventKey={3} onClick={this.onAddChoiceClick}>添加房间</MenuItem>
+                  <MenuItem eventKey={3} onClick={this.openAddRoomModal}>添加房间</MenuItem>
                 </NavDropdown>
               }
               <NavItem eventKey={2}>候选人管理</NavItem>
               {
               this.state.key === 2 &&
               <NavDropdown className="pull-right" title="添加候选人">
-                <MenuItem eventKey={5} onClick={this.openAddModal}>添加候选人</MenuItem>
-                <MenuItem eventKey={6} onClick={this.openListModal}>导入候选人列表</MenuItem>
+                <MenuItem eventKey={5} onClick={this.openAddCandidateModal}>添加候选人</MenuItem>
+                <MenuItem eventKey={6} onClick={this.openListCandidateModal}>导入候选人列表</MenuItem>
               </NavDropdown>
             }
             </Nav>
@@ -70,15 +153,28 @@ class CandidateManagerPage extends React.Component {
           <Col sm={12}>
             <Tab.Content animation>
               <Tab.Pane eventKey={1}>
-                Tab1
+                {this.checkNoRoom()}
               </Tab.Pane>
               <Tab.Pane eventKey={2}>
                 <CandidateManagerTable/>
               </Tab.Pane>
             </Tab.Content>
 
-            <AddCandidateModal showCandidateModal={this.state.showAddModal} omHideCandidateModal={this.closeAddModal}/>
-            <ListCandidateModal showListCandidateModal={this.state.showListModal} omHideListCandidateModal={this.closeListModal} />
+            <AddCandidateModal showCandidateModal={this.state.showAddCandidateModal} omHideCandidateModal={this.closeAddCandidateModal}/>
+            <ListCandidateModal showListCandidateModal={this.state.showListCandidateModal} omHideListCandidateModal={this.closeListCandidateModal} />
+            <AddModal show={this.state.showAddRoomModal} onHide={this.closeAddRoomModal}/>
+            <ModifyModal show={this.state.showModifyModal} onHide={this.closeModifyModal}
+                         rooms={this.props.rooms} roomId={this.state.selectedRoom}/>
+
+            <Modal show={this.state.showDeleteRoomModal} onHide={this.close}>
+              <Modal.Header closeButton>
+                <Modal.Title>确认删除房间？</Modal.Title>
+              </Modal.Header>
+              <Modal.Footer>
+                <Button onClick={this.close}>取消</Button>
+                <Button bsStyle="primary" onClick={this.onDeleteRoomClick}>确认</Button>
+              </Modal.Footer>
+            </Modal>
 
           </Col>
         </Row>
@@ -89,6 +185,7 @@ class CandidateManagerPage extends React.Component {
 CandidateManagerPage.PropTypes = {
   candidateManager: PropTypes.arrayOf(PropTypes.object).isRequired,
   rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
+  deleteRoom: PropTypes.func
 };
 
 function mapStateToProps(state) {
@@ -98,5 +195,5 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(CandidateManagerPage);
+export default connect(mapStateToProps, {deleteRoom})(CandidateManagerPage);
 

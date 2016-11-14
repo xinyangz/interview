@@ -14,11 +14,11 @@ class ListCandidateModal extends React.Component {
     let image = new FormData();
     image.append('logo', ReactDOM.findDOMNode(this.refs.picture).files[0]);
     this.props.listCandidate(image);
-    this.closeListModal();
+    this.props.omHideListCandidateModal();
   }
 
   render() {
-    return (<Modal show={this.props.showListModal} onHide={this.closeListModal}>
+    return (<Modal show={this.props.showListCandidateModal} onHide={this.onListCandidateClick()}>
     <Modal.Header closeButton>
       <Modal.Title>
         导入候选人列表
@@ -33,7 +33,7 @@ class ListCandidateModal extends React.Component {
       </label>
     </Modal.Body>
     <Modal.Footer>
-      <Button onClick={this.closeListModal}>取消</Button>
+      <Button onClick={this.onListCandidateClick()}>取消</Button>
       <Button bsStyle="primary" onClick={this.onListCandidateClick}>确认</Button>
     </Modal.Footer>
   </Modal>)}
