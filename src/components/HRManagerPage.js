@@ -55,8 +55,8 @@ class CandidateManagerPage extends React.Component {
   }
 
   closeAddRoomModal() {
-  this.setState({showAddRoomModal: false});
-}
+    this.setState({showAddRoomModal: false});
+  }
 
   openAddRoomModal() {
     this.setState({showAddRoomModal: true});
@@ -103,7 +103,7 @@ class CandidateManagerPage extends React.Component {
               <p>才可以导入面试候选人并为他们分配房间</p>
             </div>
             <div style={{width: '125px', margin: '0 auto'}}>
-              <p><Button bsStyle="primary" onClick={() => this.openAddRoomModal}>创建面试房间</Button></p>
+              <p><Button bsStyle="primary" onClick={this.openAddRoomModal}>创建面试房间</Button></p>
             </div>
           </Panel>
         </div>);
