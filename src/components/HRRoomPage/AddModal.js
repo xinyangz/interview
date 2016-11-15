@@ -24,12 +24,12 @@ export class AddModal extends React.Component {
     let files = target.files;
     let count = this.state.multiple ? files.length : 1;
     for (let i = 0; i < count; i++) {
-      files[i].thumb = URL.createObjectURL(files[i])
+      files[i].thumb = URL.createObjectURL(files[i]);
     }
     // convert to array
     files = Array.prototype.slice.call(files, 0);
     files = files.filter(function (file) {
-      return /image/i.test(file.type)
+      return /image/i.test(file.type);
     });
     this.setState({files: files});
   }
@@ -38,21 +38,20 @@ export class AddModal extends React.Component {
     let percent = (loaded / total * 100).toFixed(2) + '%';
     let _progress = this.state.progress;
     _progress[idx] = percent;
-    console.log(_progress);
     this.setState({ progress: _progress });
   }
 
   _renderPreview() {
     return this.state.files.map((item) => {
       return (
-        <div className="upload-append-list">
+        <div className="upload-append-list" key={item.thumb}>
           <p>
             <br/>
               <img src={item.thumb} width="100%" />
           </p>
         </div>
-      )
-    })
+      );
+    });
   }
 
   onSaveRoomClick(event) {
