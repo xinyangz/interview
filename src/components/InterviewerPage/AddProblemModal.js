@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {Modal, Button, FormGroup, ControlLabel, FormControl, InputGroup, HelpBlock} from 'react-bootstrap';
-import {addChoiceProblem} from '../../actions/problemActions';
+import {addProblem} from '../../actions/problemActions';
 
 const OptionControl = ({checked, content, onContentChange, onCheckedChange, onDelete}) => {
   return (
@@ -127,9 +127,21 @@ export class AddProblemModal extends React.Component {
   }
 
   disableSave() {
-    return this.state.title === undefined || this.state.title.length === 0 ||
-      this.state.description === undefined || this.state.description.length === 0 ||
-      this.state.options.length === 0;
+    if (this.props.type === 'choice') {
+      return this.state.title === undefined || this.state.title.length === 0 ||
+        this.state.description === undefined || this.state.description.length === 0 ||
+        this.state.options.length === 0;
+    }
+    else if (this.props.type === 'code') {
+      return this.state.title === undefined || this.state.title.length === 0 ||
+        this.state.description === undefined || this.state.description.length === 0 ||
+          this.state.sampleInput === undefined || this.state.sampleInput.length === 0 ||
+          this.state.sampleOutput === undefined || this.state.sampleOutput.length === 0;
+    }
+    else {
+      return this.state.title === undefined || this.state.title.length === 0 ||
+        this.state.description === undefined || this.state.description.length === 0;
+    }
   }
 
   onSaveClick() {
@@ -166,7 +178,7 @@ export class AddProblemModal extends React.Component {
       type: this.props.type,
       content: problemContent
     };
-    this.props.addChoiceProblem(problemInfo);
+    this.props.addProblem(problemInfo);
     this.setState(initialState);
     this.props.onHide();
   }
@@ -268,7 +280,7 @@ export class AddProblemModal extends React.Component {
 
 AddProblemModal.propTypes = {
   onHide: PropTypes.func.isRequired,
-  addChoiceProblem: PropTypes.func.isRequired,
+  addProblem: PropTypes.func.isRequired,
   type: PropTypes.string
 };
 
@@ -278,4 +290,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {addChoiceProblem})(AddProblemModal);
+export default connect(mapStateToProps, {addProblem})(AddProblemModal);

@@ -15,8 +15,6 @@ export function loadAllProblemsSuccess(problems) {
 }
 
 export function loadAllProblemsError(error) {
-  // DEBUG
-  console.log(error);
   return {
     type: types.LOAD_ALL_PROBLEMS_ERROR,
     error
@@ -43,22 +41,36 @@ export function beginDeleteProblem() {
   }
 }
 
-export function beginAddChoiceProblem(problem) {
+export function beginAddProblem(problem) {
   return {
-    type: types.ADD_CHOICE_PROBLEM,
+    type: types.ADD_PROBLEM,
     problem
   };
 }
 
-export function addChoiceProblemError(error) {
+export function addProblemError(error) {
   return {
-    type: types.ADD_CHOICE_PROBLEM_ERROR
+    type: types.ADD_PROBLEM_ERROR
   }
 }
 
-export function addChoiceProblem(problem) {
+export function beginEditProblem(problem) {
+  return {
+    type: types.EDIT_PROBLEM,
+    problem
+  };
+}
+
+export function editProblemError(error) {
+  return {
+    type: types.EDIT_PROBLEM_ERROR,
+    error
+  }
+}
+
+export function addProblem(problem) {
   return (dispatch, getState) => {
-    dispatch(beginAddChoiceProblem(problem));
+    dispatch(beginAddProblem(problem));
     const token = getState().user.token;
     const roomId = getState().roomsStates.room.id;
     return axios.post('/problem/room/' + roomId + '?token=' + token, {
@@ -69,17 +81,47 @@ export function addChoiceProblem(problem) {
           dispatch(loadAllProblems(roomId));
         }
         else if (res.status === 403) {
-          dispatch(addChoiceProblemError('用户无访问权限'));
+          dispatch(addProblemError('用户无访问权限'));
         }
         else if (res.status === 404) {
-          dispatch(addChoiceProblemError('房间不存在'));
+          dispatch(addProblemError('房间不存在'));
         }
         else {
-          dispatch(addChoiceProblemError(res.data));
+          dispatch(addProblemError(res.data));
         }
       })
       .catch(err => {
-          dispatch(addChoiceProblemError(err));
+          dispatch(addProblemError(err));
+        }
+      );
+  }
+}
+
+export function editProblem(problem) {
+  return (dispatch, getState) => {
+    dispatch(beginEditProblem(problem));
+    const token = getState().user.token;
+    const roomId = getState().roomsStates.room.id;
+    const problemId = problem.id;
+    return axios.put('/problem/' + problemId + '?token=' + token, {
+      problem
+    })
+      .then(res => {
+        if (res.status === 200) {
+          dispatch(loadAllProblems(roomId));
+        }
+        else if (res.status === 403) {
+          dispatch(editProblemError('用户无访问权限'));
+        }
+        else if (res.status === 404) {
+          dispatch(editProblemError('房间不存在'));
+        }
+        else {
+          dispatch(editProblemError(res.data));
+        }
+      })
+      .catch(err => {
+          dispatch(editProblemError(err));
         }
       );
   }
