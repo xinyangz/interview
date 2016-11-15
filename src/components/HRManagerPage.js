@@ -2,10 +2,10 @@ import React, {PropTypes} from 'react';
 import {Row, Col, Tab, Nav, NavItem, NavDropdown, MenuItem, Table, Panel, Button, Modal} from 'react-bootstrap';
 import CandidateManagerTable from './candidateManager/CandidateManagerTable';
 import {connect} from 'react-redux';
-import AddCandidateModal from './candidateManager/AddCandidateModal'
-import ListCandidateModal from './candidateManager/listCandidateModal'
-import ModifyModal from './HRRoomPage/ModifyModal'
-import AddModal from './HRRoomPage/AddModal'
+import AddCandidateModal from './candidateManager/AddCandidateModal';
+import ListCandidateModal from './candidateManager/listCandidateModal';
+import ModifyModal from './HRRoomPage/ModifyModal';
+import AddModal from './HRRoomPage/AddModal';
 import {deleteRoom} from '../actions/roomsActions';
 
 class CandidateManagerPage extends React.Component {
@@ -109,29 +109,7 @@ class CandidateManagerPage extends React.Component {
         </div>);
     }
     else {
-      return (<Table>
-        <tbody>
-        {this.props.rooms.map(room =>
-          <tr key={room.id}>
-            <td>
-              <a className="room-name" onClick={this.onEditRoomClick}>{room.name}</a>
-            </td>
-            <td>
-              面试官: {room.interviewer} | {room.candidates.length}人
-            </td>
-            <td>
-              <a className="link" onClick={() => this.openModifyModal(room.id)}>编辑</a> | <a className="link"
-                                                                                            onClick={() => this.open(room.id)}>删除</a>
-            </td>
-          </tr>)}
-        </tbody>
-      </Table>);
-    }
-  }
-
-  render() {
-    return (
-      <Tab.Container id="tab-container" activeKey={this.state.key} onSelect={this.onTabSelect}>
+      return (<Tab.Container id="tab-container" activeKey={this.state.key} onSelect={this.onTabSelect}>
         <Row>
           <Col sm={12}>
             <Nav bsStyle="tabs">
@@ -144,44 +122,68 @@ class CandidateManagerPage extends React.Component {
               }
               <NavItem eventKey={2}>候选人管理</NavItem>
               {
-              this.state.key === 2 &&
-              <NavDropdown className="pull-right" title="添加候选人">
-                <MenuItem eventKey={4} onClick={this.openAddCandidateModal}>添加候选人</MenuItem>
-                <MenuItem eventKey={5} onClick={this.openListCandidateModal}>导入候选人列表</MenuItem>
-              </NavDropdown>
-            }
+                this.state.key === 2 &&
+                <NavDropdown className="pull-right" title="添加候选人">
+                  <MenuItem eventKey={4} onClick={this.openAddCandidateModal}>添加候选人</MenuItem>
+                  <MenuItem eventKey={5} onClick={this.openListCandidateModal}>导入候选人列表</MenuItem>
+                </NavDropdown>
+              }
             </Nav>
           </Col>
           <Col sm={12}>
             <Tab.Content animation>
               <Tab.Pane eventKey={1}>
-                {this.checkNoRoom()}
+                <Table>
+                  <tbody>
+                  {this.props.rooms.map(room =>
+                    <tr key={room.id}>
+                      <td>
+                        <a className="room-name" onClick={this.onEditRoomClick}>{room.name}</a>
+                      </td>
+                      <td>
+                        面试官: {room.interviewer} | {room.candidates.length}人
+                      </td>
+                      <td>
+                        <a className="link" onClick={() => this.openModifyModal(room.id)}>编辑</a> | <a className="link"
+                                                                                                      onClick={() => this.open(room.id)}>删除</a>
+                      </td>
+                    </tr>)}
+                  </tbody>
+                </Table>
               </Tab.Pane>
               <Tab.Pane eventKey={2}>
                 <CandidateManagerTable/>
               </Tab.Pane>
             </Tab.Content>
 
-            <AddCandidateModal showCandidateModal={this.state.showAddCandidateModal} onHideCandidateModal={this.closeAddCandidateModal}
-                               rooms={this.props.rooms} candidateManager={this.props.candidateManager}/>
-            <ListCandidateModal showListCandidateModal={this.state.showListCandidateModal} onHideListCandidateModal={this.closeListCandidateModal} />
-            <AddModal show={this.state.showAddRoomModal} onHide={this.closeAddRoomModal}/>
-            <ModifyModal show={this.state.showModifyModal} onHide={this.closeModifyModal}
-                         rooms={this.props.rooms} roomId={this.state.selectedRoom}/>
-
-            <Modal show={this.state.showDeleteRoomModal} onHide={this.close}>
-              <Modal.Header closeButton>
-                <Modal.Title>确认删除房间？</Modal.Title>
-              </Modal.Header>
-              <Modal.Footer>
-                <Button onClick={this.close}>取消</Button>
-                <Button bsStyle="primary" onClick={this.onDeleteRoomClick}>确认</Button>
-              </Modal.Footer>
-            </Modal>
-
           </Col>
         </Row>
       </Tab.Container>);
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        {this.checkNoRoom()}
+        <AddCandidateModal showCandidateModal={this.state.showAddCandidateModal} onHideCandidateModal={this.closeAddCandidateModal}
+                           rooms={this.props.rooms} candidateManager={this.props.candidateManager}/>
+        <ListCandidateModal showListCandidateModal={this.state.showListCandidateModal} onHideListCandidateModal={this.closeListCandidateModal} />
+        <AddModal show={this.state.showAddRoomModal} onHide={this.closeAddRoomModal}/>
+        <ModifyModal show={this.state.showModifyModal} onHide={this.closeModifyModal}
+                     rooms={this.props.rooms} roomId={this.state.selectedRoom}/>
+
+        <Modal show={this.state.showDeleteRoomModal} onHide={this.close}>
+          <Modal.Header closeButton>
+            <Modal.Title>确认删除房间？</Modal.Title>
+          </Modal.Header>
+          <Modal.Footer>
+            <Button onClick={this.close}>取消</Button>
+            <Button bsStyle="primary" onClick={this.onDeleteRoomClick}>确认</Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+      );
   }
 }
 
@@ -194,7 +196,7 @@ CandidateManagerPage.PropTypes = {
 function mapStateToProps(state) {
   return {
     candidateManager: state.candidatesStates.candidates,
-    rooms: state.roomsStates.rooms,
+    rooms: state.roomsStates.rooms
   };
 }
 
