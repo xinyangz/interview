@@ -26,17 +26,29 @@ const rooms = (state = initialState.roomsStates.rooms, action) => {
   }
 };
 
+const room = (state = initialState.roomsStates.room, action) => {
+  switch (action.type) {
+    case types.LOAD_ROOM_SUCCESS:
+      return action.room;
+    default:
+      return state;
+  }
+};
+
 const isWaiting = (state = initialState.roomsStates.isWaiting, action) => {
   switch (action.type) {
     case types.LOAD_ALL_ROOMS:
     case types.DELETE_ROOM:
     case types.MODIFY_ROOM:
     case types.ADD_ROOM:
+    case types.LOAD_ROOM:
       return true;
     case types.DELETE_ROOM_SUCCESS:
     case types.DELETE_ROOM_ERROR:
     case types.LOAD_ALL_ROOMS_SUCCESS:
     case types.LOAD_ALL_ROOMS_ERROR:
+    case types.LOAD_ROOM_SUCCESS:
+    case types.LOAD_ROOM_ERROR:
     case types.MODIFY_ROOM_SUCCESS:
     case types.MODIFY_ROOM_ERROR:
     case types.ADD_ROOM_SUCCESS:
@@ -47,23 +59,9 @@ const isWaiting = (state = initialState.roomsStates.isWaiting, action) => {
   }
 };
 
-/*
-const newRoomId = (state = initialState.roomsStates.newRoomId, action) => {
-  switch (action.type) {
-    case types.ADD_ROOM_SUCCESS:
-      return action.room.id;
-    case types.MODIFY_ROOM_SUCCESS:
-    case types.LOAD_ALL_ROOMS_SUCCESS:
-    case types.DELETE_ROOM_SUCCESS:
-      return -1;
-    default:
-      return state;
-  }
-};
-*/
-
 const roomsReducer = combineReducers({
   rooms,
+  room,
   isWaiting
 });
 

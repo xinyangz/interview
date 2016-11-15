@@ -17,6 +17,14 @@ export default {
   },
   roomsStates: {
     rooms: [],
+    room: {
+      id: undefined,
+      name: '',
+      logo: '',
+      interviewer: '',
+      candidates: [],
+      problems: []
+    },
     isWaiting: false
   },
   problemStates: {

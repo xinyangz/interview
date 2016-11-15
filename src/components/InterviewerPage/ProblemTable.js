@@ -2,15 +2,20 @@ import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {Table, Modal, Button} from 'react-bootstrap';
 import {loadAllProblems, deleteProblem} from '../../actions/problemActions';
+import EditProblemModal from './EditProblemModal';
+
+const initialState = {showEditModal: false, showDeleteModal: false, selectedProblem: undefined};
 
 class ProblemTable extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {showDeleteModal: false, selectedProblem: undefined};
+    this.state = initialState;
     this.mapProblemType = this.mapProblemType.bind(this);
     this.closeDeleteModal = this.closeDeleteModal.bind(this);
     this.openDeleteModal = this.openDeleteModal.bind(this);
     this.onDeleteRoomClick = this.onDeleteRoomClick.bind(this);
+    this.openEditModal = this.openEditModal.bind(this);
+    this.closeEditModal = this.closeEditModal.bind(this);
   }
 
   componentWillMount() {
@@ -24,6 +29,15 @@ class ProblemTable extends React.Component {
   closeDeleteModal() {
     this.setState({showDeleteModal:false});
   }
+
+  openEditModal(id) {
+    this.setState({selectedProblem:id, showEditModal: true});
+  }
+
+  closeEditModal() {
+    this.setState({showEditModal: false});
+  }
+
 
   onDeleteRoomClick() {
     this.props.deleteProblem(this.state.selectedProblem);
@@ -66,7 +80,7 @@ class ProblemTable extends React.Component {
                       {this.mapProblemType(problem.type)}
                     </td>
                     <td className="aln-right">
-                      <a className="link">编辑</a> | <a
+                      <a className="link" onClick={() => {this.openEditModal(problem.id);}}>编辑</a> | <a
                       className="link" onClick={() => {this.openDeleteModal(problem.id);}}>删除</a>
                     </td>
                   </tr>)
@@ -86,6 +100,9 @@ class ProblemTable extends React.Component {
             <Button bsStyle="primary" onClick={this.onDeleteRoomClick}>确认</Button>
           </Modal.Footer>
         </Modal>
+
+        <EditProblemModal show={this.state.showEditModal} onHide={this.closeEditModal} type="choice"
+          selectedProblem={this.state.selectedProblem}/>
       </div>
     );
   }

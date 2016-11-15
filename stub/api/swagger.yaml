@@ -19,6 +19,8 @@ tags:
   description: "聊天数据相关API"
 - name: "problem"
   description: "面试题相关API"
+- name: "interviewer"
+  description: "面试官相关API"
 schemes:
 - "http"
 paths:
@@ -450,6 +452,30 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "Chat"
+  /interviewer:
+    get:
+      tags:
+      - "interviewer"
+      summary: "获取面试官所在房间ID"
+      description: "调用API时传入token，根据token返回登录的面试官所在的房间号"
+      operationId: "interviewerGET"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "token"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            $ref: "#/definitions/InterviewerRoom"
+        400:
+          description: "查询失败"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Interviewer"
   /problem/room/{room_id}:
     get:
       tags:
@@ -1581,6 +1607,15 @@ definitions:
       xlsx:
         type: "string"
         example: "https://example.com/example.xlsx"
+  InterviewerRoom:
+    type: "object"
+    required:
+    - "roomId"
+    properties:
+      roomId:
+        type: "integer"
+        example: 101
+        description: "面试官所在房间roomId"
   Candidate_record:
     properties:
       video:

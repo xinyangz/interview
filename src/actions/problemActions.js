@@ -41,6 +41,93 @@ export function beginDeleteProblem() {
   };
 }
 
+export function beginAddProblem(problem) {
+  return {
+    type: types.ADD_PROBLEM,
+    problem
+  };
+}
+
+export function addProblemError(error) {
+  return {
+    type: types.ADD_PROBLEM_ERROR,
+    error
+  };
+}
+
+export function beginEditProblem(problem) {
+  return {
+    type: types.EDIT_PROBLEM,
+    problem
+  };
+}
+
+export function editProblemError(error) {
+  return {
+    type: types.EDIT_PROBLEM_ERROR,
+    error
+  };
+}
+
+export function addProblem(problem) {
+  return (dispatch, getState) => {
+    dispatch(beginAddProblem(problem));
+    const token = getState().user.token;
+    const roomId = getState().roomsStates.room.id;
+    return axios.post('/problem/room/' + roomId + '?token=' + token, {
+      problem
+    })
+      .then(res => {
+        if (res.status === 200) {
+          dispatch(loadAllProblems(roomId));
+        }
+        else if (res.status === 403) {
+          dispatch(addProblemError('用户无访问权限'));
+        }
+        else if (res.status === 404) {
+          dispatch(addProblemError('房间不存在'));
+        }
+        else {
+          dispatch(addProblemError(res.data));
+        }
+      })
+      .catch(err => {
+          dispatch(addProblemError(err));
+        }
+      );
+  };
+}
+
+export function editProblem(problem) {
+  return (dispatch, getState) => {
+    dispatch(beginEditProblem(problem));
+    const token = getState().user.token;
+    const roomId = getState().roomsStates.room.id;
+    const problemId = problem.id;
+    return axios.put('/problem/' + problemId + '?token=' + token, {
+      problem
+    })
+      .then(res => {
+        if (res.status === 200) {
+          dispatch(loadAllProblems(roomId));
+        }
+        else if (res.status === 403) {
+          dispatch(editProblemError('用户无访问权限'));
+        }
+        else if (res.status === 404) {
+          dispatch(editProblemError('房间不存在'));
+        }
+        else {
+          dispatch(editProblemError(res.data));
+        }
+      })
+      .catch(err => {
+          dispatch(editProblemError(err));
+        }
+      );
+  };
+}
+
 export function deleteProblem(problemId) {
   return (dispatch, getState) => {
     dispatch(beginDeleteProblem());

@@ -14,7 +14,7 @@ const mockStore = configureStore(middlewares);
 describe('Rooms async actions', () => {
   let sandbox;
 
-  const initialState = init.roomsStates;
+  const initialState = init;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
