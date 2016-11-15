@@ -7,7 +7,51 @@ import {addRoom} from '../../actions/roomsActions';
 export class AddModal extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      files: [],
+      progress: []
+    };
     this.onSaveRoomClick = this.onSaveRoomClick.bind(this);
+    this._renderPreview = this._renderPreview.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleProgress = this.handleProgress.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({progress:[]});
+    event.preventDefault();
+    let target = event.target;
+    let files = target.files;
+    let count = this.state.multiple ? files.length : 1;
+    for (let i = 0; i < count; i++) {
+      files[i].thumb = URL.createObjectURL(files[i]);
+    }
+    // convert to array
+    files = Array.prototype.slice.call(files, 0);
+    files = files.filter(function (file) {
+      return /image/i.test(file.type);
+    });
+    this.setState({files: files});
+  }
+
+  handleProgress(file, loaded, total, idx) {
+    let percent = (loaded / total * 100).toFixed(2) + '%';
+    let _progress = this.state.progress;
+    _progress[idx] = percent;
+    this.setState({ progress: _progress });
+  }
+
+  _renderPreview() {
+    return this.state.files.map((item) => {
+      return (
+        <div className="upload-append-list" key={item.thumb}>
+          <p>
+            <br/>
+              <img src={item.thumb} width="100%" />
+          </p>
+        </div>
+      );
+    });
   }
 
   onSaveRoomClick(event) {
@@ -18,6 +62,7 @@ export class AddModal extends React.Component {
     let newRoom = {"name": name, "interviewer": interviewer};
     this.props.addRoom({newRoom,logo});
     this.props.onHide();
+    this.setState({files:[]});
   }
 
   render() {
@@ -52,10 +97,18 @@ export class AddModal extends React.Component {
                 LOGO
               </Col>
               <Col sm={10}>
-                <input type="file" ref="logo" id="imageLogo" accept="image/*"/>
+                <input
+                  onChange={(v)=>this.handleChange(v)}
+                  type="file"
+                  ref="logo"
+                  id="imageLogo"
+                  accept="image/*"
+                  multiple={false}/>
               </Col>
               <Col xs={6} md={4}>
-                <img src="" width="100%"/>
+                <div>
+                  {this._renderPreview()}
+                </div>
               </Col>
             </FormGroup>
 
