@@ -185,7 +185,7 @@ export class EditProblemModal extends React.Component {
       return {
         content: option.content,
         correct: option.checked
-      }
+      };
     });
     let problemContent;
     if (this.state.type === 'choice') {
@@ -307,7 +307,7 @@ export class EditProblemModal extends React.Component {
           <Button bsStyle="primary"
                   disabled={this.disableSave()}
                   onClick={this.onSaveClick}>保存</Button>
-          <Button onClick={() => {this.props.onHide();this.setState(initialState)}}>关闭</Button>
+          <Button onClick={() => {this.props.onHide();this.setState(initialState);}}>关闭</Button>
         </Modal.Footer>
       </Modal>
 
@@ -319,7 +319,11 @@ export class EditProblemModal extends React.Component {
 EditProblemModal.propTypes = {
   onHide: PropTypes.func.isRequired,
   editProblem: PropTypes.func.isRequired,
-  selectedProblem: PropTypes.integer
+  selectedProblem: PropTypes.integer,
+  show: PropTypes.func,
+  problems: PropTypes.array,
+  type: PropTypes.string,
+  roomId: PropTypes.integer
 };
 
 function mapStateToProps(state) {

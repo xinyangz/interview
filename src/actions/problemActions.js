@@ -32,13 +32,13 @@ export function deleteProblemError(error) {
   return {
     type: types.DELETE_PROBLEM_ERROR,
     error
-  }
+  };
 }
 
 export function beginDeleteProblem() {
   return {
     type: types.DELETE_PROBLEM
-  }
+  };
 }
 
 export function beginAddProblem(problem) {
@@ -50,8 +50,9 @@ export function beginAddProblem(problem) {
 
 export function addProblemError(error) {
   return {
-    type: types.ADD_PROBLEM_ERROR
-  }
+    type: types.ADD_PROBLEM_ERROR,
+    error
+  };
 }
 
 export function beginEditProblem(problem) {
@@ -65,7 +66,7 @@ export function editProblemError(error) {
   return {
     type: types.EDIT_PROBLEM_ERROR,
     error
-  }
+  };
 }
 
 export function addProblem(problem) {
@@ -94,7 +95,7 @@ export function addProblem(problem) {
           dispatch(addProblemError(err));
         }
       );
-  }
+  };
 }
 
 export function editProblem(problem) {
@@ -124,7 +125,7 @@ export function editProblem(problem) {
           dispatch(editProblemError(err));
         }
       );
-  }
+  };
 }
 
 export function deleteProblem(problemId) {
@@ -152,8 +153,8 @@ export function deleteProblem(problemId) {
       })
       .catch(err => {
         dispatch(deleteProblemError(err));
-      })
-  }
+      });
+  };
 }
 
 export function loadAllProblems(roomId) {

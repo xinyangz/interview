@@ -1,5 +1,5 @@
 import React from 'react';
-import {Row, Col, Tab, Nav, NavItem, NavDropdown, MenuItem, Modal} from 'react-bootstrap';
+import {Row, Col, Tab, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import ProblemTable from './ProblemTable';
 import ChoiceModal from './AddProblemModal';
 
@@ -12,7 +12,7 @@ class ControlTab extends React.Component {
       modalType: 'choice'
     };
     this.onTabSelect = this.onTabSelect.bind(this);
-    this.choiceClose = () => {this.setState({modalShow: false})};
+    this.choiceClose = () => {this.setState({modalShow: false});};
   }
 
   onTabSelect(key) {

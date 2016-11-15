@@ -149,7 +149,7 @@ export class AddProblemModal extends React.Component {
       return {
         content: option.content,
         correct: option.checked
-      }
+      };
     });
     let problemContent;
     if (this.props.type === 'choice') {
@@ -270,7 +270,7 @@ export class AddProblemModal extends React.Component {
           <Button bsStyle="primary"
                   disabled={this.disableSave()}
                   onClick={this.onSaveClick}>保存</Button>
-          <Button onClick={() => {this.props.onHide();this.setState(initialState)}}>关闭</Button>
+          <Button onClick={() => {this.props.onHide();this.setState(initialState);}}>关闭</Button>
         </Modal.Footer>
       </Modal>
 
@@ -281,7 +281,9 @@ export class AddProblemModal extends React.Component {
 AddProblemModal.propTypes = {
   onHide: PropTypes.func.isRequired,
   addProblem: PropTypes.func.isRequired,
-  type: PropTypes.string
+  type: PropTypes.string,
+  roomId: PropTypes.integer,
+  show: PropTypes.func
 };
 
 function mapStateToProps(state) {

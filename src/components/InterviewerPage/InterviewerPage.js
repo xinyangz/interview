@@ -4,15 +4,6 @@ import RoomTitle from './RoomTitle';
 import ControlTab from './ControlTab';
 import {loadInterviewerRoom} from '../../actions/roomsActions';
 
-const room = {
-  "interviewer" : "Jason Yip",
-  "candidates" : [ "1", "2", "3" ],
-  "name" : "计蒜课秋招（前端）",
-  "logo" : "http://example.com/examplepage",
-  "id" : "1001",
-  "problems" : [ "10", "11", "12" ]
-};
-
 class InterviewerPage extends React.Component {
   constructor(props) {
     super(props);
@@ -34,7 +25,8 @@ class InterviewerPage extends React.Component {
 }
 
 InterviewerPage.propTypes = {
-  room: PropTypes.object.isRequired
+  room: PropTypes.object.isRequired,
+  loadInterviewerRoom: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {

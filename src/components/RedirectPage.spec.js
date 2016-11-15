@@ -20,13 +20,13 @@ describe('<RedirectPage />', () => {
 
   it('should call login function if query parameters provided', () => {
     const location = {query: {n: '123', p: '123'}};
-    const wrapper = mount(<RedirectPage login={loginFunc} push={pushFunc} location={location}/>);
+    mount(<RedirectPage login={loginFunc} push={pushFunc} location={location}/>);
     expect(loginFunc.called).to.be.true;
   });
 
   it('should redirect to not-found page if query parameters are not satisfied', () => {
     const location = {query: {foo: '123'}};
-    const wrapper = mount(<RedirectPage login={loginFunc} push={pushFunc} location={location}/>);
+    mount(<RedirectPage login={loginFunc} push={pushFunc} location={location}/>);
     expect(pushFunc.calledWith('/not-found')).to.be.true;
-  })
+  });
 });

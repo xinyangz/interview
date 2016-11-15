@@ -132,6 +132,6 @@ export function loadInterviewerRoom() {
       .catch(err => {
         dispatch(loadRoomError(err));
       });
-  }
+  };
 }
 
