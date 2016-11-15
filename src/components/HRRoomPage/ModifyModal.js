@@ -57,8 +57,6 @@ export class ModifyModal extends React.Component {
         )
       })
     } else {
-      console.log(this.props.roomId);
-      console.log(this.props.rooms.find(room => room.id === this.props.roomId) && this.props.rooms.find(room => room.id === this.props.roomId).logo);
       return (
         <div className="upload-append-list">
           <p>
