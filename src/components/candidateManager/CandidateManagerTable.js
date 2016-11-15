@@ -37,6 +37,9 @@ class CandidateManagerTable extends React.Component {
 
     this.checkNull = this.checkNull.bind(this);
     this.setStatusColor = this.setStatusColor.bind(this);
+
+    this.getEmailValState = this.getEmailValState.bind(this);
+    this.getPhoneValState = this.getPhoneValState.bind(this);
   }
 
   setStatusColor(status) {
@@ -58,7 +61,8 @@ class CandidateManagerTable extends React.Component {
           <td>{candidate.name}</td>
           <td>{candidate.email}</td>
           <td>{candidate.phone}</td>
-          <td>{this.props.rooms.find(room => room.id === candidate.roomId).name}</td>
+          <td>{this.props.rooms.find(room => room.id === candidate.roomId) === undefined ||
+          this.props.rooms.find(room => room.id === candidate.roomId).name}</td>
           <td className="icon">
             <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/1.png" width={17} height={17} /></a>
             <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/2.png" width={17} height={17} /></a>
@@ -70,33 +74,48 @@ class CandidateManagerTable extends React.Component {
           <td><a onClick={() => this.openEditModal(candidate)}>编辑</a> | <a onClick={() => this.open(candidate.id)}>删除</a></td>
         </tr>)}</tbody>);
     }
-    return (<tbody><label>暂无候选人</label></tbody>);
+    return (<tbody><tr><td>暂无候选人</td></tr></tbody>);
   }
 
   getEmailHelpBlock() {
+    if(this.getEmailValState() == 'error') {
+      return (<Col smOffset={3}><HelpBlock style={{"padding-left" : "16px"}}>请输入正确的邮箱</HelpBlock></Col>);
+    }
+    return undefined;
+  }
+
+  getPhoneHelpBlock() {
+    if(this.getPhoneValState() == 'error') {
+      return (<Col smOffset={3}><HelpBlock style={{"padding-left" : "16px"}}>请输入正确的电话</HelpBlock></Col>);
+    }
+    return undefined;
+  }
+
+  getEmailValState(){
     const length = this.state.emailChange.length;
     if (length > 0)
     {
       const pattern = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
       if(pattern.test(this.state.emailChange)) {
-        return undefined;
+        return 'success';
       }
-      return (<HelpBlock>请输入正确的邮箱</HelpBlock>);
+      return 'error';
     }
+    return 'success';
   }
 
-  getPhoneHelpBlock() {
+  getPhoneValState(){
     const length = this.state.phoneChange.length;
     if (length > 0)
     {
       const pattern = /^([0-9])+/;
       if(pattern.test(this.state.phoneChange)) {
-        return undefined;
+        return 'success';
       }
-      return (<HelpBlock>请输入正确的电话</HelpBlock>);
+      return 'error';
     }
+    return 'success';
   }
-
 
   changeStatus(e) {
     this.setState({statueChange: e.target.value});
@@ -127,7 +146,12 @@ class CandidateManagerTable extends React.Component {
   }
 
   closeEditModal() {
-    this.setState({showEditModal: false});
+    this.setState({showEditModal: false,
+      nameChange: "",
+      emailChange: "",
+      phoneChange: "",
+      roomChange: "",
+      statusChange: "",});
   }
 
   openEditModal(candidate) {
@@ -141,18 +165,31 @@ class CandidateManagerTable extends React.Component {
   }
 
   onEditCandidateClick() {
-    var termCandidate = {
-      "id" : this.state.selectedEditCandidate.id,
-      "name" : this.state.nameChange,
-      "email" : this.state.emailChange,
-      "roomId" : this.state.roomChange,
-      "phone" : this.state.phoneChange,
-      "record" : this.state.selectedEditCandidate.record,
-      "status" : this.state.selectedEditCandidate.status,
-    };
-    console.log(termCandidate);
-    this.props.editCandidate(termCandidate);
-    this.closeEditModal();
+    if(this.getEmailValState() == 'success' &&  this.getPhoneValState() == 'success') {
+      if(!this.state.nameChange.length) {
+        this.setState({nameChange:this.state.selectedEditCandidate.name});
+      }
+      if(!this.state.emailChange.length) {
+        this.setState({emailChange:this.state.selectedEditCandidate.email});
+      }
+      if(!this.state.phoneChange.length) {
+        this.setState({phoneChange:this.state.selectedEditCandidate.phone});
+      }
+      var termCandidate = {
+        "id": this.state.selectedEditCandidate.id,
+        "name": this.state.nameChange,
+        "email": this.state.emailChange,
+        "roomId": this.state.roomChange,
+        "phone": this.state.phoneChange,
+        "record": this.state.selectedEditCandidate.record,
+        "status": this.state.selectedEditCandidate.status,
+      };
+      this.props.editCandidate(termCandidate);
+      this.closeEditModal();
+    }
+    else {
+      alert("请先完善候选人信息！");
+    }
   }
 
   render() {
@@ -188,24 +225,24 @@ class CandidateManagerTable extends React.Component {
               </Modal.Header>
               <Modal.Body>
                 <Form horizontal>
-                  <FormGroup controlId="candidateName">
+                  <FormGroup controlId="candidateName" validationState='success'>
                     <Col componentClass={ControlLabel} sm={3}>候选人姓名</Col>
                     <Col sm={9}><FormControl type="text" placeholder={this.state.selectedEditCandidate.name} onChange={this.changeName}/></Col>
                   </FormGroup>
 
-                  <FormGroup controlId="candidateEmail">
+                  <FormGroup controlId="candidateEmail" validationState={this.getEmailValState()}>
                     <Col componentClass={ControlLabel} sm={3}>候选人邮箱</Col>
                     <Col sm={9}><FormControl type="email" placeholder={this.state.selectedEditCandidate.email}  onChange={this.changeEmail}/></Col>
                     {this.getEmailHelpBlock()}
                   </FormGroup>
 
-                  <FormGroup controlId="candidatePhone">
+                  <FormGroup controlId="candidatePhone" validationState={this.getPhoneValState()}>
                     <Col componentClass={ControlLabel} sm={3}>候选人手机</Col>
                     <Col sm={9}><FormControl type="text" placeholder={this.state.selectedEditCandidate.phone}  onChange={this.changePhone}/></Col>
                     {this.getPhoneHelpBlock()}
                   </FormGroup>
 
-                  <FormGroup controlId="candidateRoom">
+                  <FormGroup controlId="candidateRoom" validationState='success'>
                     <Col componentClass={ControlLabel} sm={3}>候选人房间</Col>
                     <Col sm={9}>
                       <FormControl componentClass="select" placeholder="select"  onChange={this.changeRoom}>
