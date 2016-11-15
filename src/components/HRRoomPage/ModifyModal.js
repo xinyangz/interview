@@ -3,11 +3,72 @@ import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 import {Modal, Button, Form, FormControl, FormGroup, Col, ControlLabel} from 'react-bootstrap';
 import {modifyRoom} from '../../actions/roomsActions';
+//import '../../styles/upLoadLogo/upLoadStyle.less';
 
 export class ModifyModal extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      files: [],
+      progress: []
+    };
     this.onEditRoomClick = this.onEditRoomClick.bind(this);
+    this._renderPreview = this._renderPreview.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleProgress = this.handleProgress.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({progress:[]});
+    event.preventDefault();
+    let target = event.target;
+    let files = target.files;
+    let count = this.state.multiple ? files.length : 1;
+    for (let i = 0; i < count; i++) {
+      files[i].thumb = URL.createObjectURL(files[i])
+    }
+    // convert to array
+    files = Array.prototype.slice.call(files, 0);
+    files = files.filter(function (file) {
+      return /image/i.test(file.type)
+    });
+    this.setState({files: files});
+  }
+
+  handleProgress(file, loaded, total, idx) {
+    let percent = (loaded / total * 100).toFixed(2) + '%';
+    let _progress = this.state.progress;
+    _progress[idx] = percent;
+    console.log(_progress);
+    this.setState({ progress: _progress });
+  }
+
+  _renderPreview() {
+    console.log(this.state.files);
+    if (this.state.files.length != 0) {
+      return this.state.files.map((item) => {
+        return (
+          <div className="upload-append-list">
+            <p>
+              <br/>
+              <img src={item.thumb} width="100%" />
+            </p>
+          </div>
+        )
+      })
+    } else {
+      console.log(this.props.roomId);
+      console.log(this.props.rooms.find(room => room.id === this.props.roomId) && this.props.rooms.find(room => room.id === this.props.roomId).logo);
+      return (
+        <div className="upload-append-list">
+          <p>
+            <br/>
+            <img src={this.props.rooms.find(room => room.id === this.props.roomId) &&
+            this.props.rooms.find(room => room.id === this.props.roomId).logo} width="100%"/>
+          </p>
+        </div>
+      )
+    }
   }
 
   onEditRoomClick(event) {
@@ -41,6 +102,7 @@ export class ModifyModal extends React.Component {
       newRoom.name = nameToChange.name;
     this.props.modifyRoom({newRoom,room_id,logo});
     this.props.onHide();
+    this.setState({files:[]});
   }
 
   render() {
@@ -78,12 +140,18 @@ export class ModifyModal extends React.Component {
                 LOGO
               </Col>
               <Col sm={10}>
-                <input type="file" ref="logo" id="imageLogo" accept="image/*"/>
+                <input
+                  onChange={(v)=>this.handleChange(v)}
+                  type="file"
+                  ref="logo"
+                  id="imageLogo"
+                  accept="image/*"
+                  multiple={false}/>
               </Col>
               <Col xs={6} md={4}>
-                <img
-                  src={this.props.rooms.find(room => room.id === this.props.roomId) && this.props.rooms.find(room => room.id === this.props.roomId).logo}
-                  width="100%"/>
+                <div>
+                  {this._renderPreview()}
+                </div>
               </Col>
             </FormGroup>
 
