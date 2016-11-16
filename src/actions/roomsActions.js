@@ -269,3 +269,21 @@ export function addRoom(data) {
       });
   };
 }
+
+export function sendEmail(roomId) {
+  return (dispatch, getState) => {
+    const token = getState().user.token;
+    return axios.get('/room/' + roomId + '/invitation?token=' + token)
+      .then(response => {
+        if (response.status === 200) {
+          dispatch(displayNotification('success', '操作成功', '已发送邮件'));
+        }
+        else {
+          dispatch(displayNotification('error', '操作失败', '邮件发送失败'));
+        }
+      })
+      .catch(error => {
+        dispatch(displayNotification('error', '错误', error.message));
+      });
+  }
+}
