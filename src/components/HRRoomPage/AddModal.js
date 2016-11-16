@@ -59,8 +59,12 @@ export class AddModal extends React.Component {
     const name = ReactDOM.findDOMNode(this.refs.name).value;
     const interviewer = ReactDOM.findDOMNode(this.refs.interviewer).value;
     let logo = ReactDOM.findDOMNode(this.refs.logo).files[0];
-    let newRoom = {"name": name, "interviewer": interviewer};
-    this.props.addRoom({newRoom,logo});
+    let newRoom = {"name": name, "interviewer": interviewer, "candidates":[]};
+
+    let image = new FormData();
+    image.append('image', logo);
+
+    this.props.addRoom({newRoom,image});
     this.props.onHide();
     this.setState({files:[]});
   }

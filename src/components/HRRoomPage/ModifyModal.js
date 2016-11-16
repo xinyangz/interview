@@ -100,6 +100,9 @@ export class ModifyModal extends React.Component {
     if(nameToChange.candidates == undefined)
       newRoom.candidates = [];
 
+    let image = new FormData();
+    image.append('image', logo);
+
     this.props.modifyRoom({newRoom,room_id,image});
     this.props.onHide();
     this.setState({files:[]});
