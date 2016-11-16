@@ -3,7 +3,6 @@ import axios from 'axios';
 import {displayNotification} from './notificationActions';
 
 // token should be read from state
-const token = '123';
 const offset = '0';
 const limit = '1';
 
@@ -108,7 +107,8 @@ export function listCandidateError(error) {
 }
 
 export function deleteCandidate(candidateId) {
-  return dispatch => {
+  return (dispatch, getState) => {
+    const token = getState().user.token;
     dispatch(beginDeleteCandidate());
     return axios.delete('/candidate/' + candidateId + '?token=' + token)
       .then(response => {
@@ -125,7 +125,8 @@ export function deleteCandidate(candidateId) {
 }
 
 export function editCandidate(candidate) {
-  return dispatch => {
+  return (dispatch, getState) => {
+    const token = getState().user.token;
     dispatch(beginEditCandidate());
     return axios.put('/candidate/' + candidate.id + '?token=' + token, candidate)
       .then(response => {
@@ -143,7 +144,8 @@ export function editCandidate(candidate) {
 }
 
 export function addCandidate(candidate) {
-  return dispatch => {
+  return (dispatch, getState) => {
+    const token = getState().user.token;
     dispatch(addCandidateBegin());
     return axios.post('/candidate?token=' + token, candidate)
       .then(response => {
@@ -160,7 +162,8 @@ export function addCandidate(candidate) {
 }
 
 export function listCandidate(fileContent) {
-  return dispatch => {
+  return (dispatch, getState) => {
+    const token = getState().user.token;
     dispatch(listCandidateBegin());
     return axios.post('/candidate/file?token=' + token, fileContent)
       .then(response => {
@@ -177,7 +180,8 @@ export function listCandidate(fileContent) {
 }
 
 export function loadAllCandidates() {
-  return dispatch => {
+  return (dispatch, getState) => {
+    const token = getState().user.token;
     dispatch(beginLoadAllCandidates());
     return axios.get('/candidate' + '?offset='+ offset + '&limit=' + limit + '&token=' + token)
       .then(response => {

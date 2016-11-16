@@ -117,7 +117,7 @@ class CandidateManagerPage extends React.Component {
               <a className="room-name" onClick={this.onEditRoomClick}>{room.name}</a>
             </td>
             <td>
-              面试官: {room.interviewer} | {room.candidates.length}人
+              面试官: {room.interviewer} | {room.cadidates === undefined ? 0 : room.candidates.length}人
             </td>
             <td>
               <a className="link" onClick={() => this.openModifyModal(room.id)}>编辑</a> | <a className="link"

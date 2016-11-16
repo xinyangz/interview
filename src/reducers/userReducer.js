@@ -6,10 +6,9 @@ const isLogin = (state = initialState.user.isLogin,
                  action) => {
   switch (action.type) {
     case types.USER_LOGIN_SUCCESS:
-    case types.USER_LOGIN:
       return true;
+    case types.USER_LOGIN:
     case types.USER_LOGIN_ERROR:
-      return false;
     case types.USER_LOGOUT_SUCCESS:
       return false;
     default:

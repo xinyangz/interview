@@ -3,6 +3,8 @@ import { push } from 'react-router-redux';
 import axios from 'axios';
 import md5 from 'js-md5';
 import {displayNotification} from './notificationActions';
+import {loadAllRooms} from './roomsActions';
+import {loadAllCandidates} from './candidateManagerActions';
 
 export function beginLogin() {
   return {
@@ -29,7 +31,7 @@ export function login(data) {
     dispatch(beginLogin());
     const username = data.username;
     const password = md5(data.password);
-    axios.get('/user/login?username=' + username + '&password=' + password)
+    return axios.get('/user/login?username=' + username + '&password=' + password)
       .then(response => {
         if ( response.status === 200 ) {
           const {user} = response.data;
@@ -38,9 +40,11 @@ export function login(data) {
           dispatch(displayNotification('success', '成功登录', '您已成功登录'));
           if (type === 'hr') {
             dispatch(push('/hr'));
+            dispatch(loadAllRooms());
           }
           else if (type === 'interviewer') {
             dispatch(push('/interviewer'));
+            dispatch(loadAllCandidates());
           }
           else {
             dispatch(push('/not-found'));
@@ -53,7 +57,10 @@ export function login(data) {
           dispatch(displayNotification('error', '错误', toString(response.data)));
         }
       })
-      .catch(error=>dispatch(displayNotification('error', '错误', toString(error))));
+      .catch(error=> {
+        console.log(error);
+        return dispatch(displayNotification('error', '错误', '登录失败，请检查您的用户名和密码'));
+      });
   };
 }
 
