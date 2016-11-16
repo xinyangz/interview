@@ -187,7 +187,7 @@ class CandidateManagerPage extends React.Component {
   }
 }
 
-CandidateManagerPage.PropTypes = {
+CandidateManagerPage.propTypes = {
   candidateManager: PropTypes.arrayOf(PropTypes.object).isRequired,
   rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
   deleteRoom: PropTypes.func
