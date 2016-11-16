@@ -14,7 +14,7 @@ class RoomTestCase(APISimpleTestCase):
 
     test_room_post = {
         "name": "HK",
-        "interviewer": 0,
+        "interviewer": "zbh",
         "candidates": [
             100,
             101,
@@ -25,7 +25,7 @@ class RoomTestCase(APISimpleTestCase):
     test_room = {
         "id": 1,
         "name": "HK",
-        "interviewer": 0,
+        "interviewer": "zbh",
         "candidates": [
             100,
             101,
@@ -43,6 +43,15 @@ class RoomTestCase(APISimpleTestCase):
         'organization': 'CCP',
         'contact': 'Hawaii',
         'token': 'simple'
+    }
+
+    test_interviewer = {
+        'username': 'zbh',
+        'password': 'qd',
+        'type': 'interviewer',
+        'email': 'zbh@hk.cn',
+        'organization': 'Interviewer Group',
+        'token': 'tk'
     }
 
     factory = APIRequestFactory()
@@ -111,9 +120,15 @@ class RoomTestCase(APISimpleTestCase):
     def test_create_room(self):
         response = self.get_post_response_root({'token': self.test_hr['token']},
                                                self.test_room_post)
+        # Get tmp username
+        cursor = self.db.users.find({'type': 'interviewer'})
+        self.assertEqual(cursor.count(), 1)
+        res_room = self.test_room.copy()
+        res_room['interviewer'] = cursor[0]['username']
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, self.test_room)
+        self.assertEqual(response.data, res_room)
         self.db.rooms.delete_one({'id': 1})
+        self.db.users.delete_one({'type': 'interviewer'})
 
     def test_get_list(self):
         for i in range(20):
@@ -154,7 +169,8 @@ class RoomTestCase(APISimpleTestCase):
         self.assertEqual(response.data, self.test_room)
         self.db.rooms.delete_many({})
 
-    def test_put_success(self):
+    def test_put_success_same_interviewer(self):
+        self.db.users.insert_one(self.test_interviewer)
         tmp_room = self.test_room.copy()
         self.db.rooms.insert_one(tmp_room)
         update_data = self.test_room_post.copy()
@@ -165,6 +181,23 @@ class RoomTestCase(APISimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, updated_room)
         self.db.rooms.delete_many({})
+        self.db.users.delete_many({'type': 'interviewer'})
+
+    def test_put_success_different_interviewer(self):
+        self.db.users.insert_one(self.test_interviewer)
+        tmp_room = self.test_room.copy()
+        self.db.rooms.insert_one(tmp_room)
+        update_data = self.test_room_post.copy()
+        update_data['name'] = 'USA'
+        update_data['interviewer'] = 'a@b.c'
+        response = self.get_put_response(1, {'token': self.test_hr['token']}, update_data)
+        updated_room = self.test_room.copy()
+        updated_room['name'] = 'USA'
+        updated_room['interviewer'] = self.db.users.find({'email': 'a@b.c'})[0]['username']
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, updated_room)
+        self.db.rooms.delete_many({})
+        self.db.users.delete_many({'type': 'interviewer'})
 
     def test_logo_success(self):
         tmp_room = self.test_room.copy()

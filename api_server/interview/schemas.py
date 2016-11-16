@@ -1671,7 +1671,7 @@ swagger_schema = {
                     "example": "http://example.com/examplepage"
                 },
                 "interviewer": {
-                    "description": "面试官ID，若不存在则置空",
+                    "description": "面试官，若不存在则置空",
                     "type": "string"
                 },
                 "candidates": {
@@ -1713,8 +1713,8 @@ swagger_schema = {
                     "example": "计蒜课秋招（前端）"
                 },
                 "interviewer": {
-                    "description": "面试官ID，若不存在则置空",
-                    "type": "integer"
+                    "description": "面试官，若不存在则置空",
+                    "type": "string"
                 },
                 "candidates": {
                     "description": "候选人ID列表",
