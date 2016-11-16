@@ -4,7 +4,7 @@ import {displayNotification} from './notificationActions';
 
 // token should be read from state
 const offset = '0';
-const limit = '1';
+const limit = '20';
 
 export function beginDeleteCandidate() {
   return {
@@ -139,7 +139,6 @@ export function editCandidate(candidate) {
     return axios.put('/candidate/' + candidate.id + '?token=' + token, candidate)
       .then(response => {
         if (response.status === 200) {
-          dispatch(editCandidateSuccess(candidate.id));
           dispatch(loadAllCandidates());
           dispatch(displayNotification('success', '操作成功', '候选人信息已修改'));
         }
@@ -158,7 +157,6 @@ export function addCandidate(candidate) {
     return axios.post('/candidate?token=' + token, candidate)
       .then(response => {
         if (response.status === 200) {
-          dispatch(addCandidateSuccess(candidate));
           dispatch(loadAllCandidates());
         }
         else {
@@ -176,7 +174,6 @@ export function listCandidate(fileContent) {
     return axios.post('/candidate/file?token=' + token, fileContent)
       .then(response => {
         if (response.status === 200) {
-          dispatch(listCandidateSuccess(fileContent));
           dispatch(loadAllCandidates());
         }
         else {

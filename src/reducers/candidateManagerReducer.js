@@ -8,12 +8,6 @@ const candidates = (state = initialState.candidatesStates.candidates, action) =>
       return state.filter(candidate => candidate.id != action.candidateId);
     case types.LOAD_ALL_CANDIDATE_SUCCESS:
       return action.candidates;
-    case types.ADD_CANDIDATE_SUCCESS:
-      return action.candidates;
-    case types.EDIT_CANDIDATE_SUCCESS:
-      return action.candidates;
-    case types.LIST_CANDIDATE_SUCCESS:
-      return action.candidates;
     default:
       return state;
   }

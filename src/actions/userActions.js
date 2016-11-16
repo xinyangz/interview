@@ -47,6 +47,7 @@ export function login(data, type) {
           if (type === 'hr') {
             dispatch(push('/hr'));
             dispatch(loadAllRooms());
+            dispatch(loadAllCandidates());
             dispatch(loadTemplate());
           }
           else if (type === 'interviewer') {
