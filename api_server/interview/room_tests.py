@@ -80,26 +80,30 @@ class RoomTestCase(APISimpleTestCase):
         db_client.drop_database(settings.DB_NAME)
 
     def get_delete_response(self, room_id, query):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + str(room_id)
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
+            str(room_id)
         request = self.factory.get(url, query)
         url = request.get_raw_uri()
         response = self.client.delete(url)
         return response
 
     def get_get_response(self, room_id, query):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + str(room_id)
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
+            str(room_id)
         response = self.client.get(url, query)
         return response
 
     def get_put_response(self, room_id, query, data):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + str(room_id)
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
+            str(room_id)
         request = self.factory.get(url, query)
         url = request.get_raw_uri()
         response = self.client.put(url, data)
         return response
 
     def get_put_logo_response(self, room_id, query, data):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + str(room_id) + '/logo'
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
+            str(room_id) + '/logo'
         request = self.factory.get(url, query)
         url = request.get_raw_uri()
         response = self.client.put(url, data, format='multipart')
@@ -118,8 +122,9 @@ class RoomTestCase(APISimpleTestCase):
         return response
 
     def test_create_room(self):
-        response = self.get_post_response_root({'token': self.test_hr['token']},
-                                               self.test_room_post)
+        response = self.get_post_response_root(
+            {'token': self.test_hr['token']},
+            self.test_room_post)
         # Get tmp username
         cursor = self.db.users.find({'type': 'interviewer'})
         self.assertEqual(cursor.count(), 1)
@@ -151,20 +156,23 @@ class RoomTestCase(APISimpleTestCase):
         self.db.rooms.delete_many({})
 
     def test_not_found(self):
-        response = self.get_delete_response(1, {'token': self.test_hr['token']})
+        response = self.get_delete_response(
+            1, {'token': self.test_hr['token']})
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_delete_success(self):
         tmp_room = self.test_room.copy()
         tmp_room['id'] = 0
         self.db.rooms.insert_one(tmp_room)
-        response = self.get_delete_response(0, {'token': self.test_hr['token']})
+        response = self.get_delete_response(
+            0, {'token': self.test_hr['token']})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_success(self):
         tmp_room = self.test_room.copy()
         self.db.rooms.insert_one(tmp_room)
-        response = self.get_get_response(1, {'token': self.test_hr['token']})
+        response = self.get_get_response(
+            1, {'token': self.test_hr['token']})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, self.test_room)
         self.db.rooms.delete_many({})
@@ -177,7 +185,8 @@ class RoomTestCase(APISimpleTestCase):
         update_data['name'] = 'USA'
         updated_room = self.test_room.copy()
         updated_room['name'] = 'USA'
-        response = self.get_put_response(1, {'token': self.test_hr['token']}, update_data)
+        response = self.get_put_response(
+            1, {'token': self.test_hr['token']}, update_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, updated_room)
         self.db.rooms.delete_many({})
@@ -190,10 +199,12 @@ class RoomTestCase(APISimpleTestCase):
         update_data = self.test_room_post.copy()
         update_data['name'] = 'USA'
         update_data['interviewer'] = 'a@b.c'
-        response = self.get_put_response(1, {'token': self.test_hr['token']}, update_data)
+        response = self.get_put_response(
+            1, {'token': self.test_hr['token']}, update_data)
         updated_room = self.test_room.copy()
         updated_room['name'] = 'USA'
-        updated_room['interviewer'] = self.db.users.find({'email': 'a@b.c'})[0]['username']
+        updated_room['interviewer'] = \
+            self.db.users.find({'email': 'a@b.c'})[0]['username']
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, updated_room)
         self.db.rooms.delete_many({})
@@ -208,7 +219,8 @@ class RoomTestCase(APISimpleTestCase):
         tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
         image.save(tmp_file, 'jpeg')
 
-        response = self.get_put_logo_response(1, {'token': self.test_hr['token']}, {'image': tmp_file})
+        response = self.get_put_logo_response(
+            1, {'token': self.test_hr['token']}, {'image': tmp_file})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # print(response.data['logo'])

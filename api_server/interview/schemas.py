@@ -809,7 +809,8 @@ swagger_schema = {
                             "X-Rate-Limit": {
                                 "type": "integer",
                                 "format": "integer",
-                                "description": "calls per hour allowed by the user"
+                                "description": "calls per \
+                                    hour allowed by the user"
                             },
                             "X-Expires-After": {
                                 "type": "string",

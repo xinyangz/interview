@@ -12,18 +12,13 @@ def file_parser(ext_name, content):
     if ext_name == 'csv':
         text = content.read().decode('utf-8')
         spamreader = '\n'.join(text.split('\r\n')).split('\n')
-        # dialect = csv.Sniffer().sniff(content.read().decode('utf-8'))
-        # content.seek(0)
-        # content.open()
-        # spamreader = csv.reader(content.read().decode('utf-8'), delimiter=',', dialect=dialect)
-        # spamreader = csv.reader(content.read().decode(), delimiter=',', dialect=dialect)
-        # spamreader = csv.reader(codecs.EncodedFile(content, "utf-8"), delimiter=',', dialect=dialect)
         line_counter = 0
         for raw_row in spamreader:
             line_counter += 1
             if line_counter <= 1:
                 row = raw_row.split(',')
-                if len(row) < 3 or row[0] != r'姓名' or row[1] != r'邮箱' or row[2] != r'手机号':
+                if len(row) < 3 or row[0] != r'姓名' or \
+                        row[1] != r'邮箱' or row[2] != r'手机号':
                     return None
                 continue
             row = raw_row.split(',')
@@ -59,7 +54,8 @@ def file_parser(ext_name, content):
             if line_counter <= 2:
                 if line_counter == 2:
                     line = [col.value for col in row]
-                    if len(line) < 3 or line[0] != u'姓名' or line[1] != u'邮箱' or line[2] != u'手机号':
+                    if len(line) < 3 or line[0] != u'姓名' or \
+                       line[1] != u'邮箱' or line[2] != u'手机号':
                         return None
                 continue
             line = [col.value for col in row]

@@ -13,7 +13,9 @@ def check(request, permitted_user_types=None, room_id=None):
     """
     Check the if the request is permitted.
     :param request: Request to check
-    :param permitted_user_types: Types of users that are permitted. Default is None, which means do not check user types.
+    :param permitted_user_types:
+        Types of users that are permitted.
+        Default is None, which means do not check user types.
     :param room_id: Room to access
     :return: Predefined status
     """
@@ -46,11 +48,15 @@ def check(request, permitted_user_types=None, room_id=None):
     if room_id is not None and user_type != 'hr':
         user_name = cursor[0]['username']
         if user_type == 'interviewer':
-            room_cursor = db.rooms.find({'interviewer': user_name, 'id': room_id})
+            room_cursor = db.rooms.find(
+                {'interviewer': user_name, 'id': room_id}
+            )
             if room_cursor.count() == 0:
                 return NO_PERMISSION
         elif user_type == 'candidate':
-            room_cursor = db.rooms.find({'candidates': user_name, 'id': room_id})
+            room_cursor = db.rooms.find(
+                {'candidates': user_name, 'id': room_id}
+            )
             if room_cursor.count() == 0:
                 return NO_PERMISSION
         else:

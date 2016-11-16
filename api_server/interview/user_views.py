@@ -102,7 +102,8 @@ def user_login(request, **kwargs):
 @api_view(['GET'])
 def user_logout(request, **kwargs):
     perm_result = permissions.check(request)
-    if perm_result == permissions.NO_TOKEN or perm_result == permissions.NO_PERMISSION:
+    if perm_result == permissions.NO_TOKEN or \
+       perm_result == permissions.NO_PERMISSION:
         return Response(
             {
                 'error': 'Permission denied'
@@ -173,7 +174,10 @@ def user_register(request, **kwargs):
     username = data_dict['username']
     cursor = db.users.find({'username': username})
     if cursor.count() > 0:
-        return Response({'error': 'Username already exists'}, status.HTTP_401_UNAUTHORIZED)
+        return Response(
+            {'error': 'Username already exists'},
+            status.HTTP_401_UNAUTHORIZED
+        )
 
     # insert
     original_dict = data_dict.copy()
@@ -229,9 +233,13 @@ def user_manage(request, **kwargs):
         changed_data = request.data
 
         try:
-            jsonschema.validate(changed_data, swagger_schema['definitions']['User'])
+            jsonschema.validate(changed_data,
+                                swagger_schema['definitions']['User'])
         except:
-            return Response({'error': 'Key error'}, status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'error': 'Key error'},
+                status.HTTP_400_BAD_REQUEST
+            )
 
         db.users.update_one(
             {'username': username},

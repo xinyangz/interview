@@ -29,7 +29,8 @@ def root(request, **kwargs):
         room_data = dict(request.data)
 
         try:
-            jsonschema.validate(room_data, swagger_schema['definitions']['RoomPost'])
+            jsonschema.validate(room_data,
+                                swagger_schema['definitions']['RoomPost'])
         except:
             return Response(
                 {'error': 'Key error'},
@@ -47,10 +48,17 @@ def root(request, **kwargs):
         # TODO: interview field is email
         # TODO: send email button
         # TODO: put change email
-        temp_username = "Interviewer_" + str(sequences.get_next_sequence('interviewer'))
+        temp_username = "Interviewer_" + \
+            str(sequences.get_next_sequence('interviewer'))
         while db.users.find({'username': temp_username}).count() > 0:
+<<<<<<< a230ba8d181138ef2905f75b939fc0d18dd20225
             temp_username = "Interviewer_" + str(sequences.get_next_sequence('interviewer'))
         temp_password = str(uuid.uuid4())
+=======
+            temp_username = "Interviewer_" + \
+                str(sequences.get_next_sequence('interviewer'))
+        temp_password = uuid.uuid4()
+>>>>>>> Grammer check
         user_part = {
             'username': temp_username,
             'type': 'interviewer',
@@ -85,6 +93,7 @@ def root(request, **kwargs):
         else:
             limit = int(limit)
 
+<<<<<<< a230ba8d181138ef2905f75b939fc0d18dd20225
         sorted_rooms = db.rooms.find({}).sort('id', pymongo.ASCENDING)
         all_count = sorted_rooms.count()
         if offset + limit > all_count:
@@ -94,6 +103,17 @@ def root(request, **kwargs):
         sorted_rooms = list(sorted_rooms)[offset:offset + count]
         return_list = list(map(lambda x: {k: v for k, v in dict(x).items() if k in room_keys},
                            sorted_rooms))
+=======
+        sorted_rooms = db.rooms.find(
+            {
+                'id': {'$gte': offset + 1, '$lte': offset + limit}
+            }
+        ).sort('id', pymongo.ASCENDING)
+        count = sorted_rooms.count()
+        return_list = list(map(
+            lambda x: {k: v for k, v in dict(x).items()if k in room_keys},
+            list(sorted_rooms)))
+>>>>>>> Grammer check
         return Response(
             {
                 'offset': offset,
@@ -160,13 +180,23 @@ def invitation(request, room_id, **kwargs):
                     status.HTTP_400_BAD_REQUEST
                 )
             candidate_username = candidate_cursor[0]['unique_username']
-            candidate_email_lrs.append((candidate_cursor[0]['email'],
-                                        candidate_username,
-                                        db.users.find({'username': candidate_username})[0]['password']))
+            candidate_email_lrs.append(
+                (candidate_cursor[0]['email'],
+                 candidate_username,
+                 db.users.find(
+                     {'username': candidate_username})[0]['password']
+                 )
+            )
 
-    send_email.send_interviewer_invitation(interviewer_email_lr[0], interviewer_email_lr[1], interviewer_email_lr[2])
+    send_email.send_interviewer_invitation(
+        interviewer_email_lr[0],
+        interviewer_email_lr[1],
+        interviewer_email_lr[2])
     for candidate_email_lr in candidate_email_lrs:
-        send_email.send_candidate_invitation(candidate_email_lr[0], candidate_email_lr[1], candidate_email_lr[2])
+        send_email.send_candidate_invitation(
+            candidate_email_lr[0],
+            candidate_email_lr[1],
+            candidate_email_lr[2])
 
     return Response(status=status.HTTP_200_OK)
 
@@ -208,7 +238,8 @@ def logo(request, room_id, **kwargs):
     # Save logo
     img_file = request.data['image']
     _, extension = os.path.splitext(img_file.name)
-    file_path = os.path.join(settings.FILE_ROOT, str(room_id), 'logo' + extension)
+    file_path = os.path.join(settings.FILE_ROOT, str(room_id),
+                             'logo' + extension)
     if not os.path.exists(os.path.dirname(file_path)):
         os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'wb+') as destination:
@@ -216,7 +247,8 @@ def logo(request, room_id, **kwargs):
             destination.write(chunk)
 
     # update logo url
-    logo_url = settings.SITE_URL + settings.FILE_URL + str(room_id) + '/logo' + extension
+    logo_url = settings.SITE_URL + settings.FILE_URL + str(room_id) + \
+        '/logo' + extension
     db.rooms.update_one(
         {'id': room_id},
         {'$set': {'logo': logo_url}}
@@ -265,19 +297,26 @@ def manage(request, room_id, **kwargs):
         return Response(status=status.HTTP_200_OK)
 
     if request.method == 'GET':
-        ret_data = {k: v for k, v in dict(room_cursor[0]).items() if k in room_keys}
+        ret_data = {
+            k: v for k, v in dict(room_cursor[0]).items() if k in room_keys
+        }
         return Response(
             ret_data,
             status.HTTP_200_OK
         )
 
     if request.method == 'PUT':
-        room_data_full = {k: v for k, v in dict(room_cursor[0]).items() if k in room_keys}
+        room_data_full = {
+            k: v for k, v in dict(room_cursor[0]).items() if k in room_keys
+        }
         update_data = dict(request.data)
 
         # Schema check
         try:
-            jsonschema.validate(update_data, swagger_schema['definitions']['RoomPost'])
+            jsonschema.validate(
+                update_data,
+                swagger_schema['definitions']['RoomPost']
+             )
         except:
             return Response(
                 {'error': 'Key error'},
@@ -303,9 +342,11 @@ def manage(request, room_id, **kwargs):
                     status.HTTP_404_NOT_FOUND
                 )
             if username_email != user_cursor[0]['email']:
-                temp_username = "Interviewer_" + str(sequences.get_next_sequence('interviewer'))
+                temp_username = "Interviewer_" + \
+                    str(sequences.get_next_sequence('interviewer'))
                 while db.users.find({'username': temp_username}).count() > 0:
-                    temp_username = "Interviewer_" + str(sequences.get_next_sequence('interviewer'))
+                    temp_username = "Interviewer_" + \
+                        str(sequences.get_next_sequence('interviewer'))
                 temp_password = str(uuid.uuid4())
                 user_part = {
                     'username': temp_username,

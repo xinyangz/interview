@@ -69,7 +69,8 @@ class RoomTestCase(APISimpleTestCase):
         self.db.users.insert_one(self.test_interviewer)
 
         url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/interviewer'
-        response = self.client.get(url, {'token': self.test_interviewer['token']})
+        response = self.client.get(url,
+                                   {'token': self.test_interviewer['token']})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['roomId'], self.test_room['id'])
 

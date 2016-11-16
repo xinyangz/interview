@@ -55,7 +55,7 @@ class ReportTestCase(APISimpleTestCase):
         'candidates': [
             '301'
         ],
-        'problems':[1],
+        'problems': [1],
         'interviewer': 'Sharon'
     }
 
@@ -66,8 +66,7 @@ class ReportTestCase(APISimpleTestCase):
       "content": {
           "title": "A multiple choice example",
           "description": "here is description",
-          "option": [
-                {
+          "option": [{
                     "content": "Choice 1",
                     "correct": "True"
                 },
@@ -92,8 +91,9 @@ class ReportTestCase(APISimpleTestCase):
         while True:
             if test_db_name not in existing_db_names:
                 break
-            # test_db_name = nr.bytes(10)
-            test_db_name = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(10))
+            test_db_name = ''.join(
+                random.choice(string.ascii_letters + string.digits)
+                for _ in range(10))
         settings.DB_NAME = test_db_name
 
     @classmethod
@@ -109,17 +109,20 @@ class ReportTestCase(APISimpleTestCase):
         self.db = self.db_client[settings.DB_NAME]
 
     def get_put_response(self, candidate_id, data, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/report/' + str(candidate_id) + '?token=' + token
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/report/' + \
+            str(candidate_id) + '?token=' + token
         response = self.client.put(url, data, format='json')
         return response
 
     def get_get_response(self, candidate_id, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/report/' + str(candidate_id) + '?token=' + token
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/report/' + \
+            str(candidate_id) + '?token=' + token
         response = self.client.get(url)
         return response
 
     def get_del_response(self, candidate_id, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/report/' + str(candidate_id) + '?token=' + token
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/report/' + \
+            str(candidate_id) + '?token=' + token
         response = self.client.delete(url)
         return response
 
@@ -130,7 +133,8 @@ class ReportTestCase(APISimpleTestCase):
         self.db.candidate.insert_one(self.candidate_data_template)
         self.db.room.insert_one(self.room_template)
         self.db.problems.insert_one(self.problem_template)
-        response = self.get_put_response(301, "His English is very poor", 'houbuhouwa')
+        response = self.get_put_response(
+            301, "His English is very poor", 'houbuhouwa')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.get_get_response(301, 'houbuhouwa')

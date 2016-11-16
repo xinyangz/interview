@@ -3,10 +3,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.conf import settings
 import pymongo
-import datetime
 import uuid
 import jsonschema
-import copy
 from . import permissions
 from . import sequences
 from .schemas import swagger_schema
@@ -51,7 +49,8 @@ def get_set_candidate(request, **kwargs):
 
         # Check key error
         try:
-            jsonschema.validate(candidate_data, swagger_schema['definitions']['PostCandidate'])
+            jsonschema.validate(candidate_data,
+                                swagger_schema['definitions']['PostCandidate'])
         except:
             return Response(
                 {
@@ -107,8 +106,10 @@ def get_set_candidate(request, **kwargs):
         else:
             count = limit
         sorted_candidate = list(sorted_candidate)[offset:offset + count]
-        return_list = list(map(lambda x: {k: v for k, v in dict(x).items() if k in candidate_keys},
-                           sorted_candidate))
+        return_list = list(map(
+            lambda x: {k: v for k, v in dict(x).items()
+                       if k in candidate_keys},
+            sorted_candidate))
 
         return Response(
             {
@@ -164,7 +165,9 @@ def workon_candidate(request, candidate_id, **kwargs):
     if request.method == 'GET':
         # Get data
         for item in data:
-            temp_data = {k: v for k, v in dict(item).items() if k in candidate_keys}
+            temp_data = {
+                k: v for k, v in dict(item).items() if k in candidate_keys
+            }
             return Response(
                 temp_data,
                 status.HTTP_200_OK
@@ -174,7 +177,8 @@ def workon_candidate(request, candidate_id, **kwargs):
         input_data = request.data
 
         try:
-            jsonschema.validate(input_data, swagger_schema['definitions']['Candidate'])
+            jsonschema.validate(input_data,
+                                swagger_schema['definitions']['Candidate'])
         except:
             return Response(
                 {
@@ -189,11 +193,13 @@ def workon_candidate(request, candidate_id, **kwargs):
                 if dulp_list.count() > 0:
                     return Response(
                         {
-                            'error': 'Trying to generate candidates with same id'
-                         },
+                            'error':
+                                'Trying to generate candidates with same id'
+                        },
                         status.HTTP_400_BAD_REQUEST
                     )
-        temp_data = {k: v for k, v in input_data.items() if k in candidate_keys}
+        temp_data = {
+            k: v for k, v in input_data.items() if k in candidate_keys}
         db.candidate.update_one(
             {'id': candidate_id},
             {
@@ -265,12 +271,14 @@ def change_status_candidate(request, candidate_id, **kwargs):
                     }
                 }
             )
-            response_dict = {k: v for k, v in dict(item).items() if k in candidate_keys}
+            response_dict = {
+                k: v for k, v in dict(item).items() if k in candidate_keys}
 
             return Response(
                 response_dict,
                 status.HTTP_200_OK
             )
+
 
 @api_view(['GET', 'POST'])
 def batch_candidate(request, **kwargs):
@@ -287,7 +295,7 @@ def batch_candidate(request, **kwargs):
     db = client[settings.DB_NAME]
 
     if request.method == 'POST':
-        if request.FILES == None:
+        if request.FILES is None:
             return Response(
                 {
                     'error': "No available file"
@@ -303,13 +311,9 @@ def batch_candidate(request, **kwargs):
                 status.HTTP_400_BAD_REQUEST
             )
         ext_name = file_name.split('.')[-1]
-        # print (request.FILES)
-        # print (dir(request.FILES))
         file_content = request.FILES['file']
 
         candidate_list = file_parser(ext_name, file_content)
-        #print ("Candidate_list:")
-        #print (candidate_list)
         if candidate_list is None:
             return Response(
                 {

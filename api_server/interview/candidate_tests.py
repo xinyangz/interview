@@ -67,8 +67,10 @@ class CandidateTestCase(APISimpleTestCase):
     }
 
     # In user collection, user name is unique.
-    # In applicant collection, id is unique and the reference to name in user collection('unique_username')
+    # In applicant collection, id is unique and the reference to name
+    #     in user collection('unique_username')
     db = None
+
     @classmethod
     def setUpClass(cls):
         super(CandidateTestCase, cls).setUpClass()
@@ -79,7 +81,9 @@ class CandidateTestCase(APISimpleTestCase):
         while True:
             if test_db_name not in existing_db_names:
                 break
-            test_db_name = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(10))
+            test_db_name = ''.join(
+                random.choice(string.ascii_letters + string.digits)
+                for _ in range(10))
         # override settings
         settings.DB_NAME = test_db_name
 
@@ -91,62 +95,75 @@ class CandidateTestCase(APISimpleTestCase):
         db_client.drop_database(settings.DB_NAME)
 
     def get_put_response_change(self, candidate_id, status, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/candidate/' + str(candidate_id) + '/status?status=' + str(status) + '&token=' + token
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/candidate/' + str(candidate_id) + '/status?status=' + \
+            str(status) + '&token=' + token
         response = self.client.put(url)
         return response
 
     def get_delete_response_delete(self, candidate_id, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/candidate/' + str(candidate_id) + '?token=' + token
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/candidate/' + str(candidate_id) + '?token=' + token
         response = self.client.delete(url)
         return response
 
     def get_put_response_put(self, candidate_id, data, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/candidate/' + str(candidate_id) + '?token=' + token
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/candidate/' + str(candidate_id) + '?token=' + token
         response = self.client.put(url, data)
         return response
 
     def get_post_response_add(self, data, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/candidate?token=' + token
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/candidate?token=' + token
         response = self.client.post(url, data, format='json')
         return response
 
     def get_get_response_get_all(self, offset, limit, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/candidate?offset=' + str(offset) + '&limit' + str(limit) + '&token=' + token
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/candidate?offset=' + str(offset) + '&limit' + str(limit) + \
+            '&token=' + token
         response = self.client.get(url)
         return response
 
     def get_get_response_get(self, candidate_id, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/candidate/' + str(candidate_id) + '?token=' + token
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/candidate/' + str(candidate_id) + '?token=' + token
         response = self.client.get(url)
         return response
 
     def get_post_response(self, data):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/candidate/' + data['id']
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/candidate/' + data['id']
         response = self.client.post(url, data, format='json')
         return response
 
     def post_file_response(self, filepath, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/candidate/file' + '?token=' +token
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/candidate/file' + '?token=' + token
         with open(filepath, 'rb') as data:
-            response = self.client.post(url, {'file': data}, format='multipart')
+            response = self.client.post(
+                url, {'file': data}, format='multipart')
             return response
-
 
     def init_Wallace(self):
         if self.db is None:
-            self.db = pymongo.MongoClient(port=settings.DB_PORT)[settings.DB_NAME]
+            self.db = pymongo.MongoClient(
+                port=settings.DB_PORT)[settings.DB_NAME]
         if self.db.users.find({'token': 'exampletoken'}).count() == 0:
             self.db.users.insert_one(self.applicant_data)
 
     def init_Sharon(self):
         if self.db is None:
-            self.db = pymongo.MongoClient(port=settings.DB_PORT)[settings.DB_NAME]
+            self.db = pymongo.MongoClient(
+                port=settings.DB_PORT)[settings.DB_NAME]
         if self.db.users.find({'token': 'fastertoken'}).count() == 0:
             self.db.users.insert_one(self.bad_applicant_data)
 
     def init_Elder(self):
         if self.db is None:
-            self.db = pymongo.MongoClient(port=settings.DB_PORT)[settings.DB_NAME]
+            self.db = pymongo.MongoClient(
+                port=settings.DB_PORT)[settings.DB_NAME]
 
         if self.db.candidate.find({'name': 'elder'}).count() == 0:
             temp_username = "User_" + str(uuid.uuid4())[:8]
@@ -200,7 +217,8 @@ class CandidateTestCase(APISimpleTestCase):
         self.init_Sharon()
         elder_data = self.candidate_data.copy()
         response = self.get_post_response_add(elder_data, 'fastertoken')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)  # Angry
+        self.assertEqual(
+            response.status_code, status.HTTP_403_FORBIDDEN)  # Angry
 
     def test_get_success(self):
         self.init_Wallace()
@@ -214,7 +232,7 @@ class CandidateTestCase(APISimpleTestCase):
         response = self.get_get_response_get(305, 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_get_dupl_candidate(self): # Should never occur in practice
+    def test_get_dupl_candidate(self):  # Should never occur in practice
         self.init_Wallace()
         self.init_Elder()
         candidate_data_tmp = self.another_candidate_data.copy()
@@ -261,7 +279,8 @@ class CandidateTestCase(APISimpleTestCase):
     def test_put_change_success(self):
         self.init_Wallace()
         self.init_Elder()
-        response = self.get_put_response_change(0, 'AliveForever', 'exampletoken')
+        response = self.get_put_response_change(
+            0, 'AliveForever', 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response = self.get_put_response_change(0, 'Alive', 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -292,21 +311,25 @@ class CandidateTestCase(APISimpleTestCase):
     def test_file_parse_success(self):
         self.init_Elder()
         self.init_Wallace()
-        response = self.post_file_response('file_example/example2.csv', 'exampletoken')
+        response = self.post_file_response(
+            'file_example/example2.csv', 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.post_file_response('file_example/example1.xlsx', 'exampletoken')
+        response = self.post_file_response(
+            'file_example/example1.xlsx', 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_file_format_error(self):
         self.init_Elder()
         self.init_Wallace()
-        response = self.post_file_response('file_example/example3.numbers', 'exampletoken')
+        response = self.post_file_response(
+            'file_example/example3.numbers', 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        response = self.post_file_response('file_example/example4.xlsx', 'exampletoken')
+        response = self.post_file_response(
+            'file_example/example4.xlsx', 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        response = self.post_file_response('file_example/example5.csv', 'exampletoken')
+        response = self.post_file_response(
+            'file_example/example5.csv', 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-

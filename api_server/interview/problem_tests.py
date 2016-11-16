@@ -146,7 +146,9 @@ class ProblemTestCase(APISimpleTestCase):
             if test_db_name not in existing_db_names:
                 break
             # test_db_name = nr.bytes(10)
-            test_db_name = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(10))
+            test_db_name = ''.join(
+                random.choice(string.ascii_letters + string.digits)
+                for _ in range(10))
         settings.DB_NAME = test_db_name
 
     @classmethod
@@ -161,29 +163,34 @@ class ProblemTestCase(APISimpleTestCase):
         self.db = self.db_client[settings.DB_NAME]
 
     def get_room_problems(self, room_id, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/problem/room/' + str(room_id) + '?token=' + token
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/problem/room/' + str(room_id) + '?token=' + token
         response = self.client.get(url)
         return response
 
     def post_room_problems(self, room_id, data, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/problem/room/' + str(room_id) + '?token=' + token
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/problem/room/' + str(room_id) + '?token=' + token
         if '_id' in data:
             del data['_id']
         response = self.client.post(url, data)
         return response
 
     def get_problem(self, problem_id, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/problem/' + str(problem_id) + '?token=' + token
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/problem/' + str(problem_id) + '?token=' + token
         response = self.client.get(url)
         return response
 
     def put_problem(self, problem_id, data, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/problem/' + str(problem_id) + '?token=' + token
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/problem/' + str(problem_id) + '?token=' + token
         response = self.client.put(url, data)
         return response
 
     def delete_problem(self, problem_id, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/problem/' + str(problem_id) + '?token=' + token
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/problem/' + str(problem_id) + '?token=' + token
         response = self.client.delete(url)
         return response
 
@@ -208,7 +215,8 @@ class ProblemTestCase(APISimpleTestCase):
             self.db.users.insert_one(self.interviewer_data_template)
         if self.db.rooms.find({'id': 302}).count() == 0:
             self.db.rooms.insert_one(self.empty_room_template)
-        response = self.post_room_problems(302, self.new_problem_template, 'houbuhouwa')
+        response = self.post_room_problems(
+            302, self.new_problem_template, 'houbuhouwa')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.clear_database()
 
@@ -263,7 +271,8 @@ class ProblemTestCase(APISimpleTestCase):
         self.db.rooms.insert_one(self.room_template)
         weak_problem = self.new_problem_template.copy()
         # Permission check
-        response = self.post_room_problems(301, weak_problem, 'zhongyangyezicitama')
+        response = self.post_room_problems(
+            301, weak_problem, 'zhongyangyezicitama')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         # Format check
         del weak_problem['type']
@@ -314,7 +323,7 @@ class ProblemTestCase(APISimpleTestCase):
 
     def test_delete_problems_failures(self):
         self.init_db()
-        self.db.users.insert_one(self.interviewer_data_template);
+        self.db.users.insert_one(self.interviewer_data_template)
         self.db.rooms.insert_one(self.room_template)
         for item in self.problems_template:
             self.db.problems.insert_one(item)
@@ -325,4 +334,3 @@ class ProblemTestCase(APISimpleTestCase):
         response = self.delete_problem(2333, 'houbuhouwa')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.clear_database()
-

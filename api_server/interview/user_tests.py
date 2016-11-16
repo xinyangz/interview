@@ -235,7 +235,8 @@ class UserRegisterTestCase(APISimpleTestCase):
         while True:
             if test_db_name not in existing_db_names:
                 break
-            test_db_name = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(10))
+            test_db_name = ''.join(random.choice(
+                string.ascii_letters + string.digits) for _ in range(10))
         # override settings
         settings.DB_NAME = test_db_name
 
@@ -247,7 +248,8 @@ class UserRegisterTestCase(APISimpleTestCase):
         db_client.drop_database(settings.DB_NAME)
 
     def get_post_response(self, data):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/user/register'
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/user/register'
         response = self.client.post(url, data, format='json')
         return response
 
@@ -349,48 +351,56 @@ class UserManageTestCase(APISimpleTestCase):
         db_client.drop_database(settings.DB_NAME)
 
     def get_delete_response(self, username, query):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/user/' + username
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/user/' + username
         request = self.factory.get(url, query)
         url = request.get_raw_uri()
         response = self.client.delete(url)
         return response
 
     def get_get_response(self, username, query):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/user/' + username
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/user/' + username
         response = self.client.get(url, query)
         return response
 
     def get_put_response(self, username, query, data):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/user/' + username
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/user/' + username
         request = self.factory.get(url, query)
         url = request.get_raw_uri()
         response = self.client.put(url, data)
         return response
 
     def test_no_permission(self):
-        response = self.get_get_response(self.test_candidate_data['username'], None)
+        response = self.get_get_response(
+            self.test_candidate_data['username'], None)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.data['error'], 'Permission denied')
-        response = self.get_get_response(self.test_candidate_data['username'], {'token': 'none'})
+        response = self.get_get_response(
+            self.test_candidate_data['username'], {'token': 'none'})
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.data['error'], 'Permission denied')
-        response = self.get_get_response(self.test_candidate_data['username'],
-                                         {'token': self.test_candidate_data['token']})
+        response = self.get_get_response(
+            self.test_candidate_data['username'],
+            {'token': self.test_candidate_data['token']})
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.data['error'], 'Permission denied')
 
     def test_user_not_exists(self):
-        response = self.get_get_response('journalist',
-                                         {'token': self.test_hr_data['token']})
+        response = self.get_get_response(
+            'journalist', {'token': self.test_hr_data['token']})
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(response.data['error'], 'User does not exist.')
 
     def test_delete_success(self):
-        response = self.get_delete_response(self.test_candidate_data['username'],
-                                         {'token': self.test_hr_data['token']})
+        response = self.get_delete_response(
+            self.test_candidate_data['username'],
+            {'token': self.test_hr_data['token']})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         db = pymongo.MongoClient(port=settings.DB_PORT)[settings.DB_NAME]
-        cursor = db.users.find({'username': self.test_candidate_data['username']})
+        cursor = db.users.find(
+            {'username': self.test_candidate_data['username']})
         self.assertEqual(cursor.count(), 0)
         db.users.insert_one(self.test_candidate_data.copy())
 
