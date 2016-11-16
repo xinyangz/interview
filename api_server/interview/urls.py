@@ -3,6 +3,7 @@ from . import user_views
 from . import candidate_views
 from . import report_views
 from . import room_views
+from . import problem_views
 
 api_patterns = [
     url(r'^user/login$', user_views.user_login, name='user-login'),
@@ -17,6 +18,8 @@ api_patterns = [
     url(r'^room$', room_views.root, name='room-root'),
     url(r'^room/(?P<room_id>([0-9]+))/logo$', room_views.logo, name='room-logo'),
     url(r'^room/(?P<room_id>([0-9]+))$', room_views.manage, name='room-manage'),
+    url(r'^problem/room/(?P<room_id>([0-9]+))$', problem_views.root, name='problem-root'),
+    url(r'^problem/(?P<problem_id>([0-9]+))$', problem_views.manage, name='problem-manage')
 ]
 
 urlpatterns = [

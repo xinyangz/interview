@@ -25,24 +25,24 @@ def root(request, room_id, **kwargs):
             {'error': 'Permission Denied'},
             status.HTTP_403_FORBIDDEN
         )
-
+    room_id = int(room_id)
     if request.method == 'POST':
         # Format check
         problem_data = dict(request.data)
         try:
             jsonschema.validate(problem_data,
-                                swagger_schema['definitions']['ProblemList'])
+                                swagger_schema['definitions']['Problem'])
         except:
             return Response(
                 {'error': "Key error"},
-                status.HTTP_400_BAD_REQUEST0
+                status.HTTP_400_BAD_REQUEST
             )
         problem_id = sequences.get_next_sequence('problem_id')
         client = pymongo.MongoClient()
         db = client[settings.DB_NAME]
         problem_data['id'] = problem_id
 
-        # Validation
+        # Validation. Should never happen.
         if room_id != problem_data['roomId']:
             return Response(
                 {'error': 'Unknown error'},
@@ -58,6 +58,8 @@ def root(request, room_id, **kwargs):
         room = room_cursor[0]
         room['problems'].append(problem_id)
         db.problems.insert_one(problem_data)
+        if '_id' in problem_data:
+            del problem_data['_id']
         return Response(
             problem_data,
             status.HTTP_200_OK
@@ -79,13 +81,6 @@ def root(request, room_id, **kwargs):
         else:
             limit = int(limit)
 
-        # Validation
-        if room_id != problem_data['roomId']:
-            return Response(
-                {'error': 'Unknown error'},
-                status.HTTP_400_BAD_REQUEST
-            )
-
         # Check room existance
         room_cursor = db.rooms.find({'id': room_id})
         if room_cursor.count() == 0:
@@ -102,7 +97,7 @@ def root(request, room_id, **kwargs):
                 status.HTTP_200_OK
             )
         else:
-            sorted_problem_list = sorted(problems_list, key=lambda x: x['id'])
+            sorted_problem_list = sorted(problems_list)
             if len(problems_list) <= offset + limit:
                 limit = len(problems_list) - offset
             response_problem_list = []
@@ -110,12 +105,16 @@ def root(request, room_id, **kwargs):
                 problem_cursor = db.problems.find(
                     {'id': sorted_problem_list[index]}
                 )
+                # Should never happen
                 if problem_cursor.count() == 0 or problem_cursor.count() > 1:
                     return Response(
                         {'error': "No such problem record."},
                         status.HTTP_404_NOT_FOUND
                     )
-                response_problem_list.append(problem_cursor[0])
+                update_problem = problem_cursor[0]
+                if '_id' in update_problem:
+                    del update_problem['_id']
+                response_problem_list.append(update_problem)
             return Response(
                 response_problem_list,
                 status.HTTP_200_OK
@@ -132,7 +131,6 @@ def manage(request, problem_id, **kwargs):
     '''
     Manage problems directly according to problem id.
     '''
-
     # Check permission
     permitted_user_types = ['hr', 'interviewer']
     if permissions.check(request, permitted_user_types) != permissions.PASS:
@@ -151,7 +149,7 @@ def manage(request, problem_id, **kwargs):
             {'error': 'Problem not found.'},
             status.HTTP_404_NOT_FOUND
         )
-    elif problem_cursor.count() > 1:
+    elif problem_cursor.count() > 1:  # Which should never happen
         return Response(
             {'error': 'Problem id duplicated.'},
             status.HTTP_400_BAD_REQUEST
@@ -165,24 +163,29 @@ def manage(request, problem_id, **kwargs):
             pass
         else:
             for room in room_cursor:
+                updated_room = room
+                updated_room['problems'].remove(problem_id)
                 db.rooms.update_one(
                     {'id': room['id']},
                     {
-                        '$set': room['problems'].remove(problem_id)
+                        '$set': updated_room
                     }
                 )
         db.problems.delete_one({'id': problem_id})
         return Response(status=status.HTTP_200_OK)
     elif request.method == 'GET':
         problem = problem_cursor[0]
-        return {
+        if '_id' in problem:
+            del problem['_id']
+        return Response(
             problem,
             status.HTTP_200_OK
-        }
+        )
     elif request.method == 'PUT':
+        problem = problem_cursor[0]
         update_data = dict(request.data)
 
-        # Validation
+        # Validation. Should never happen.
         if problem_id != update_data['id']:
             return Response(
                 {'error': 'Unknown error'},
