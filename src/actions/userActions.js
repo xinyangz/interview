@@ -4,7 +4,7 @@ import axios from 'axios';
 import md5 from 'js-md5';
 import {displayNotification} from './notificationActions';
 import {loadAllRooms} from './roomsActions';
-import {loadAllCandidates} from './candidateManagerActions';
+import {loadAllCandidates, loadTemplate} from './candidateManagerActions';
 
 export function beginLogin() {
   return {
@@ -47,6 +47,7 @@ export function login(data, type) {
           if (type === 'hr') {
             dispatch(push('/hr'));
             dispatch(loadAllRooms());
+            dispatch(loadTemplate());
           }
           else if (type === 'interviewer') {
             dispatch(push('/interviewer'));

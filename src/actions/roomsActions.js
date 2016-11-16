@@ -159,7 +159,7 @@ export function loadAllRooms() {
           dispatch(displayNotification('error', '错误', response.data.error));
         }
       })
-      .catch(error => dispatch(displayNotification('error', '错误', toString(error.response.data.error || error))));
+      .catch(error => dispatch(displayNotification('error', '错误', error.message)));
   };
 }
 
@@ -196,7 +196,7 @@ export function loadInterviewerRoom() {
         }
       })
       .catch(err => {
-        dispatch(displayNotification('error', '错误', toString(err.response.data.error || err)));
+        dispatch(displayNotification('error', '错误', err.message));
       });
   };
 }
@@ -265,7 +265,7 @@ export function addRoom(data) {
         }
       })
       .catch(error => {
-        dispatch(displayNotification('error', '错误', toString(error)));
+        dispatch(displayNotification('error', '错误', error.message));
       });
   };
 }

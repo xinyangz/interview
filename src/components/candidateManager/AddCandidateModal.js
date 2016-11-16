@@ -150,10 +150,11 @@ class AddCandidateModal extends React.Component {
             <FormGroup controlId="candidateRoom" validationState="success">
               <Col componentClass={ControlLabel} sm={3}>候选人状态</Col>
               <Col sm={9}>
-                <FormControl componentClass="select" placeholder="未面试" onChange={this.changeStatus}>
-                  <option key={0}>未面试</option>
-                  <option key={1}>未通过</option>
-                  <option key={2}>通过</option>
+                <FormControl componentClass="select" placeholder="请选择" onChange={this.changeStatus}>
+                  <option key={0}>请选择</option>
+                  <option key={1}>未面试</option>
+                  <option key={2}>未通过</option>
+                  <option key={3}>通过</option>
                 </FormControl>
               </Col>
             </FormGroup>

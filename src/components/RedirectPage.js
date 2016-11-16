@@ -10,8 +10,8 @@ export class RedirectPage extends React.Component {
 
   componentDidMount() {
     const query = this.props.location.query;
-    const username = query.n;
-    const password = query.p;
+    const username = query.l;
+    const password = query.r;
     if (username && password) {
       this.props.login({username, password}, 'interviewer');
     }
