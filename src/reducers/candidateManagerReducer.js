@@ -41,9 +41,19 @@ const isWaiting = (state = initialState.candidatesStates.isWaiting, action) => {
   }
 };
 
+const templateUrl = (state = initialState.candidatesStates.templateUrl, action) => {
+  switch (action.type) {
+    case types.LOAD_TEMPLATE_SUCCESS:
+      return {csv: action.csv, xlsx: action.xlsx};
+    default:
+      return state;
+  }
+};
+
 const candidatesManagerReducer = combineReducers({
   candidates,
-  isWaiting
+  isWaiting,
+  templateUrl
 });
 
 export default candidatesManagerReducer;

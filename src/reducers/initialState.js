@@ -40,6 +40,7 @@ export default {
   },
   candidatesStates:{
     candidates:[],
-    isWaiting: false
+    isWaiting: false,
+    templateUrl: {}
   }
 };

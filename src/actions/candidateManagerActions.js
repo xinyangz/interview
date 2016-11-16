@@ -106,6 +106,14 @@ export function listCandidateError(error) {
   };
 }
 
+export function loadTemplateSuccess(data) {
+  return {
+    type: types.LOAD_TEMPLATE_SUCCESS,
+    csv: data.csv,
+    xlsx: data.xlsx
+  };
+}
+
 export function deleteCandidate(candidateId) {
   return (dispatch, getState) => {
     const token = getState().user.token;
@@ -193,6 +201,24 @@ export function loadAllCandidates() {
         }
       })
       .catch(error => dispatch(displayNotification('error', '错误', toString(error))));
+  };
+}
+
+export function loadTemplate() {
+  return (dispatch, getState) => {
+    const token = getState().user.token;
+    return axios.get('/candidate/file?token=' + token)
+      .then(response => {
+        if (response.status === 200) {
+          dispatch(loadTemplateSuccess(response.data));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', '不能读取批量添加候选人样例文件'));
+        }
+      })
+      .catch(error => {
+        dispatch(displayNotification('error', '错误', '不能读取批量添加候选人样例文件'));
+      });
   };
 }
 

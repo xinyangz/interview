@@ -27,7 +27,7 @@ class ListCandidateModal extends React.Component {
     </Modal.Header>
     <Modal.Body>
       请下载并编辑
-      <a href="https://www.baidu.com/" target="_blank">样例.csv</a>文件，按照其中格式填入候选人信息后上传，并点击导入即可。上传的文件后缀名应为“.csv”或者“.xlsx”，大小不超过500kb。
+      <a href={this.props.templateUrl.csv} target="_blank">样例.csv</a>或<a href={this.props.templateUrl.xlsx} target="_blank">样例.xlsx</a>文件，按照其中格式填入候选人信息后上传，并点击导入即可。上传的文件后缀名应为“.csv”或者“.xlsx”，大小不超过500kb。
       <br/>
       <label className="center">
         <input id="list" type="file" ref="logo" multiple accept=".csv, .xlsx"/>
@@ -43,11 +43,14 @@ class ListCandidateModal extends React.Component {
 ListCandidateModal.propTypes = {
   showListCandidateModal:PropTypes.bool,
   onHideListCandidateModal:PropTypes.func.isRequired,
-  listCandidate: PropTypes.func
+  listCandidate: PropTypes.func,
+  templateUrl: PropTypes.object
 };
 
-function mapStateToProps() {
-  return {};
+function mapStateToProps(state) {
+  return {
+    templateUrl: state.candidatesStates.templateUrl
+  };
 }
 
 export default connect(mapStateToProps, {listCandidate})(ListCandidateModal);
