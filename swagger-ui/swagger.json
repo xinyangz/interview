@@ -233,6 +233,49 @@
     }
    }
   },
+  "/room/{room_id}/invitation": {
+   "get": {
+    "tags": [
+     "room"
+    ],
+    "summary": "发送面试邀请",
+    "parameters": [
+     {
+      "name": "room_id",
+      "in": "path",
+      "description": "面试房间id",
+      "required": true,
+      "type": "integer"
+     },
+     {
+      "name": "token",
+      "in": "query",
+      "required": true,
+      "type": "string"
+     }
+    ],
+    "produces": [
+     "application/json"
+    ],
+    "responses": {
+     "200": {
+      "description": "面试邀请发送成功"
+     },
+     "400": {
+      "description": "面试邀请发送失败",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     },
+     "403": {
+      "description": "用户无访问权限",
+      "schema": {
+       "$ref": "#/definitions/Error"
+      }
+     }
+    }
+   }
+  },
   "/room/{room_id}": {
    "get": {
     "tags": [
