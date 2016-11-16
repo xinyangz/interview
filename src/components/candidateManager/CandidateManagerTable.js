@@ -225,7 +225,7 @@ class CandidateManagerTable extends React.Component {
               </Modal.Header>
               <Modal.Body>
                 <Form horizontal>
-                  <FormGroup controlId="candidateName" validationState={'success'}>
+                  <FormGroup controlId="candidateName" validationState="success">
                     <Col componentClass={ControlLabel} sm={3}>候选人姓名</Col>
                     <Col sm={9}><FormControl type="text" placeholder={this.state.selectedEditCandidate.name} onChange={this.changeName}/></Col>
                   </FormGroup>
@@ -242,7 +242,7 @@ class CandidateManagerTable extends React.Component {
                     {this.getPhoneHelpBlock()}
                   </FormGroup>
 
-                  <FormGroup controlId="candidateRoom" validationState={'success'}>
+                  <FormGroup controlId="candidateRoom" validationState="success">
                     <Col componentClass={ControlLabel} sm={3}>候选人房间</Col>
                     <Col sm={9}>
                       <FormControl componentClass="select" placeholder="select"  onChange={this.changeRoom}>

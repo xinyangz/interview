@@ -147,7 +147,7 @@ class AddCandidateModal extends React.Component {
               {this.getPhoneHelpBlock()}
             </FormGroup>
 
-            <FormGroup controlId="candidateRoom" validationState={'success'}>
+            <FormGroup controlId="candidateRoom" validationState="success">
               <Col componentClass={ControlLabel} sm={3}>候选人状态</Col>
               <Col sm={9}>
                 <FormControl componentClass="select" placeholder="未面试" onChange={this.changeStatus}>
