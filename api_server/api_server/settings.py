@@ -151,3 +151,7 @@ FILE_URL = '/file/'
 # Domain name
 
 SITE_URL = 'https://testalent.tk'
+
+EMAIL_DOMAIN = 'testalent.tk'
+
+INVITATION_SENDER = 'invitation'

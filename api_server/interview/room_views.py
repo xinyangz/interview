@@ -9,6 +9,7 @@ import uuid
 from .schemas import swagger_schema
 from . import permissions
 from . import sequences
+from . import send_email
 
 
 room_keys = ('id', 'name', 'logo', 'interviewer', 'candidates', 'problems')
@@ -101,6 +102,71 @@ def root(request, **kwargs):
             },
             status.HTTP_200_OK
         )
+
+
+@api_view(['GET'])
+def invitation(request, room_id, **kwargs):
+    permitted_user_types = ['hr']
+    if permissions.check(request, permitted_user_types) != permissions.PASS:
+        return Response(
+            {'error': 'Permission denied'},
+            status.HTTP_403_FORBIDDEN
+        )
+
+    client = pymongo.MongoClient()
+    db = client[settings.DB_NAME]
+
+    # Check existence
+    room_id = int(room_id)
+    room_cursor = db.rooms.find({'id': room_id})
+    if room_cursor.count() == 0:
+        return Response(
+            {
+                'error': 'Room not found.'
+            },
+            status.HTTP_404_NOT_FOUND
+        )
+    elif room_cursor.count() > 1:
+        return Response(
+            {
+                'error': 'Room id duplicated'
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
+
+    room_data = room_cursor[0]
+    interviewer_username = room_data['interviewer']
+    interviewer_cursor = db.users.find({'username': interviewer_username})
+    if interviewer_cursor.count() == 0:
+        return Response(
+            {
+                'error': 'Interviewer not found'
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
+    interviewer_email_lr = (interviewer_cursor[0]['email'],
+                            interviewer_cursor[0]['username'],
+                            interviewer_cursor[0]['password'])
+    candidate_email_lrs = []
+    for candidate_id in room_data['candidates']:
+        candidate_cursor = db.candidate.find({'id': candidate_id})
+        if candidate_cursor.count() == 0:
+            return Response(
+                {
+                    'error': 'Candidate not found'
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+        candidate_username = candidate_cursor[0]['unique_username']
+        candidate_email_lrs.append((candidate_cursor[0]['email'],
+                                    candidate_username,
+                                    db.users.find({'username': candidate_username})[0]['password']))
+
+    send_email.send_interviewer_invitation(interviewer_email_lr[0], interviewer_email_lr[1], interviewer_email_lr[2])
+    for candidate_email_lr in candidate_email_lrs:
+        send_email.send_candidate_invitation(candidate_email_lr[0], candidate_email_lr[1], candidate_email_lr[2])
+
+    return Response(status=status.HTTP_200_OK)
 
 
 @api_view(['PUT'])

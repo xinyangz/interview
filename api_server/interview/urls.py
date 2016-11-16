@@ -17,6 +17,7 @@ api_patterns = [
     url(r'^report/(?P<candidate_id>([0-9]+))$', report_views.all_report, name='put-report'),
     url(r'^room$', room_views.root, name='room-root'),
     url(r'^room/(?P<room_id>([0-9]+))/logo$', room_views.logo, name='room-logo'),
+    url(r'^room/(?P<room_id>([0-9]+))/invitation$', room_views.invitation, name='room-invitation'),
     url(r'^room/(?P<room_id>([0-9]+))$', room_views.manage, name='room-manage'),
     url(r'^interviewer$', interviewer_views.root, name='interviewer-roomId'),
 ]
