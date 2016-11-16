@@ -60,7 +60,6 @@ def root(request, **kwargs):
         db.users.insert_one(user_part)
 
         room_data['interviewer'] = temp_username
-
         db.rooms.insert_one(room_data)
 
         del room_data['_id']
@@ -216,6 +215,39 @@ def manage(request, room_id, **kwargs):
                 {'error': 'Key error'},
                 status.HTTP_400_BAD_REQUEST
             )
+
+        cursor = db.rooms.find({'id': room_id})
+        if cursor.count() == 0:
+            return Response(
+                {'error': 'Room not found'},
+                status.HTTP_404_NOT_FOUND
+            )
+
+        # Check if interviewer is changed
+        username_email = update_data['interviewer']
+        user_cursor = db.users.find({'username': username_email})
+        if user_cursor.count() == 0 or user_cursor[0]['type'] != 'interviewer':
+            interviewer_username = cursor[0]['interviewer']
+            user_cursor = db.users.find({'username': interviewer_username})
+            if user_cursor.count() == 0:
+                return Response(
+                    {'error': 'Interviewer not found'},
+                    status.HTTP_404_NOT_FOUND
+                )
+            if username_email != user_cursor[0]['email']:
+                temp_username = "Interviewer_" + str(sequences.get_next_sequence('interviewer'))
+                while db.users.find({'username': temp_username}).count() > 0:
+                    temp_username = "Interviewer_" + str(sequences.get_next_sequence('interviewer'))
+                temp_password = uuid.uuid4()
+                user_part = {
+                    'username': temp_username,
+                    'type': 'interviewer',
+                    'email': username_email,
+                    'password': temp_password,
+                    'organization': 'Interviewer Group',
+                }
+                db.users.insert_one(user_part)
+                update_data['interviewer'] = temp_username
 
         db.rooms.update_one(
             {'id': room_id},
