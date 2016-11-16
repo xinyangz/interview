@@ -225,24 +225,24 @@ class CandidateManagerTable extends React.Component {
               </Modal.Header>
               <Modal.Body>
                 <Form horizontal>
-                  <FormGroup controlId="candidateName" validationState="success">
+                  <FormGroup controlId="candidateName" >
                     <Col componentClass={ControlLabel} sm={3}>候选人姓名</Col>
                     <Col sm={9}><FormControl type="text" placeholder={this.state.selectedEditCandidate.name} onChange={this.changeName}/></Col>
                   </FormGroup>
 
-                  <FormGroup controlId="candidateEmail" validationState={this.getEmailValState()}>
+                  <FormGroup controlId="candidateEmail" >
                     <Col componentClass={ControlLabel} sm={3}>候选人邮箱</Col>
                     <Col sm={9}><FormControl type="email" placeholder={this.state.selectedEditCandidate.email}  onChange={this.changeEmail}/></Col>
                     {this.getEmailHelpBlock()}
                   </FormGroup>
 
-                  <FormGroup controlId="candidatePhone" validationState={this.getPhoneValState()}>
+                  <FormGroup controlId="candidatePhone" >
                     <Col componentClass={ControlLabel} sm={3}>候选人手机</Col>
                     <Col sm={9}><FormControl type="text" placeholder={this.state.selectedEditCandidate.phone}  onChange={this.changePhone}/></Col>
                     {this.getPhoneHelpBlock()}
                   </FormGroup>
 
-                  <FormGroup controlId="candidateRoom" validationState="success">
+                  <FormGroup controlId="candidateRoom" >
                     <Col componentClass={ControlLabel} sm={3}>候选人房间</Col>
                     <Col sm={9}>
                       <FormControl componentClass="select" placeholder="select"  onChange={this.changeRoom}>
