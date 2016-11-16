@@ -4,7 +4,7 @@ import {displayNotification} from './notificationActions';
 
 // token should be read from state
 const offset = '0';
-const limit = '20';
+const limit = '100';
 
 export function beginDeleteCandidate() {
   return {
@@ -110,7 +110,7 @@ export function loadTemplateSuccess(data) {
   return {
     type: types.LOAD_TEMPLATE_SUCCESS,
     csv: data.csv,
-    xlsx: data.xlsx
+    xlsx: data.xlsx,
   };
 }
 
@@ -122,7 +122,7 @@ export function deleteCandidate(candidateId) {
       .then(response => {
         if (response.status === 200) {
           dispatch(deleteCandidateSuccess(candidateId));
-          dispatch(displayNotification('success', '操作成功', '候选人已添加'));
+          dispatch(displayNotification('success', '操作成功', '候选人已删除'));
         }
         else {
           dispatch(displayNotification('error', '错误', toString(response.data.error)));
@@ -158,6 +158,7 @@ export function addCandidate(candidate) {
       .then(response => {
         if (response.status === 200) {
           dispatch(loadAllCandidates());
+          dispatch(displayNotification('success', '操作成功', '候选人已添加'));
         }
         else {
           dispatch(displayNotification('error', '错误', toString(response.data.error)));
@@ -175,12 +176,13 @@ export function listCandidate(fileContent) {
       .then(response => {
         if (response.status === 200) {
           dispatch(loadAllCandidates());
+          dispatch(displayNotification('success', '操作成功', '候选人列表已添加'));
         }
         else {
           dispatch(displayNotification('error', '错误', toString(response.data.error)));
         }
       })
-      .catch(error => dispatch(displayNotification('error', '错误', toString(error))));
+      .catch(error => dispatch(displayNotification('error', '错误', '候选人列表添加失败，请导入正确的文件')));
   };
 }
 

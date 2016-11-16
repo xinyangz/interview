@@ -11,8 +11,8 @@ class AddCandidateModal extends React.Component {
       nameChange: "",
       emailChange: "",
       phoneChange: "",
-      roomChange: "",
-      statusChange: "",
+      roomChange: '请选择',
+      statusChange: '请选择',
     };
 
     this.onAddCandidateClick = this.onAddCandidateClick.bind(this);
@@ -30,6 +30,9 @@ class AddCandidateModal extends React.Component {
     this.getEmailHelpBlock = this.getEmailHelpBlock.bind(this);
     this.getPhoneHelpBlock = this.getPhoneHelpBlock.bind(this);
 
+    this.getStatusValState = this.getStatusValState.bind(this);
+    this.getRoomValState = this.getRoomValState.bind(this);
+
     this.closeModal = this.closeModal.bind(this);
   }
 
@@ -37,8 +40,8 @@ class AddCandidateModal extends React.Component {
     this.setState({nameChange: "",
       emailChange: "",
       phoneChange: "",
-      roomChange: "",
-      statusChange: "",});
+      roomChange: '请选择',
+      statusChange: '请选择',});
     this.props.onHideCandidateModal();
   }
 
@@ -59,6 +62,14 @@ class AddCandidateModal extends React.Component {
   getNameValState(){
     const length = this.state.nameChange.length;
     if (length > 0) return 'success';
+  }
+
+  getRoomValState(){
+    if (this.state.roomChange !== '请选择') return 'success';
+  }
+
+  getStatusValState(){
+    if (this.state.statusChange !== '请选择') return 'success';
   }
 
   getEmailValState(){
@@ -147,7 +158,7 @@ class AddCandidateModal extends React.Component {
               {this.getPhoneHelpBlock()}
             </FormGroup>
 
-            <FormGroup controlId="candidateRoom" validationState="success">
+            <FormGroup controlId="candidateRoom" validationState={this.getStatusValState()}>
               <Col componentClass={ControlLabel} sm={3}>候选人状态</Col>
               <Col sm={9}>
                 <FormControl componentClass="select" placeholder="请选择" onChange={this.changeStatus}>
@@ -159,10 +170,11 @@ class AddCandidateModal extends React.Component {
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="candidateRoom" validationState={'success'}>
+            <FormGroup controlId="candidateRoom" validationState={this.getRoomValState()}>
               <Col componentClass={ControlLabel} sm={3}>候选人房间</Col>
               <Col sm={9}>
                 <FormControl componentClass="select" placeholder="select" onChange={this.changeRoom}>
+                  <option key={100}>请选择</option>
                   {this.props.rooms.map(room =>
                     <option key={room.id}>{room.name}</option>)}
                 </FormControl>
