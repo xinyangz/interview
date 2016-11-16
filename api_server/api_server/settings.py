@@ -133,11 +133,21 @@ DB_PORT = 27017
 
 CORS_ORIGIN_WHITELIST = (
     'localhost',
-    '127.0.0.1'
+    '127.0.0.1',
+    '127.0.0.1:3000',
+    'localhost:3000',
 )
+
+# File storage
 
 REPORT_PATH = 'report/'
 
 TEX_PATH = 'report_tex/'
 
-FILE_ROOT = 'file/'
+FILE_ROOT = os.path.join(BASE_DIR, 'file')
+
+FILE_URL = '/file/'
+
+# Domain name
+
+SITE_URL = 'https://testalent.tk'
