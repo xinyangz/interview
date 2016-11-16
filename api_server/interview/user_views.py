@@ -66,10 +66,12 @@ def user_login(request, **kwargs):
                     'username': item['username'],
                     'type': item['type'],
                     'email': item['email'],
-                    'password': item['password'],
-                    'organization': item['organization'],
-                    'contact': item['contact']
+                    'password': item['password']
                 }
+                if 'organization' in item:
+                    user_part['organization'] = item['organization']
+                if 'contact' in item:
+                    user_part['contact'] = item['contact']
                 token = uuid.uuid4()
                 while db.users.find({'token': str(token)}).count() > 0:
                     token = uuid.uuid4()
