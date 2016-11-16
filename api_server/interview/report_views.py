@@ -30,6 +30,7 @@ def all_report(request, candidate_id, **kwargs):
         )
 
 def get_report(request, candidate_id):
+    candidate_id = int(candidate_id)
     token = request.GET.get('token')
     client = pymongo.MongoClient()
     db = client[settings.DB_NAME]
@@ -55,7 +56,6 @@ def get_report(request, candidate_id):
         )
     report_cursor = db.report.find({'candidate_id': candidate_id})
     if report_cursor.count() == 0:
-        print("Candidate not found")
         return Response(
             {
                 'error': 'Candidate not found'
@@ -63,7 +63,6 @@ def get_report(request, candidate_id):
             status.HTTP_404_NOT_FOUND
         )
     elif report_cursor.count() > 1:
-        print("Duplicate in database")
         return Response(
             {
                 'error': 'Duplicate in database'
@@ -83,6 +82,7 @@ def get_report(request, candidate_id):
 
 
 def delete_report(request, candidate_id):
+    candidate_id = int(candidate_id)
     token = request.GET.get('token')
     client = pymongo.MongoClient()
     db = client[settings.DB_NAME]
@@ -158,6 +158,7 @@ def put_report(request, candidate_id):
 
     report_data = request.data
     text = report_data
+    candidate_id = int(candidate_id)
     token = request.GET.get('token')
 
     client = pymongo.MongoClient()
@@ -177,7 +178,6 @@ def put_report(request, candidate_id):
     if access_denied:
         return Response(
             {
-                'status': '30',
                 'error': 'Permission denied.'
             },
             status.HTTP_403_FORBIDDEN
@@ -189,7 +189,6 @@ def put_report(request, candidate_id):
     while db.report.find({'report_id': report_id}).count() > 0:
         report_id = str(uuid.uuid4())
     report_path =  os.path.join(settings.REPORT_PATH, report_id)
-    tex_file_path = os.path.join(settings.TEX_PATH, report_id)
     db.report.insert_one(
         {
             'candidate_id': candidate_id,
@@ -197,9 +196,8 @@ def put_report(request, candidate_id):
             'path': report_path + '.pdf'
         }
     )
-
     # Get related data from 3 collections
-    candidate_candidate_data = db.candidate.find_one({'id': candidate_id})
+    candidate_candidate_data = db.candidate.find({'id': candidate_id})[0]
     user_name = candidate_candidate_data['unique_username']
     candidate_user_data = db.users.find_one({'username': user_name})
 
@@ -239,9 +237,30 @@ def put_report(request, candidate_id):
     room_id = candidate_candidate_data['roomId']
     room_data = db.room.find_one({'id': room_id})
     interviewer_name = room_data['interviewer']
-
-
-    logo_dir = os.path.join(settings.FILE_ROOT, room_id)
+    if 'problems' in room_data:
+        problems = room_data['problems']
+    else:
+        problems = []
+    choice, blank, answer, code = [], [], [], []
+    print (problems)
+    for problem_index in problems:
+        try:
+            problem = db.problems.find_one({'id': problem_index})
+            print (problem)
+            if problem['type'] == 'choice':
+                choice.append(problem)
+            elif problem['type'] == 'blank':
+                blank.append(problem)
+            elif problem['type'] == 'answer':
+                answer.append(problem)
+            elif problem['type'] == 'code':
+                code.append(problem)
+            else:
+                pass
+        except:
+            pass
+    print (choice, blank, answer, code)
+    logo_dir = os.path.join(settings.FILE_ROOT, str(room_id))
 
     def weak_in(name, _list):
         for item in _list:
@@ -255,14 +274,9 @@ def put_report(request, candidate_id):
         with open(os.path.join(logo_dir, 'logo.pdf'), 'wb') as f:
             f.write(pdf_bytes)
     if weak_in('logo.pdf', os.listdir(logo_dir)):
-        print ("FOUND!")
         logo = os.path.join(logo_dir, 'logo.pdf')
     else:
-        print ("NOT FOUND!")
         logo = settings.TEX_PATH + "logo/iitmlogo.pdf"
-
-    #logo = room_data['logo']
-    #logo = settings.TEX_PATH + "logo/iitmlogo.pdf"
 
     # Write report
 
@@ -270,13 +284,13 @@ def put_report(request, candidate_id):
     reshading_macro_prefix = "\\vspace{8pt} \n\\parbox{\\textwidth}{\\setlength{\\FrameSep}{\\outerbordwidth} \n\\begin{shaded}\n\\setlength{\\fboxsep}{0pt}\\framebox[\\textwidth][l]{\\setlength{\\fboxsep}{4pt}\\fcolorbox{shadecolorB}{shadecolorB}{\\textbf{\\sffamily{\\mbox{~}\\makebox[6.762in][l]{"
     reshading_macro_suffix = "} \\vphantom{p\\^{E}}}}}}\n\\end{shaded}}\n\\vspace{-5pt}\n"
     with open(settings.TEX_PATH + 'header/header.tex', 'r') as fheader:
-            # Warning: Dirty implementations
+        # Warning: Dirty implementations so sad;(, fix later
         lines.append(fheader.read())
         lines.append("\\begin{document}\n")
         lines.append("\\begin{tabular*}{7in}{l@{\extracolsep{\\fill}}r}\n")
         lines.append(" & \\multirow{4}{*}{\includegraphics[scale=0.19]{" + logo + "}} \\\\\n")
         lines.append(" & \\\\\n")
-        lines.append("\\textbf{\Large " + candidate_name + "$|$" + candidate_id + "} & \\\\\n")
+        lines.append("\\textbf{\Large " + candidate_name + "$|$" + str(candidate_id) + "} & \\\\\n")
         lines.append(candidate_organization + "& \\\\\n")
         lines.append(candidate_phone + "& \\\\\n")
         lines.append(candidate_email + "& \\\\\n")
@@ -296,14 +310,46 @@ def put_report(request, candidate_id):
         lines.append("    \\parbox{6.762in}{" + report_data + "}\n")
         lines.append("\\end{center}\n")
 
-        lines.append(reshading_macro_prefix + "\\large{面试题记录（文字部分）}" + reshading_macro_suffix)
-        #lines.append("\\begin{itemize}\n")
-        #lines.append("\\item\n")
-        # TODO: Question format
-        # lines.append("    \\ressubheading{选择题}{}{Passed}{}")
-        # lines.append("    \\begin{itemize}")
-        # lines.append("        \\resitem{title1}")
-        # lines.append("    \\end{itemize}")
+        if len(choice) + len(blank) + len(code) + len(answer) > 0:
+            lines.append(reshading_macro_prefix + "\\large{面试题记录（文字部分）}" + reshading_macro_suffix)
+            lines.append("\\begin{itemize}\n")
+            lines.append("\\item\n")
+            if len(choice) > 0:
+                lines.append("    \\ressubheading{选择题}{}{Multiple choice}{}\n")
+                lines.append("    \\begin{itemize}\n")
+                for item_choice in choice:
+                    content = item_choice['content']
+                    title = content['title']
+                    lines.append("        \\resitem{" + title + "}\n")
+                lines.append("    \\end{itemize}\n")
+            if len(blank) > 0:
+                lines.append("    \\ressubheading{填空题}{}{Fill in the blank}{}\n")
+                for item_blank in blank:
+                    content = item_blank['content']
+                    title = content['title']
+                    lines.append("        \\resitem{" + title + "}\n")
+                lines.append("    \\begin{itemize}\n")
+                lines.append("        \\resitem{title1}\n")
+                lines.append("    \\end{itemize}\n")
+            if len(code) > 0:
+                lines.append("    \\ressubheading{编程题}{}{Coding}{}\n")
+                for item_code in code:
+                    content = item_code['content']
+                    title = content['title']
+                    lines.append("        \\resitem{" + title + "}\n")
+                lines.append("    \\begin{itemize}\n")
+                lines.append("        \\resitem{title1}\n")
+                lines.append("    \\end{itemize}\n")
+            if len(answer) > 0:
+                lines.append("    \\ressubheading{简答题}{}{Answer questions}{}\n")
+                for item_answer in answer:
+                    content = item_answer['content']
+                    title = content['title']
+                    lines.append("        \\resitem{" + title + "}\n")
+                lines.append("    \\begin{itemize}\n")
+                lines.append("        \\resitem{title1}\n")
+                lines.append("    \\end{itemize}\n")
+            lines.append("\\end{itemize}\n")
 
         lines.append(reshading_macro_prefix + "\\large{面试题记录（视频与音频部分）}" + reshading_macro_suffix)
         lines.append("\\begin{itemize}\n")
@@ -318,7 +364,6 @@ def put_report(request, candidate_id):
         lines.append("        \\resitem{{\\bf File} " + candidate_video + "}\n")
         lines.append("    \\end{itemize}\n")
         lines.append("\\end{itemize}\n")
-
         lines.append("\\end{document}\n")
 
     lines = map(lambda x: x.encode('utf-8'), lines)
