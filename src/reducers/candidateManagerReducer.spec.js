@@ -23,17 +23,17 @@ describe('Reducers: candidates', () => {
 
   it('should handle LOAD_ALL_CANDIDATES', () => {
     expect(reducer(undefined, {type: types.LOAD_ALL_CANDIDATE_BEGIN}))
-      .to.deep.equal({isWaiting: true, candidates: []});
+      .to.deep.equal({isWaiting: true, candidates: [], templateUrl: {}});
   });
 
   it('should handle LOAD_ALL_ROOMS_SUCCESS', () => {
     expect(reducer(undefined, {type: types.LOAD_ALL_CANDIDATE_SUCCESS, candidates: candidates}))
-      .to.deep.equal({isWaiting: false, candidates: candidates});
+      .to.deep.equal({isWaiting: false, candidates: candidates, templateUrl: {}});
   });
 
   it('should handle DELETE_CANDIDATE', () => {
     expect(reducer(undefined, {type: types.DELETE_CANDIDATE_BEGIN}))
-      .to.deep.equal({isWaiting: true, candidates: []});
+      .to.deep.equal({isWaiting: true, candidates: [], templateUrl: {}});
   });
 
   it('should handle DELETE_CANDIDATE_SUCCESS', () => {
@@ -44,7 +44,8 @@ describe('Reducers: candidates', () => {
       "email": "bibi@163.com",
       "phone": "1213123123",
       "id": "1001",
-    }]
+    }],
+      templateUrl: {}
     };
     expect(reducer({isWaiting: true, candidates}, {type: types.DELETE_CANDIDATE_SUCCESS, candidateId: "1002"}))
       .to.deep.equal(expectedState);

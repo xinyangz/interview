@@ -19,7 +19,7 @@ describe('<RedirectPage />', () => {
   });
 
   it('should call login function if query parameters provided', () => {
-    const location = {query: {n: '123', p: '123'}};
+    const location = {query: {l: '123', r: '123'}};
     mount(<RedirectPage login={loginFunc} push={pushFunc} location={location}/>);
     expect(loginFunc.called).to.be.true;
   });
