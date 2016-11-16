@@ -13,7 +13,7 @@ export class RedirectPage extends React.Component {
     const username = query.n;
     const password = query.p;
     if (username && password) {
-      this.props.login({username, password});
+      this.props.login({username, password}, 'interviewer');
     }
     else {
       this.props.push('/not-found');
