@@ -1,6 +1,7 @@
 import * as types from '../constants/actionTypes';
 import { push } from 'react-router-redux';
 import axios from 'axios';
+import {displayNotification} from './notificationActions';
 
 export function registerBegin() {
   return {
@@ -30,13 +31,14 @@ export function register(registerInfo) {
       .then(response => {
         if (response.status === 200) {
           dispatch(registerSuccess(response.data));
+          dispatch(displayNotification('success', '注册成功', '账户已创建，请您登录'));
           dispatch(push('/login'));
         } else {
-          dispatch(registerError('Oops! Something went wrong!'));
+          dispatch(displayNotification('error', '错误', '注册出错'));
         }
       })
       .catch(err => {
-        dispatch(registerError(err));
+        dispatch(displayNotification('error', '错误', toString(err)));
       });
   };
 }

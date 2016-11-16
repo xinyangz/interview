@@ -1,5 +1,6 @@
 import * as types from '../constants/actionTypes';
 import axios from 'axios';
+import {displayNotification} from './notificationActions';
 
 
 export function beginDeleteRoom() {
@@ -131,10 +132,10 @@ export function deleteRoom(roomId) {
           dispatch(deleteRoomSuccess(roomId));
         }
         else {
-          dispatch(deleteRoomError(response.data.error));
+          dispatch(displayNotification('error', '错误', toString(response.data.error)));
         }
       })
-      .catch(error => dispatch(deleteRoomError(error.response.data.error || error)));
+      .catch(error => dispatch(displayNotification('error', '错误', toString(error.response.data.error || error))));
   };
 }
 
@@ -148,10 +149,10 @@ export function loadAllRooms() {
           dispatch(loadAllRoomsSuccess(response.data.rooms));
         }
         else {
-          dispatch(loadAllRoomsError(response.data.error));
+          dispatch(displayNotification(response.data.error));
         }
       })
-      .catch(error => dispatch(loadAllRoomsError(error.response.data.error || error)));
+      .catch(error => dispatch(displayNotification('error', '错误', toString(error.response.data.error || error))));
   };
 }
 
@@ -188,7 +189,7 @@ export function loadInterviewerRoom() {
         }
       })
       .catch(err => {
-        dispatch(loadRoomError(err));
+        dispatch(displayNotification('error', '错误', toString(err.response.data.error || err)));
       });
   };
 }
@@ -221,8 +222,7 @@ export function modifyRoom(data) {
         }
       })
       .catch(error => {
-        dispatch(modifyRoomError(error));
-        dispatch(uploadImageError(error));
+        dispatch(displayNotification('error', '错误', toString(error.response.data.error || error)));
       });
   };
 }
@@ -256,8 +256,7 @@ export function addRoom(data) {
         }
       })
       .catch(error => {
-        dispatch(addRoomError(error));
-        dispatch(uploadImageError(error));
+        dispatch(displayNotification('error', '错误', toString(error)));
       });
   };
 }

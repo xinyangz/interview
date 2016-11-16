@@ -6,6 +6,7 @@ import candidatesStates from './candidateManagerReducer'
 import {routerReducer} from 'react-router-redux';
 import registerReducer from './registerReducer';
 import user from './userReducer';
+import {reducer as notifications} from 'react-notification-system-redux';
 
 const rootReducer = combineReducers({
   fuelSavings,
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
   registerReducer,
   candidatesStates,
   user,
-  routing: routerReducer
+  routing: routerReducer,
+  notifications
 });
 
 export default rootReducer;

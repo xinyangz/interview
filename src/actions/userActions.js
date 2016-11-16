@@ -2,7 +2,7 @@ import * as types from '../constants/actionTypes';
 import { push } from 'react-router-redux';
 import axios from 'axios';
 import md5 from 'js-md5';
-
+import {displayNotification} from './notificationActions';
 
 export function beginLogin() {
   return {
@@ -18,23 +18,9 @@ export function loginSuccess(data) {
   };
 }
 
-export function loginError(error) {
-  return {
-    type: types.USER_LOGIN_ERROR,
-    error
-  };
-}
-
 export function logoutSuccess() {
   return {
     type: types.USER_LOGOUT_SUCCESS
-  };
-}
-
-export function logoutError(error) {
-  return {
-    type: types.USER_LOGOUT_ERROR,
-    error
   };
 }
 
@@ -49,6 +35,7 @@ export function login(data) {
           const {user} = response.data;
           const {type} = user;
           dispatch(loginSuccess(response.data));
+          dispatch(displayNotification('success', '成功登录', '您已成功登录'));
           if (type === 'hr') {
             dispatch(push('/hr'));
           }
@@ -60,13 +47,13 @@ export function login(data) {
           }
         }
         else if (response.status === 400) {
-          dispatch(loginError('wrong password'));
+          dispatch(displayNotification('error', '错误', '用户名或密码错误'));
         }
         else {
-          dispatch(loginError(response.data));
+          dispatch(displayNotification('error', '错误', toString(response.data)));
         }
       })
-      .catch(error=>dispatch(loginError(error)));
+      .catch(error=>dispatch(displayNotification('error', '错误', toString(error))));
   };
 }
 
@@ -81,14 +68,15 @@ export function logout() {
       .then(response => {
         if (response.status === 200) {
           dispatch(logoutSuccess());
+          dispatch(displayNotification('success', '退出成功', '感谢使用本系统'));
           dispatch(push('/'));
         }
         else {
-          dispatch(logoutError(response.data));
+          dispatch(displayNotification('error', '错误', toString(response.data)));
         }
       })
       .catch(error => {
-        dispatch(logoutError(error));
+        dispatch(displayNotification('error', '错误', toString(error)));
       });
   };
 }
