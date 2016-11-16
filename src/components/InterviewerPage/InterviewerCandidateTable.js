@@ -32,11 +32,11 @@ class InterviewerCandidateTable extends React.Component {
           <td>{candidate.phone}</td>
           <td>{this.props.rooms.find(room => room.id === candidate.roomId).name}</td>
           <td className="icon">
-            <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/1.png" width={17} height={17} /></a>
-            <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/2.png" width={17} height={17} /></a>
-            <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/3.png" width={13} height={13} /></a>
-            <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/4.png" width={13} height={13} /></a>
-            <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/5.png" width={15} height={15} /></a>
+            <a href={candidate.record && candidate.record.video} target="_blank"><Image src="../../images/1.png" width={17} height={17} /></a>
+            <a href={candidate.record && candidate.record.chat} target="_blank"><Image src="../../images/2.png" width={17} height={17} /></a>
+            <a href={candidate.record && candidate.record.code} target="_blank"><Image src="../../images/3.png" width={13} height={13} /></a>
+            <a href={candidate.record && candidate.record.board} target="_blank"><Image src="../../images/4.png" width={13} height={13} /></a>
+            <a href={candidate.record && candidate.record.report} target="_blank"><Image src="../../images/5.png" width={15} height={15} /></a>
           </td>
           <td>{this.setStatusColor(candidate.status)}</td>
         </tr>)}</tbody>);
