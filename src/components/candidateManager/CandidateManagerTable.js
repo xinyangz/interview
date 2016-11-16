@@ -64,11 +64,11 @@ class CandidateManagerTable extends React.Component {
           <td>{this.props.rooms.find(room => room.id === candidate.roomId) === undefined ||
           this.props.rooms.find(room => room.id === candidate.roomId).name}</td>
           <td className="icon">
-            <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/1.png" width={17} height={17} /></a>
-            <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/2.png" width={17} height={17} /></a>
-            <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/3.png" width={13} height={13} /></a>
-            <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/4.png" width={13} height={13} /></a>
-            <a href="https://www.baidu.com/" target="_blank"><Image src="../../images/5.png" width={15} height={15} /></a>
+            <a href={candidate.record.video} target="_blank"><Image src="../../images/1.png" width={17} height={17} /></a>
+            <a href={candidate.record.chat} target="_blank"><Image src="../../images/2.png" width={17} height={17} /></a>
+            <a href={candidate.record.code} target="_blank"><Image src="../../images/3.png" width={13} height={13} /></a>
+            <a href={candidate.record.board} target="_blank"><Image src="../../images/4.png" width={13} height={13} /></a>
+            <a href={candidate.record.report} target="_blank"><Image src="../../images/5.png" width={15} height={15} /></a>
           </td>
           <td>{this.setStatusColor(candidate.status)}</td>
           <td><a onClick={() => this.openEditModal(candidate)}>编辑</a> | <a onClick={() => this.open(candidate.id)}>删除</a></td>
