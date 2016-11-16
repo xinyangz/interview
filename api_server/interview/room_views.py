@@ -51,14 +51,9 @@ def root(request, **kwargs):
         temp_username = "Interviewer_" + \
             str(sequences.get_next_sequence('interviewer'))
         while db.users.find({'username': temp_username}).count() > 0:
-<<<<<<< a230ba8d181138ef2905f75b939fc0d18dd20225
-            temp_username = "Interviewer_" + str(sequences.get_next_sequence('interviewer'))
-        temp_password = str(uuid.uuid4())
-=======
             temp_username = "Interviewer_" + \
                 str(sequences.get_next_sequence('interviewer'))
-        temp_password = uuid.uuid4()
->>>>>>> Grammer check
+        temp_password = str(uuid.uuid4())
         user_part = {
             'username': temp_username,
             'type': 'interviewer',
@@ -93,7 +88,6 @@ def root(request, **kwargs):
         else:
             limit = int(limit)
 
-<<<<<<< a230ba8d181138ef2905f75b939fc0d18dd20225
         sorted_rooms = db.rooms.find({}).sort('id', pymongo.ASCENDING)
         all_count = sorted_rooms.count()
         if offset + limit > all_count:
@@ -101,19 +95,10 @@ def root(request, **kwargs):
         else:
             count = limit
         sorted_rooms = list(sorted_rooms)[offset:offset + count]
-        return_list = list(map(lambda x: {k: v for k, v in dict(x).items() if k in room_keys},
-                           sorted_rooms))
-=======
-        sorted_rooms = db.rooms.find(
-            {
-                'id': {'$gte': offset + 1, '$lte': offset + limit}
-            }
-        ).sort('id', pymongo.ASCENDING)
-        count = sorted_rooms.count()
         return_list = list(map(
-            lambda x: {k: v for k, v in dict(x).items()if k in room_keys},
-            list(sorted_rooms)))
->>>>>>> Grammer check
+            lambda x: {k: v for k, v in dict(x).items()
+                       if k in room_keys},
+            sorted_rooms))
         return Response(
             {
                 'offset': offset,
