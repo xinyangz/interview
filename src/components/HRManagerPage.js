@@ -6,7 +6,7 @@ import AddCandidateModal from './candidateManager/AddCandidateModal';
 import ListCandidateModal from './candidateManager/listCandidateModal';
 import ModifyModal from './HRRoomPage/ModifyModal';
 import AddModal from './HRRoomPage/AddModal';
-import {deleteRoom, sendEmail} from '../actions/roomsActions';
+import {deleteRoom} from '../actions/roomsActions';
 
 class CandidateManagerPage extends React.Component {
   constructor(props) {
@@ -101,13 +101,14 @@ class CandidateManagerPage extends React.Component {
       return(
         <div style={{width: '800px', margin: '0 auto'}}>
           <Panel>
-            <div style={{width: '168px', margin: '0 auto'}}>
-              <p style={{fontSize:'15px'}}>您需要先创建面试房间，</p>
+            <div style={{width: '220px', margin: '0 auto'}}>
+              <p style={{fontSize:'20px'}}>您需要先创建面试房间，</p>
             </div>
-            <div style={{width: '260px', margin: '0 auto'}}>
-              <p>才可以导入面试候选人并为他们分配房间</p>
+            <div style={{width: '360px', margin: '0 auto'}}>
+              <p style={{fontSize:'20px'}}>才可以导入面试候选人并为他们分配房间</p>
             </div>
-            <div style={{width: '125px', margin: '0 auto'}}>
+            <br/>
+            <div style={{width: '132px', margin: '0 auto'}}>
               <p><Button bsStyle="primary" onClick={this.openAddRoomModal}>创建面试房间</Button></p>
             </div>
           </Panel>

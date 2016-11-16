@@ -18,7 +18,7 @@ const rooms = (state = initialState.roomsStates.rooms, action) => {
     }
     case types.ADD_ROOM_SUCCESS:
     {
-      state.append(action.room);
+      state.append(action.data);
       return state;
     }
     default:

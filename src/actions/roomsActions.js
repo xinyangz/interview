@@ -69,10 +69,10 @@ export function beginAddRoom() {
   };
 }
 
-export function addRoomSuccess(room) {
+export function addRoomSuccess(data) {
   return {
     type: types.ADD_ROOM_SUCCESS,
-    room
+    data
   };
 }
 
@@ -206,16 +206,13 @@ export function modifyRoom(data) {
     dispatch(beginModifyRoom());
     const room_id = data.room_id;
     const room = data.newRoom;
-    const image = new FormData();
-    image.append('logo', data.logo);
+    let image = data.image;
     const token = getState().user.token;
     return axios.put('/room/' + room_id +'?token=' + token, room)
       .then(response => {
         if(response.status === 200) {
-          dispatch(modifyRoomSuccess(response.data.room));
+          dispatch(loadAllRooms());
           dispatch(beginUploadImage());
-          debugger;
-          console.log(image);
           return axios.put('/room/' + room_id + '/logo' + '?token=' + token, image);
         }
         else {
@@ -240,13 +237,12 @@ export function addRoom(data) {
   return (dispatch, getState) => {
     dispatch(beginAddRoom());
     const room = data.newRoom;
-    const image = new FormData();
-    image.append('logo', data.logo);
+    let image = data.image;
     const token = getState().user.token;
     return axios.post('/room' + '?token=' + token, room)
       .then(response => {
         if(response.status === 200) {
-          dispatch(addRoomSuccess(response.data.room));
+          dispatch(loadAllRooms());
           const roomNum = getState().roomsStates.rooms.length;
           const room_id = getState().roomsStates.rooms[roomNum - 1].id;
           dispatch(beginUploadImage());
