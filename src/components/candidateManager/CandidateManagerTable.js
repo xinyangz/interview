@@ -1,8 +1,8 @@
-import React, {PropTypes}from 'react'
+import React, {PropTypes}from 'react';
 import {connect} from 'react-redux';
-import {Table, Modal, Button, FormControl, FormGroup, ControlLabel, Form, Col, Image, HelpBlock} from 'react-bootstrap'
-import {deleteCandidate, editCandidate, addCandidate} from '../../actions/candidateManagerActions'
-import '../../styles/CandidateManagerPage/candidate-manager-icon.css'
+import {Table, Modal, Button, FormControl, FormGroup, ControlLabel, Form, Col, Image, HelpBlock} from 'react-bootstrap';
+import {deleteCandidate, editCandidate, addCandidate} from '../../actions/candidateManagerActions';
+import '../../styles/CandidateManagerPage/candidate-manager-icon.css';
 
 class CandidateManagerTable extends React.Component {
   constructor(props) {
@@ -175,7 +175,7 @@ class CandidateManagerTable extends React.Component {
       if(!this.state.phoneChange.length) {
         this.setState({phoneChange:this.state.selectedEditCandidate.phone});
       }
-      var termCandidate = {
+      let termCandidate = {
         "id": this.state.selectedEditCandidate.id,
         "name": this.state.nameChange,
         "email": this.state.emailChange,
@@ -225,7 +225,7 @@ class CandidateManagerTable extends React.Component {
               </Modal.Header>
               <Modal.Body>
                 <Form horizontal>
-                  <FormGroup controlId="candidateName" validationState='success'>
+                  <FormGroup controlId="candidateName" validationState="success">
                     <Col componentClass={ControlLabel} sm={3}>候选人姓名</Col>
                     <Col sm={9}><FormControl type="text" placeholder={this.state.selectedEditCandidate.name} onChange={this.changeName}/></Col>
                   </FormGroup>
@@ -242,7 +242,7 @@ class CandidateManagerTable extends React.Component {
                     {this.getPhoneHelpBlock()}
                   </FormGroup>
 
-                  <FormGroup controlId="candidateRoom" validationState='success'>
+                  <FormGroup controlId="candidateRoom" validationState="success">
                     <Col componentClass={ControlLabel} sm={3}>候选人房间</Col>
                     <Col sm={9}>
                       <FormControl componentClass="select" placeholder="select"  onChange={this.changeRoom}>
@@ -260,11 +260,11 @@ class CandidateManagerTable extends React.Component {
               </Modal.Footer>
             </Modal>
           </Table>
-    )
+    );
   }
 }
 
-CandidateManagerTable.PropTypes = {
+CandidateManagerTable.propTypes = {
   candidateManager: PropTypes.arrayOf(PropTypes.object).isRequired,
   deleteCandidate: PropTypes.func,
   editCandidate: PropTypes.func,

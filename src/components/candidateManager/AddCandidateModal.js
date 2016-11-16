@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import {HelpBlock, Col, ControlLabel, Modal, Form, FormControl, FormGroup, Button} from 'react-bootstrap';
 import {connect} from 'react-redux';
-import {addCandidate} from '../../actions/candidateManagerActions'
+import {addCandidate} from '../../actions/candidateManagerActions';
 
 class AddCandidateModal extends React.Component {
   constructor(props) {
@@ -147,7 +147,7 @@ class AddCandidateModal extends React.Component {
               {this.getPhoneHelpBlock()}
             </FormGroup>
 
-            <FormGroup controlId="candidateRoom" validationState='success'>
+            <FormGroup controlId="candidateRoom" validationState="success">
               <Col componentClass={ControlLabel} sm={3}>候选人状态</Col>
               <Col sm={9}>
                 <FormControl componentClass="select" placeholder="未面试" onChange={this.changeStatus}>
@@ -158,7 +158,7 @@ class AddCandidateModal extends React.Component {
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="candidateRoom" validationState='success'>
+            <FormGroup controlId="candidateRoom" validationState={'success'}>
               <Col componentClass={ControlLabel} sm={3}>候选人房间</Col>
               <Col sm={9}>
                 <FormControl componentClass="select" placeholder="select" onChange={this.changeRoom}>
@@ -173,15 +173,16 @@ class AddCandidateModal extends React.Component {
           <Button onClick={this.closeModal}>取消</Button>
           <Button bsStyle="primary" onClick={this.onAddCandidateClick}>确认</Button>
         </Modal.Footer>
-      </Modal>)
+      </Modal>);
   }
 }
 
 AddCandidateModal.propTypes = {
   candidateManager: PropTypes.arrayOf(PropTypes.object).isRequired,
   rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
-  showCandidateModal:PropTypes.bool,
-  onHideCandidateModal:PropTypes.func.isRequired,
+  showCandidateModal: PropTypes.bool,
+  onHideCandidateModal: PropTypes.func.isRequired,
+  addCandidate: PropTypes.func
 };
 
 function mapStateToProps(state) {

@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import fuelSavings from './fuelSavingsReducer';
 import roomsStates from './roomsReducer';
 import problemStates from './problemReducer';
-import candidatesStates from './candidateManagerReducer'
+import candidatesStates from './candidateManagerReducer';
 import {routerReducer} from 'react-router-redux';
 import registerReducer from './registerReducer';
 import user from './userReducer';

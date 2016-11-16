@@ -48,5 +48,5 @@ describe('Reducers: candidates', () => {
     };
     expect(reducer({isWaiting: true, candidates}, {type: types.DELETE_CANDIDATE_SUCCESS, candidateId: "1002"}))
       .to.deep.equal(expectedState);
-  })
+  });
 });

@@ -1,7 +1,7 @@
-import React, {PropTypes}from 'react'
+import React, {PropTypes}from 'react';
 import {connect} from 'react-redux';
 import {Table, Image} from 'react-bootstrap';
-import '../../styles/CandidateManagerPage/candidate-manager-icon.css'
+import '../../styles/CandidateManagerPage/candidate-manager-icon.css';
 
 class InterviewerCandidateTable extends React.Component {
   constructor(props) {
@@ -59,11 +59,11 @@ class InterviewerCandidateTable extends React.Component {
         </thead>
         {this.checkNull()}
       </Table>
-    )
+    );
   }
 }
 
-InterviewerCandidateTable.PropTypes = {
+InterviewerCandidateTable.propTypes = {
   candidateManager: PropTypes.arrayOf(PropTypes.object).isRequired,
   rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
