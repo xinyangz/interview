@@ -96,13 +96,14 @@ class CandidateManagerPage extends React.Component {
       return(
         <div style={{width: '800px', margin: '0 auto'}}>
           <Panel>
-            <div style={{width: '168px', margin: '0 auto'}}>
-              <p style={{fontSize:'15px'}}>您需要先创建面试房间，</p>
+            <div style={{width: '220px', margin: '0 auto'}}>
+              <p style={{fontSize:'20px'}}>您需要先创建面试房间，</p>
             </div>
-            <div style={{width: '260px', margin: '0 auto'}}>
-              <p>才可以导入面试候选人并为他们分配房间</p>
+            <div style={{width: '360px', margin: '0 auto'}}>
+              <p style={{fontSize:'20px'}}>才可以导入面试候选人并为他们分配房间</p>
             </div>
-            <div style={{width: '125px', margin: '0 auto'}}>
+            <br/>
+            <div style={{width: '132px', margin: '0 auto'}}>
               <p><Button bsStyle="primary" onClick={this.openAddRoomModal}>创建面试房间</Button></p>
             </div>
           </Panel>
@@ -141,7 +142,7 @@ class CandidateManagerPage extends React.Component {
                         <a className="room-name" onClick={this.onEditRoomClick}>{room.name}</a>
                       </td>
                       <td>
-                        面试官: {room.interviewer} | {room.candidates.length}人
+                        面试官: {room.interviewer} | {room.candidates && room.candidates.length}人
                       </td>
                       <td>
                         <a className="link" onClick={() => this.openModifyModal(room.id)}>编辑</a> | <a className="link"

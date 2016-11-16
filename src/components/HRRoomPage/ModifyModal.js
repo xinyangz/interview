@@ -70,7 +70,7 @@ export class ModifyModal extends React.Component {
   onEditRoomClick(event) {
     event.preventDefault();
     const name = ReactDOM.findDOMNode(this.refs.name).value;
-    let logo = ReactDOM.findDOMNode(this.refs.logo).files[0];
+    const logo = ReactDOM.findDOMNode(this.refs.logo).files[0];
     const room_id = this.props.roomId;
 
     function clone(obj) {
@@ -93,10 +93,14 @@ export class ModifyModal extends React.Component {
     }
     const roomToChange = this.props.rooms.find(room => room.id === room_id);
     const nameToChange = {"name": name};
-    let newRoom = clone(roomToChange);
+    let roomInfo = clone(roomToChange);
+    let newRoom = {"name": roomInfo.name, "interviewer": roomInfo.interviewer, "candidates": roomInfo.candidates};
     if(nameToChange.name != "")
       newRoom.name = nameToChange.name;
-    this.props.modifyRoom({newRoom,room_id,logo});
+    if(nameToChange.candidates == undefined)
+      newRoom.candidates = [];
+
+    this.props.modifyRoom({newRoom,room_id,image});
     this.props.onHide();
     this.setState({files:[]});
   }

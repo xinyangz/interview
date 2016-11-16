@@ -89,10 +89,9 @@ export function beginModifyRoom() {
   };
 }
 
-export function modifyRoomSuccess(room) {
+export function modifyRoomSuccess() {
   return {
-    type: types.MODIFY_ROOM_SUCCESS,
-    room
+    type: types.MODIFY_ROOM_SUCCESS
   };
 }
 
@@ -206,13 +205,12 @@ export function modifyRoom(data) {
     dispatch(beginModifyRoom());
     const room_id = data.room_id;
     const room = data.newRoom;
-    const image = new FormData();
-    image.append('logo', data.logo);
+    var image = data.image;
+    console.log(image.get('image'));
     const token = getState().user.token;
     return axios.put('/room/' + room_id +'?token=' + token, room)
       .then(response => {
         if(response.status === 200) {
-          dispatch(modifyRoomSuccess(response.data.room));
           dispatch(beginUploadImage());
           return axios.put('/room/' + room_id + '/logo' + '?token=' + token, image);
         }
@@ -229,7 +227,7 @@ export function modifyRoom(data) {
         }
       })
       .catch(error => {
-        dispatch(displayNotification('error', '错误', toString(error.response.data.error || error)));
+        dispatch(displayNotification('error', '错误', toString(error.message || error)));
       });
   };
 }
