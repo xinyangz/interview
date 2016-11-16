@@ -65,7 +65,7 @@ def get_set_candidate(request, **kwargs):
         temp_username = "User_" + str(uuid.uuid4())[:8]
         while db.users.find({'username': temp_username}).count() > 0:
             temp_username = "User_" + str(uuid.uuid4())[:8]
-        temp_password = uuid.uuid4()
+        temp_password = str(uuid.uuid4())
         user_part = {
             'username': temp_username,
             'type': 'candidate',
@@ -100,14 +100,15 @@ def get_set_candidate(request, **kwargs):
         else:
             limit = int(limit)
 
-        sorted_candidate = db.candidate.find(
-            {
-                'id': {'$gte': offset + 1, '$lte': offset + limit}
-            }
-        ).sort('id', pymongo.ASCENDING)
-        count = sorted_candidate.count()
+        sorted_candidate = db.candidate.find({}).sort('id', pymongo.ASCENDING)
+        all_count = sorted_candidate.count()
+        if offset + limit > all_count:
+            count = all_count - offset
+        else:
+            count = limit
+        sorted_candidate = list(sorted_candidate)[offset:offset + count]
         return_list = list(map(lambda x: {k: v for k, v in dict(x).items() if k in candidate_keys},
-                           list(sorted_candidate)))
+                           sorted_candidate))
 
         return Response(
             {
