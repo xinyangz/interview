@@ -2043,8 +2043,20 @@ swagger_schema = {
                     "type": "array",
                     "description": "选择题选项",
                     "items": {
-                        "type": "string",
-                        "example": "选项1"
+                        "type": "object",
+                        "required": [
+                            "content",
+                            "correct"
+                        ],
+                        "additionalProperties": False,
+                        "properties": {
+                            "content": {
+                                "type": "string"
+                            },
+                            "correct": {
+                                "type": bool
+                            }
+                        }
                     }
                 },
                 "sampleInput": {

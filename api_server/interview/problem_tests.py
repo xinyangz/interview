@@ -51,11 +51,11 @@ class ProblemTestCase(APISimpleTestCase):
               "option": [
                     {
                         "content": "\\infty",
-                        "correct": "True"
+                        "correct": True
                     },
                     {
                         "content": "\\infty",
-                        "correct": "True"
+                        "correct": True
                     }
                   ],
             }
@@ -70,11 +70,11 @@ class ProblemTestCase(APISimpleTestCase):
               "option": [
                         {
                             "content": "\\infty",
-                            "correct": "True"
+                            "correct": True
                         },
                         {
                             "content": "\\infty",
-                            "correct": "True"
+                            "correct": True
                         }
                   ],
               "sampleInput": "1 2",
@@ -91,11 +91,11 @@ class ProblemTestCase(APISimpleTestCase):
               "option": [
                         {
                             "content": "\\infty",
-                            "correct": "False"
+                            "correct": False
                         },
                         {
                             "content": "c",
-                            "correct": "True"
+                            "correct": True
                         }
                   ],
               "sampleInput": "1 2",
@@ -114,19 +114,19 @@ class ProblemTestCase(APISimpleTestCase):
           "option": [
                     {
                         "content": "The elder",
-                        "correct": "True"
+                        "correct": True
                     },
                     {
                         "content": "The professor",
-                        "correct": "True"
+                        "correct": True
                     },
                     {
                         "content": "The former chairman",
-                        "correct": "True"
+                        "correct": True
                     },
                     {
                         "content": "Xi Jinping",
-                        "correct": "False"
+                        "correct": False
                     }
               ],
           "sampleInput": "1 2",
