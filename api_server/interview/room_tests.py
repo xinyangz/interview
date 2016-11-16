@@ -14,7 +14,7 @@ class RoomTestCase(APISimpleTestCase):
 
     test_room_post = {
         "name": "HK",
-        "interviewer": 0,
+        "interviewer": "zbh@hk.cn",
         "candidates": [
             100,
             101,
@@ -25,7 +25,7 @@ class RoomTestCase(APISimpleTestCase):
     test_room = {
         "id": 1,
         "name": "HK",
-        "interviewer": 0,
+        "interviewer": "zbh@hk.cn",
         "candidates": [
             100,
             101,
@@ -111,9 +111,15 @@ class RoomTestCase(APISimpleTestCase):
     def test_create_room(self):
         response = self.get_post_response_root({'token': self.test_hr['token']},
                                                self.test_room_post)
+        # Get tmp username
+        cursor = self.db.users.find({'type': 'interviewer'})
+        self.assertEqual(cursor.count(), 1)
+        res_room = self.test_room.copy()
+        res_room['interviewer'] = cursor[0]['username']
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, self.test_room)
+        self.assertEqual(response.data, res_room)
         self.db.rooms.delete_one({'id': 1})
+        self.db.users.delete_one({'type': 'interviewer'})
 
     def test_get_list(self):
         for i in range(20):
@@ -163,6 +169,8 @@ class RoomTestCase(APISimpleTestCase):
         updated_room['name'] = 'USA'
         response = self.get_put_response(1, {'token': self.test_hr['token']}, update_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        print(response.data)
+        print(updated_room)
         self.assertEqual(response.data, updated_room)
         self.db.rooms.delete_many({})
 

@@ -5,6 +5,7 @@ from django.conf import settings
 import pymongo
 import os
 import jsonschema
+import uuid
 from .schemas import swagger_schema
 from . import permissions
 from . import sequences
@@ -40,6 +41,26 @@ def root(request, **kwargs):
 
         client = pymongo.MongoClient()
         db = client[settings.DB_NAME]
+
+        # Create user for interviewer
+        # TODO: interview field is email
+        # TODO: send email button
+        # TODO: put change email
+        temp_username = "Interviewer_" + str(sequences.get_next_sequence('interviewer'))
+        while db.users.find({'username': temp_username}).count() > 0:
+            temp_username = "Interviewer_" + str(sequences.get_next_sequence('interviewer'))
+        temp_password = uuid.uuid4()
+        user_part = {
+            'username': temp_username,
+            'type': 'interviewer',
+            'email': room_data['interviewer'],
+            'password': temp_password,
+            'organization': 'Interviewer Group',
+        }
+        db.users.insert_one(user_part)
+
+        room_data['interviewer'] = temp_username
+
         db.rooms.insert_one(room_data)
 
         del room_data['_id']
