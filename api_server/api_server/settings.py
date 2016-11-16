@@ -139,3 +139,5 @@ CORS_ORIGIN_WHITELIST = (
 REPORT_PATH = 'report/'
 
 TEX_PATH = 'report_tex/'
+
+FILE_ROOT = 'file/'

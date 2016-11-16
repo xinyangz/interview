@@ -8,7 +8,7 @@ import pymongo
 import uuid
 import subprocess
 import os
-from time import sleep
+#import PIL
 
 
 @api_view(['GET', 'DELETE', 'PUT'])
@@ -239,10 +239,30 @@ def put_report(request, candidate_id):
     room_id = candidate_candidate_data['roomId']
     room_data = db.room.find_one({'id': room_id})
     interviewer_name = room_data['interviewer']
-    logo = room_data['logo']
 
-    # TODO: Where is the logo? room_data['logo'] returns what?
-    logo = settings.TEX_PATH + "logo/iitmlogo.pdf"
+
+    logo_dir = os.path.join(settings.FILE_ROOT, room_id)
+
+    def weak_in(name, _list):
+        for item in _list:
+            if name == item:
+                return True
+        return False
+
+    if weak_in('logo.pdf', os.listdir(logo_dir)):
+        import img2pdf
+        pdf_bytes = img2pdf.convert(os.path.join(logo_dir, 'logo.jpg'))
+        with open(os.path.join(logo_dir, 'logo.pdf'), 'wb') as f:
+            f.write(pdf_bytes)
+    if weak_in('logo.pdf', os.listdir(logo_dir)):
+        print ("FOUND!")
+        logo = os.path.join(logo_dir, 'logo.pdf')
+    else:
+        print ("NOT FOUND!")
+        logo = settings.TEX_PATH + "logo/iitmlogo.pdf"
+
+    #logo = room_data['logo']
+    #logo = settings.TEX_PATH + "logo/iitmlogo.pdf"
 
     # Write report
 
@@ -307,7 +327,8 @@ def put_report(request, candidate_id):
     with open(settings.TEX_PATH + str(report_id) + ".tex", 'wb') as f:
         f.writelines(lines)
 
-    subprocess.call('/Library/TeX/texbin/xelatex ' + tex_path + ' -output-directory=' + settings.REPORT_PATH + ' -aux-directory=report/ && sh clean.sh', shell=True)
+    subprocess.call('/Library/TeX/texbin/xelatex ' + tex_path + ' -output-directory=' + settings.REPORT_PATH + ' -aux-directory=report/', shell=True)
+    subprocess.call('sh clean.sh', shell=True)
 
     return Response(
         {
