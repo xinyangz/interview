@@ -135,8 +135,7 @@ AddModal.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    rooms: state.roomsStates.rooms,
-    newRoomId: state.roomsStates.newRoomId
+    rooms: state.roomsStates.rooms
   };
 }
 
