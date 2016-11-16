@@ -5,8 +5,9 @@ from django.conf import settings
 import pymongo
 import random
 import string
-import uuid
-import datetime
+from PIL import Image
+import tempfile
+import os
 
 
 class RoomTestCase(APISimpleTestCase):
@@ -88,6 +89,13 @@ class RoomTestCase(APISimpleTestCase):
         response = self.client.put(url, data)
         return response
 
+    def get_put_logo_response(self, room_id, query, data):
+        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + str(room_id) + '/logo'
+        request = self.factory.get(url, query)
+        url = request.get_raw_uri()
+        response = self.client.put(url, data, format='multipart')
+        return response
+
     def get_post_response_root(self, query, data):
         url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room'
         request = self.factory.get(url, query)
@@ -156,4 +164,24 @@ class RoomTestCase(APISimpleTestCase):
         response = self.get_put_response(1, {'token': self.test_hr['token']}, update_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, updated_room)
+        self.db.rooms.delete_many({})
+
+    def test_logo_success(self):
+        tmp_room = self.test_room.copy()
+        self.db.rooms.insert_one(tmp_room)
+
+        # Generate logo
+        image = Image.new('RGB', (100, 100), "#ddd")
+        tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
+        image.save(tmp_file, 'jpeg')
+
+        response = self.get_put_logo_response(1, {'token': self.test_hr['token']}, {'image': tmp_file})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # print(response.data['logo'])
+
+        # Delete file
+        file_path = os.path.join(settings.FILE_ROOT, str(1), 'logo.jpg')
+        os.remove(file_path)
+
         self.db.rooms.delete_many({})

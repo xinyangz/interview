@@ -117,19 +117,18 @@ def logo(request, room_id, **kwargs):
     room_data = dict(room_cursor[0])
     del room_data['_id']
 
-    # TODO: test
+    # Save logo
     img_file = request.data['image']
     _, extension = os.path.splitext(img_file.name)
     file_path = os.path.join(settings.FILE_ROOT, str(room_id), 'logo' + extension)
     if not os.path.exists(os.path.dirname(file_path)):
         os.makedirs(os.path.dirname(file_path))
-    destination = open(file_path, 'wb+')
-    for chunk in img_file.chunks():
-        destination.write(chunk)
-    destination.close()
+    with open(file_path, 'wb+') as destination:
+        for chunk in img_file.chunks():
+            destination.write(chunk)
 
     # update logo url
-    logo_url = settings.FILE_URL + str(room_id) + '/logo' + extension
+    logo_url = settings.SITE_URL + settings.FILE_URL + str(room_id) + '/logo' + extension
     db.rooms.update_one(
         {'id': room_id},
         {'$set': {'logo': logo_url}}

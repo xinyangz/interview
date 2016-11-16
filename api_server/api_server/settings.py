@@ -143,3 +143,7 @@ CORS_ORIGIN_WHITELIST = (
 FILE_ROOT = os.path.join(BASE_DIR, 'file')
 
 FILE_URL = '/file/'
+
+# Domain name
+
+SITE_URL = 'https://testalent.tk'
