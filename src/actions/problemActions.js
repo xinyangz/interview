@@ -1,5 +1,6 @@
 import * as types from '../constants/actionTypes';
 import axios from 'axios';
+import {displayNotification} from './notificationActions';
 
 export function beginLoadAllProblems() {
   return {
@@ -79,20 +80,21 @@ export function addProblem(problem) {
     })
       .then(res => {
         if (res.status === 200) {
+          dispatch(displayNotification('success', '操作成功', '题目添加成功'));
           dispatch(loadAllProblems(roomId));
         }
         else if (res.status === 403) {
-          dispatch(addProblemError('用户无访问权限'));
+          dispatch(displayNotification('error', '错误', '您无访问权限'));
         }
         else if (res.status === 404) {
-          dispatch(addProblemError('房间不存在'));
+          dispatch(displayNotification('error', '错误', '题目不存在'));
         }
         else {
-          dispatch(addProblemError(res.data));
+          dispatch(displayNotification('error', '错误', toString(res.data)));
         }
       })
       .catch(err => {
-          dispatch(addProblemError(err));
+          dispatch(displayNotification('error', '错误', toString(err)));
         }
       );
   };
@@ -109,20 +111,21 @@ export function editProblem(problem) {
     })
       .then(res => {
         if (res.status === 200) {
+          dispatch(displayNotification('success', '操作成功', '题目修改成功'));
           dispatch(loadAllProblems(roomId));
         }
         else if (res.status === 403) {
-          dispatch(editProblemError('用户无访问权限'));
+          dispatch(displayNotification('error', '错误', '您无访问权限'));
         }
         else if (res.status === 404) {
-          dispatch(editProblemError('房间不存在'));
+          dispatch(displayNotification('error', '错误', '题目不存在'));
         }
         else {
-          dispatch(editProblemError(res.data));
+          dispatch(displayNotification('error', '错误', toString(res.data)));
         }
       })
       .catch(err => {
-          dispatch(editProblemError(err));
+        dispatch(displayNotification('error', '错误', toString(err)));
         }
       );
   };
@@ -139,20 +142,21 @@ export function deleteProblem(problemId) {
     })
       .then(res => {
         if (res.status === 200) {
+          dispatch(displayNotification('success', '操作成功', '题目删除成功'));
           dispatch(deleteProblemSuccess(problemId));
         }
         else if (res.status === 403) {
-          dispatch(deleteProblemError('用户无访问权限'));
+          dispatch(displayNotification('error', '错误', '您无访问权限'));
         }
         else if (res.status === 404) {
-          dispatch(deleteProblemError('面试题不存在'));
+          dispatch(displayNotification('error', '错误', '题目不存在'));
         }
         else {
-          dispatch(deleteProblemError(res.data));
+          dispatch(displayNotification('error', '错误', toString(res.data)));
         }
       })
       .catch(err => {
-        dispatch(deleteProblemError(err));
+        dispatch(displayNotification('error', '错误', toString(err)));
       });
   };
 }
@@ -179,11 +183,11 @@ export function loadAllProblems(roomId) {
           dispatch(loadAllProblemsError('房间不存在'));
         }
         else {
-          dispatch(loadAllProblemsError(res.data));
+          dispatch(displayNotification('error', '错误', toString(res.data)));
         }
       })
       .catch(err => {
-        dispatch(loadAllProblemsError(err));
+        dispatch(displayNotification('error', '错误', toString(err)));
       });
   };
 }

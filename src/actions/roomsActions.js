@@ -1,5 +1,6 @@
 import * as types from '../constants/actionTypes';
 import axios from 'axios';
+import {displayNotification} from './notificationActions';
 
 
 export function beginDeleteRoom() {
@@ -129,12 +130,13 @@ export function deleteRoom(roomId) {
       .then(response => {
         if (response.status === 200) {
           dispatch(deleteRoomSuccess(roomId));
+          dispatch(displayNotification('success', '操作成功', '删除房间成功'));
         }
         else {
-          dispatch(deleteRoomError(response.data.error));
+          dispatch(displayNotification('error', '错误', toString(response.data.error)));
         }
       })
-      .catch(error => dispatch(deleteRoomError(error.response.data.error || error)));
+      .catch(error => dispatch(displayNotification('error', '错误', toString(error.response.data.error || error))));
   };
 }
 
@@ -142,16 +144,22 @@ export function loadAllRooms() {
   return (dispatch, getState) => {
     dispatch(beginLoadAllRooms());
     const token = getState().user.token;
-    return axios.get('/room' + '?token=' + token)
+    return axios.get('/room', {
+      params:{
+        token,
+        offset: 0,
+        limit: 20
+      }
+    })
       .then(response => {
         if (response.status === 200) {
           dispatch(loadAllRoomsSuccess(response.data.rooms));
         }
         else {
-          dispatch(loadAllRoomsError(response.data.error));
+          dispatch(displayNotification('error', '错误', response.data.error));
         }
       })
-      .catch(error => dispatch(loadAllRoomsError(error.response.data.error || error)));
+      .catch(error => dispatch(displayNotification('error', '错误', toString(error.response.data.error || error))));
   };
 }
 
@@ -188,7 +196,7 @@ export function loadInterviewerRoom() {
         }
       })
       .catch(err => {
-        dispatch(loadRoomError(err));
+        dispatch(displayNotification('error', '错误', toString(err.response.data.error || err)));
       });
   };
 }
@@ -221,8 +229,7 @@ export function modifyRoom(data) {
         }
       })
       .catch(error => {
-        dispatch(modifyRoomError(error));
-        dispatch(uploadImageError(error));
+        dispatch(displayNotification('error', '错误', toString(error.response.data.error || error)));
       });
   };
 }
@@ -256,8 +263,7 @@ export function addRoom(data) {
         }
       })
       .catch(error => {
-        dispatch(addRoomError(error));
-        dispatch(uploadImageError(error));
+        dispatch(displayNotification('error', '错误', toString(error)));
       });
   };
 }

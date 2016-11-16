@@ -1,8 +1,8 @@
 import * as types from '../constants/actionTypes';
 import axios from 'axios';
+import {displayNotification} from './notificationActions';
 
 // token should be read from state
-const token = '123';
 const offset = '0';
 const limit = '1';
 
@@ -107,29 +107,33 @@ export function listCandidateError(error) {
 }
 
 export function deleteCandidate(candidateId) {
-  return dispatch => {
+  return (dispatch, getState) => {
+    const token = getState().user.token;
     dispatch(beginDeleteCandidate());
     return axios.delete('/candidate/' + candidateId + '?token=' + token)
       .then(response => {
         if (response.status === 200) {
           dispatch(deleteCandidateSuccess(candidateId));
+          dispatch(displayNotification('success', '操作成功', '候选人已添加'));
         }
         else {
-          dispatch(deleteCandidateError(response.data.error));
+          dispatch(displayNotification('error', '错误', toString(response.data.error)));
         }
       })
-      .catch(error => dispatch(deleteCandidateError(error)));
+      .catch(error => dispatch(displayNotification('error', '错误', toString(error))));
   };
 }
 
 export function editCandidate(candidate) {
-  return dispatch => {
+  return (dispatch, getState) => {
+    const token = getState().user.token;
     dispatch(beginEditCandidate());
     return axios.put('/candidate/' + candidate.id + '?token=' + token, candidate)
       .then(response => {
         if (response.status === 200) {
           dispatch(editCandidateSuccess(candidate.id));
           dispatch(loadAllCandidates());
+          dispatch(displayNotification('success', '操作成功', '候选人信息已修改'));
         }
         else {
           dispatch(editCandidateError(response.data.error));
@@ -140,7 +144,8 @@ export function editCandidate(candidate) {
 }
 
 export function addCandidate(candidate) {
-  return dispatch => {
+  return (dispatch, getState) => {
+    const token = getState().user.token;
     dispatch(addCandidateBegin());
     return axios.post('/candidate?token=' + token, candidate)
       .then(response => {
@@ -149,15 +154,16 @@ export function addCandidate(candidate) {
           dispatch(loadAllCandidates());
         }
         else {
-          dispatch(addCandidateError(response.data.error));
+          dispatch(displayNotification('error', '错误', toString(response.data.error)));
         }
       })
-      .catch(error => dispatch(addCandidateError(error)));
+      .catch(error => dispatch(displayNotification('error', '错误', toString(error))));
   };
 }
 
 export function listCandidate(fileContent) {
-  return dispatch => {
+  return (dispatch, getState) => {
+    const token = getState().user.token;
     dispatch(listCandidateBegin());
     return axios.post('/candidate/file?token=' + token, fileContent)
       .then(response => {
@@ -166,15 +172,16 @@ export function listCandidate(fileContent) {
           dispatch(loadAllCandidates());
         }
         else {
-          dispatch(listCandidateError(response.data.error));
+          dispatch(displayNotification('error', '错误', toString(response.data.error)));
         }
       })
-      .catch(error => dispatch(listCandidateError(error)));
+      .catch(error => dispatch(displayNotification('error', '错误', toString(error))));
   };
 }
 
 export function loadAllCandidates() {
-  return dispatch => {
+  return (dispatch, getState) => {
+    const token = getState().user.token;
     dispatch(beginLoadAllCandidates());
     return axios.get('/candidate' + '?offset='+ offset + '&limit=' + limit + '&token=' + token)
       .then(response => {
@@ -182,10 +189,10 @@ export function loadAllCandidates() {
           dispatch(loadAllCandidatesSuccess(response.data.candidates));
         }
         else {
-          dispatch(loadAllCandidatesError(response.data.error));
+          dispatch(displayNotification('error', '错误', toString(response.data.error)));
         }
       })
-      .catch(error => dispatch(loadAllCandidatesError(error)));
+      .catch(error => dispatch(displayNotification('error', '错误', toString(error))));
   };
 }
 

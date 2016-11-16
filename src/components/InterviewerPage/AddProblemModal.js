@@ -282,8 +282,8 @@ AddProblemModal.propTypes = {
   onHide: PropTypes.func.isRequired,
   addProblem: PropTypes.func.isRequired,
   type: PropTypes.string,
-  roomId: PropTypes.integer,
-  show: PropTypes.func
+  roomId: PropTypes.number,
+  show: PropTypes.bool
 };
 
 function mapStateToProps(state) {

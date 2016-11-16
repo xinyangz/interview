@@ -319,11 +319,11 @@ export class EditProblemModal extends React.Component {
 EditProblemModal.propTypes = {
   onHide: PropTypes.func.isRequired,
   editProblem: PropTypes.func.isRequired,
-  selectedProblem: PropTypes.integer,
-  show: PropTypes.func,
+  selectedProblem: PropTypes.number,
+  show: PropTypes.bool,
   problems: PropTypes.array,
   type: PropTypes.string,
-  roomId: PropTypes.integer
+  roomId: PropTypes.number
 };
 
 function mapStateToProps(state) {
