@@ -6,7 +6,7 @@ import AddCandidateModal from './candidateManager/AddCandidateModal';
 import ListCandidateModal from './candidateManager/listCandidateModal';
 import ModifyModal from './HRRoomPage/ModifyModal';
 import AddModal from './HRRoomPage/AddModal';
-import {deleteRoom} from '../actions/roomsActions';
+import {deleteRoom, sendEmail} from '../actions/roomsActions';
 
 class CandidateManagerPage extends React.Component {
   constructor(props) {
@@ -36,6 +36,7 @@ class CandidateManagerPage extends React.Component {
     this.closeAddRoomModal = this.closeAddRoomModal.bind(this);
     this.openModifyModal = this.openModifyModal.bind(this);
     this.closeModifyModal = this.closeModifyModal.bind(this);
+    this.sendEmail = this.sendEmail.bind(this);
   }
 
   closeAddCandidateModal() {
@@ -89,6 +90,10 @@ class CandidateManagerPage extends React.Component {
   onDeleteRoomClick() {
     this.props.deleteRoom(this.state.selectedRoom);
     this.close();
+  }
+
+  sendEmail(roomId) {
+    this.props.sendEmail(roomId);
   }
 
   checkNoRoom() {
@@ -147,6 +152,9 @@ class CandidateManagerPage extends React.Component {
                         <a className="link" onClick={() => this.openModifyModal(room.id)}>编辑</a> | <a className="link"
                                                                                                       onClick={() => this.open(room.id)}>删除</a>
                       </td>
+                      <td>
+                        <a className="link" onClick={() => this.sendEmail(room.id)}>发送邮件</a>
+                      </td>
                     </tr>)}
                   </tbody>
                 </Table>
@@ -200,5 +208,5 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {deleteRoom})(CandidateManagerPage);
+export default connect(mapStateToProps, {deleteRoom, sendEmail})(CandidateManagerPage);
 
