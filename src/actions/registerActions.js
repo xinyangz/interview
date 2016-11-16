@@ -38,7 +38,7 @@ export function register(registerInfo) {
         }
       })
       .catch(err => {
-        dispatch(displayNotification('error', '错误', toString(err)));
+        dispatch(displayNotification('error', '错误', '注册失败，您的用户名可能已被使用或是其他原因'));
       });
   };
 }
