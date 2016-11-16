@@ -148,19 +148,20 @@ def invitation(request, room_id, **kwargs):
                             interviewer_cursor[0]['username'],
                             interviewer_cursor[0]['password'])
     candidate_email_lrs = []
-    for candidate_id in room_data['candidates']:
-        candidate_cursor = db.candidate.find({'id': candidate_id})
-        if candidate_cursor.count() == 0:
-            return Response(
-                {
-                    'error': 'Candidate not found'
-                },
-                status.HTTP_400_BAD_REQUEST
-            )
-        candidate_username = candidate_cursor[0]['unique_username']
-        candidate_email_lrs.append((candidate_cursor[0]['email'],
-                                    candidate_username,
-                                    db.users.find({'username': candidate_username})[0]['password']))
+    if 'candidates' in room_data:
+        for candidate_id in room_data['candidates']:
+            candidate_cursor = db.candidate.find({'id': candidate_id})
+            if candidate_cursor.count() == 0:
+                return Response(
+                    {
+                        'error': 'Candidate not found'
+                    },
+                    status.HTTP_400_BAD_REQUEST
+                )
+            candidate_username = candidate_cursor[0]['unique_username']
+            candidate_email_lrs.append((candidate_cursor[0]['email'],
+                                        candidate_username,
+                                        db.users.find({'username': candidate_username})[0]['password']))
 
     send_email.send_interviewer_invitation(interviewer_email_lr[0], interviewer_email_lr[1], interviewer_email_lr[2])
     for candidate_email_lr in candidate_email_lrs:
