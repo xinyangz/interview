@@ -214,6 +214,8 @@ export function modifyRoom(data) {
         if(response.status === 200) {
           dispatch(modifyRoomSuccess(response.data.room));
           dispatch(beginUploadImage());
+          debugger;
+          console.log(image);
           return axios.put('/room/' + room_id + '/logo' + '?token=' + token, image);
         }
         else {
@@ -229,7 +231,7 @@ export function modifyRoom(data) {
         }
       })
       .catch(error => {
-        dispatch(displayNotification('error', '错误', toString(error.response.data.error || error)));
+        dispatch(displayNotification('error', '错误', error.message));
       });
   };
 }

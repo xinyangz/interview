@@ -26,11 +26,17 @@ export function logoutSuccess() {
   };
 }
 
-export function login(data) {
+export function login(data, type) {
   return dispatch => {
     dispatch(beginLogin());
     const username = data.username;
-    const password = md5(data.password);
+    let password;
+    if (type === 'hr') {
+      password = md5(data.password);
+    }
+    else {
+      password = data.password;
+    }
     return axios.get('/user/login?username=' + username + '&password=' + password)
       .then(response => {
         if ( response.status === 200 ) {

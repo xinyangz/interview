@@ -15,7 +15,7 @@ class LoginPage extends React.Component {
     const { login } = this.props;
     const username = ReactDOM.findDOMNode(this.refs.username).value;
     const password = ReactDOM.findDOMNode(this.refs.password).value;
-    login({ username, password });
+    login({ username, password }, 'hr');
   }
 
   render() {
