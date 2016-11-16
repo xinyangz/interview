@@ -46,7 +46,7 @@ export function login(data) {
     axios.get('/user/login?username=' + username + '&password=' + password)
       .then(response => {
         if ( response.status === 200 ) {
-          const {user, token} = response.data;
+          const {user} = response.data;
           const {type} = user;
           dispatch(loginSuccess(response.data));
           if (type === 'hr') {
