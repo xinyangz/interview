@@ -8,6 +8,7 @@ import uuid
 import jsonschema
 import copy
 from . import permissions
+from . import sequences
 from .schemas import swagger_schema
 from .file_parser import file_parser
 
@@ -18,12 +19,12 @@ candidate_keys = ('id', 'name', 'email', 'phone', 'status', 'roomId', 'record')
 @api_view(['POST', 'GET'])
 def get_set_candidate(request, **kwargs):
     '''
-    'id': '3001',
+    'id': 3001,
     'name': 'Mike',
     'email': 'example@example.com',
     'phone': '1300000000',
     'status': 'weimianshi',
-    'roomId': '1001',
+    'roomId': 1001,
     'record':{
         'video': 'string',
         'board': 'string',
@@ -37,7 +38,6 @@ def get_set_candidate(request, **kwargs):
     if permissions.check(request, ('hr', 'interviewer')) != permissions.PASS:
         return Response(
             {
-                'status': '30',
                 'error': 'Access denied.'
             },
             status.HTTP_403_FORBIDDEN
@@ -51,11 +51,10 @@ def get_set_candidate(request, **kwargs):
 
         # Check key error
         try:
-            jsonschema.validate(candidate_data, swagger_schema['definitions']['Candidate'])
+            jsonschema.validate(candidate_data, swagger_schema['definitions']['PostCandidate'])
         except:
             return Response(
                 {
-                    'status': '30',
                     'error': 'Key error'
                 },
                 status.HTTP_400_BAD_REQUEST
@@ -78,15 +77,16 @@ def get_set_candidate(request, **kwargs):
             user_part['contact'] = candidate_data['phone']
         db.users.insert_one(user_part)
 
+        # Generate unique id
+        candidate_id = sequences.get_next_sequence('candidate_id')
+
         candidate_part = candidate_data.copy()
         candidate_part['unique_username'] = temp_username
+        candidate_part['id'] = candidate_id
         db.candidate.insert_one(candidate_part)
-        return Response(
-            {
-                'status': '200'
-            },
-            status.HTTP_200_OK
-        )
+        ret_candidate_part = candidate_data.copy()
+        ret_candidate_part['id'] = candidate_id
+        return Response(ret_candidate_part, status.HTTP_200_OK)
     elif request.method == 'GET':
         offset = request.GET.get('offset')
         limit = request.GET.get('limit')
@@ -100,20 +100,21 @@ def get_set_candidate(request, **kwargs):
         else:
             limit = int(limit)
 
-        sorted_candidate = db.candidate.find({}).sort('id', pymongo.ASCENDING)
-        if offset + limit - 1 > int(sorted_candidate.count()):
-            return Response(
-                {
-                    'error': 'Index out of boundary'
-                },
-                status.HTTP_400_BAD_REQUEST
-            )
-        return_list = map(lambda x: {k: v for k, v in dict(sorted_candidate).items() if k in candidate_keys},
-                          list(sorted_candidate)[offset: offset + limit])
+        sorted_candidate = db.candidate.find(
+            {
+                'id': {'$gte': offset + 1, '$lte': offset + limit}
+            }
+        ).sort('id', pymongo.ASCENDING)
+        count = sorted_candidate.count()
+        return_list = list(map(lambda x: {k: v for k, v in dict(x).items() if k in candidate_keys},
+                           list(sorted_candidate)))
+
         return Response(
             {
-                'data': return_list
-                # sorted_candidate[offset, offset + limit]
+                'offset': offset,
+                'limit': limit,
+                'count': count,
+                'candidates': return_list
             },
             status.HTTP_200_OK
         )
@@ -140,6 +141,8 @@ def workon_candidate(request, candidate_id, **kwargs):
     client = pymongo.MongoClient()
     db = client[settings.DB_NAME]
 
+    candidate_id = int(candidate_id)
+
     # Check existance
     data = db.candidate.find({'id': candidate_id})
     if data.count() == 0:
@@ -162,15 +165,24 @@ def workon_candidate(request, candidate_id, **kwargs):
         for item in data:
             temp_data = {k: v for k, v in dict(item).items() if k in candidate_keys}
             return Response(
-                {
-                    'data':  temp_data
-                },
+                temp_data,
                 status.HTTP_200_OK
             )
     elif request.method == 'PUT':
         # Put data
         input_data = request.data
-        if input_data['id'] is not candidate_id:
+
+        try:
+            jsonschema.validate(input_data, swagger_schema['definitions']['Candidate'])
+        except:
+            return Response(
+                {
+                    'error': 'Key error'
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+
+        if input_data['id'] != candidate_id:
             for item in data:
                 dulp_list = db.candidate.find({'id': input_data['id']})
                 if dulp_list.count() > 0:
@@ -181,7 +193,7 @@ def workon_candidate(request, candidate_id, **kwargs):
                         status.HTTP_400_BAD_REQUEST
                     )
         temp_data = {k: v for k, v in input_data.items() if k in candidate_keys}
-        db.candidate.update(
+        db.candidate.update_one(
             {'id': candidate_id},
             {
                 '$set': temp_data
@@ -195,14 +207,11 @@ def workon_candidate(request, candidate_id, **kwargs):
     elif request.method == 'DELETE':
         # Delete data
         db.candidate.delete_one({'id': candidate_id})
-        return Response(
-            status.HTTP_200_OK
-        )
+        return Response(status=status.HTTP_200_OK)
 
     else:
         return Response(
             {
-                'status': '30',
                 'error': 'Unknown request method'
             },
             status.HTTP_400_BAD_REQUEST
@@ -222,17 +231,17 @@ def change_status_candidate(request, candidate_id, **kwargs):
     if permissions.check(request, ('hr', 'interviewer')) != permissions.PASS:
         return Response(
             {
-                'status': '30',
                 'error': 'Access denied.'
             },
             status.HTTP_403_FORBIDDEN
         )
 
+    candidate_id = int(candidate_id)
+
     candidate = db.candidate.find({'id': candidate_id})
     if candidate.count() == 0:
         return Response(
             {
-                'status': '30',
                 'error': 'Candidate not found.'
             },
             status.HTTP_404_NOT_FOUND
@@ -240,14 +249,13 @@ def change_status_candidate(request, candidate_id, **kwargs):
     elif candidate.count() > 1:
         return Response(
             {
-                'status': '30',
                 'error': 'Candidate id duplicated'
             },
             status.HTTP_400_BAD_REQUEST
         )
     else:
         for item in candidate:
-            db.candidate.update(
+            db.candidate.update_one(
                 {'id': candidate_id},
                 {
                     '$set':

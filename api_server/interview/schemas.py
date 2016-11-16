@@ -357,7 +357,7 @@ swagger_schema = {
                         "default": 0,
                         "minimum": 0,
                         "type": "integer",
-                        "format": "int32"
+                        "format": "integer"
                     },
                     {
                         "name": "limit",
@@ -366,7 +366,7 @@ swagger_schema = {
                         "default": 10,
                         "maximum": 100,
                         "type": "integer",
-                        "format": "int32"
+                        "format": "integer"
                     },
                     {
                         "name": "token",
@@ -631,7 +631,7 @@ swagger_schema = {
                         "default": 0,
                         "minimum": 0,
                         "type": "integer",
-                        "format": "int32"
+                        "format": "integer"
                     },
                     {
                         "name": "limit",
@@ -640,7 +640,7 @@ swagger_schema = {
                         "default": 10,
                         "maximum": 100,
                         "type": "integer",
-                        "format": "int32"
+                        "format": "integer"
                     },
                     {
                         "name": "token",
@@ -808,7 +808,7 @@ swagger_schema = {
                         "headers": {
                             "X-Rate-Limit": {
                                 "type": "integer",
-                                "format": "int32",
+                                "format": "integer",
                                 "description": "calls per hour allowed by the user"
                             },
                             "X-Expires-After": {
@@ -1170,7 +1170,7 @@ swagger_schema = {
                         "default": 0,
                         "minimum": 0,
                         "type": "integer",
-                        "format": "int32"
+                        "format": "integer"
                     },
                     {
                         "name": "limit",
@@ -1179,7 +1179,7 @@ swagger_schema = {
                         "default": 10,
                         "maximum": 20,
                         "type": "integer",
-                        "format": "int32"
+                        "format": "integer"
                     },
                     {
                         "name": "token",
@@ -1299,7 +1299,7 @@ swagger_schema = {
                         "default": 0,
                         "minimum": 0,
                         "type": "integer",
-                        "format": "int32"
+                        "format": "integer"
                     },
                     {
                         "name": "limit",
@@ -1656,7 +1656,7 @@ swagger_schema = {
             "additionalProperties": False,
             "properties": {
                 "id": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "面试房间ID",
                     "example": "1001"
                 },
@@ -1714,13 +1714,13 @@ swagger_schema = {
                 },
                 "interviewer": {
                     "description": "面试官ID，若不存在则置空",
-                    "type": "string"
+                    "type": "integer"
                 },
                 "candidates": {
                     "description": "候选人ID列表",
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "example": [
                         "100",
@@ -1742,13 +1742,13 @@ swagger_schema = {
             "properties": {
                 "offset": {
                     "type": "integer",
-                    "format": "int32",
+                    "format": "integer",
                     "description": "面试房间列表的读取偏移",
                     "example": "0"
                 },
                 "limit": {
                     "type": "integer",
-                    "format": "int32",
+                    "format": "integer",
                     "description": "面试房间列表的读取个数，最大为100",
                     "minimum": "0",
                     "maximum": "100",
@@ -1757,7 +1757,7 @@ swagger_schema = {
                 "count": {
                     "description": "总面试房间数",
                     "type": "integer",
-                    "format": "int32",
+                    "format": "integer",
                     "example": "1"
                 },
                 "rooms": {
@@ -1800,7 +1800,7 @@ swagger_schema = {
                 },
                 "roomId": {
                     "description": "候选人被分配的唯一的面试房间 id",
-                    "type": "string",
+                    "type": "integer",
                     "example": "1001"
                 }
             }
@@ -1817,7 +1817,7 @@ swagger_schema = {
             "properties": {
                 "id": {
                     "description": "候选人id",
-                    "type": "string",
+                    "type": "integer",
                     "example": "3001"
                 },
                 "name": {
@@ -1842,7 +1842,7 @@ swagger_schema = {
                 },
                 "roomId": {
                     "description": "候选人被分配的唯一的面试房间 id",
-                    "type": "string",
+                    "type": "integer",
                     "example": "1001"
                 },
                 "record": {
@@ -1885,19 +1885,19 @@ swagger_schema = {
             "properties": {
                 "offset": {
                     "type": "integer",
-                    "format": "int32",
+                    "format": "integer",
                     "description": "候选人列表的读取偏移"
                 },
                 "limit": {
                     "type": "integer",
-                    "format": "int32",
+                    "format": "integer",
                     "description": "候选人列表读取个数，上限100",
                     "minimum": 0,
                     "maximum": 100
                 },
                 "count": {
                     "type": "integer",
-                    "format": "int32",
+                    "format": "integer",
                     "description": "候选人总人数"
                 },
                 "candidates": {
@@ -1919,7 +1919,7 @@ swagger_schema = {
             "additionalProperties": False,
             "properties": {
                 "id": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "报告id",
                     "example": "7001"
                 },
@@ -1965,7 +1965,7 @@ swagger_schema = {
             "additionalProperties": False,
             "properties": {
                 "id": {
-                    "type": "string",
+                    "type": "integer",
                     "example": "10001"
                 },
                 "candidateId": {
@@ -2001,12 +2001,12 @@ swagger_schema = {
             "properties": {
                 "offset": {
                     "type": "integer",
-                    "format": "int32",
+                    "format": "integer",
                     "description": "读取偏移"
                 },
                 "limit": {
                     "type": "integer",
-                    "format": "int32",
+                    "format": "integer",
                     "description": "读取个数",
                     "minimum": 0,
                     "maximum": 20
@@ -2069,12 +2069,12 @@ swagger_schema = {
             "additionalProperties": False,
             "properties": {
                 "id": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "题目id",
                     "example": "3901"
                 },
                 "roomId": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "题目所属房间id",
                     "example": "1001"
                 },
@@ -2102,12 +2102,12 @@ swagger_schema = {
             "properties": {
                 "offset": {
                     "type": "integer",
-                    "format": "int32",
+                    "format": "integer",
                     "description": "读取偏移"
                 },
                 "limit": {
                     "type": "integer",
-                    "format": "int32",
+                    "format": "integer",
                     "description": "读取个数",
                     "minimum": 0,
                     "maximum": 20

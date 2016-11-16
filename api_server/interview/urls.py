@@ -2,6 +2,7 @@ from django.conf.urls import url, include
 from . import user_views
 from . import candidate_views
 from . import report_views
+from . import room_views
 
 api_patterns = [
     url(r'^user/login$', user_views.user_login, name='user-login'),
@@ -12,7 +13,10 @@ api_patterns = [
     url(r'^candidate/(?P<candidate_id>([0-9]+))$', candidate_views.workon_candidate, name='workon-candidate'),
     url(r'^candidate/(?P<candidate_id>([0-9]+))/status$', candidate_views.change_status_candidate, name='status-candidate'),
     url(r'^candidate/file$', candidate_views.batch_candidate, name='batch-candidate'),
-    url(r'^report/(?P<candidate_id>([0-9]+))$', report_views.all_report, name='put-report')
+    url(r'^report/(?P<candidate_id>([0-9]+))$', report_views.all_report, name='put-report'),
+    url(r'^room$', room_views.root, name='room-root'),
+    url(r'^room/(?P<room_id>([0-9]+))/logo$', room_views.logo, name='room-logo'),
+    url(r'^room/(?P<room_id>([0-9]+))$', room_views.manage, name='room-manage'),
 ]
 
 urlpatterns = [
