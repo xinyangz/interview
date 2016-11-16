@@ -12,7 +12,7 @@ class ListCandidateModal extends React.Component {
 
   onListCandidateClick() {
     let candidateList = new FormData();
-    candidateList.append('logo', ReactDOM.findDOMNode(this.refs.logo).files[0]);
+    candidateList.append('file', ReactDOM.findDOMNode(this.refs.logo).files[0]);
     this.props.listCandidate(candidateList);
     this.props.onHideListCandidateModal();
   }
