@@ -17,8 +17,8 @@ def file_parser(ext_name, content):
             line_counter += 1
             if line_counter <= 1:
                 row = raw_row.split(',')
-                if len(row) < 3 or row[0] != r'姓名' or \
-                        row[1] != r'邮箱' or row[2] != r'手机号':
+                if len(row) < 3 or row[0] != u'姓名' or \
+                        row[1] != u'邮箱' or row[2] != u'手机号':
                     return None
                 continue
             row = raw_row.split(',')
@@ -29,7 +29,7 @@ def file_parser(ext_name, content):
                     'name': row[0],
                     'email': row[1],
                     'phone': row[2],
-                    'status': '未面试',
+                    'status': u'未面试',
                     'roomId': '',
                     'record': {
                         'video': 0,
@@ -66,7 +66,7 @@ def file_parser(ext_name, content):
                 'name': line[0],
                 'email': line[1],
                 'phone': line[2],
-                'status': '未面试',
+                'status': u'未面试',
                 'roomId': '',
                 'record': {
                     'video': 0,
