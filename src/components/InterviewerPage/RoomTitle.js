@@ -10,7 +10,7 @@ const RoomTitle = ({room}) => {
           <h4 className="room-title">{room.name}</h4>
         </Col>
         <Col md={9}>
-          <h4>面试官: {room.interviewer} | 人数: {room.candidates.length}</h4>
+          <h4>面试官: {room.interviewer} | 人数: {room.candidates === undefined ? 0 : room.candidates.length}</h4>
         </Col>
       </Row>
     </Grid>

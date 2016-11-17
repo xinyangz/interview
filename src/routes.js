@@ -39,9 +39,8 @@ const routes = (store) => {
     <Route path="/" component={App}>
       <IndexRoute component={WelcomePage}/>
       <Route path="hr" component={HRManagerPage} />
-      <Route path="fuel-savings" component={FuelSavingsPage}/>
       <Route path="about" component={AboutPage} onEnter={requireHR}/>
-      <Route path="interviewer" component={InterviewerPage} />
+      <Route path="interviewer" component={InterviewerPage} onEnter={requireInterviewer} />
       <Route path="not-found" component={NotFoundPage} />
       <Route path="login" component={LoginPage} />
       <Route path="register" component={RegisterPage}/>

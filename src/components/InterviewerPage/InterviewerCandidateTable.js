@@ -30,7 +30,7 @@ class InterviewerCandidateTable extends React.Component {
           <td>{candidate.name}</td>
           <td>{candidate.email}</td>
           <td>{candidate.phone}</td>
-          <td>{this.props.rooms.find(room => room.id === candidate.roomId).name}</td>
+          <td>{this.props.rooms.find(room => room.id === candidate.roomId) && this.props.rooms.find(room => room.id === candidate.roomId).name}</td>
           <td className="icon">
             <a href={candidate.record && candidate.record.video} target="_blank"><Image src="../../images/1.png" width={17} height={17} /></a>
             <a href={candidate.record && candidate.record.chat} target="_blank"><Image src="../../images/2.png" width={17} height={17} /></a>

@@ -9,6 +9,7 @@ import '../styles/navigation.css';
 class NavigationBar extends React.Component {
   render() {
     let navRight;
+    let navPage;
     if (!this.props.isLogin) {
       navRight = (
         <Nav pullRight>
@@ -34,6 +35,30 @@ class NavigationBar extends React.Component {
       );
     }
 
+    if (!this.props.isLogin) {
+      navPage = undefined;
+    }
+    else {
+      if (this.props.type === 'hr') {
+        navPage = (
+          <Nav>
+            <IndexLinkContainer to="/hr">
+              <NavItem eventKey={1}>房间管理</NavItem>
+            </IndexLinkContainer>
+          </Nav>
+        );
+      }
+      else {
+        navPage = (
+          <Nav>
+            <LinkContainer to="/interviewer">
+              <NavItem eventKey={3}>面试官管理台</NavItem>
+            </LinkContainer>
+          </Nav>
+        );
+      }
+    }
+
     return (
       <header className="navigation">
         <Navbar fixedTop>
@@ -42,18 +67,7 @@ class NavigationBar extends React.Component {
               <a href="/">面试管理平台</a>
             </Navbar.Brand>
           </Navbar.Header>
-          <Nav>
-            <IndexLinkContainer to="/hr">
-              <NavItem eventKey={1}>房间管理</NavItem>
-            </IndexLinkContainer>
-            <LinkContainer to="/interviewer">
-              <NavItem eventKey={3}>面试官管理台</NavItem>
-            </LinkContainer>
-            <LinkContainer to="/about">
-              <NavItem eventKey={4}>About</NavItem>
-            </LinkContainer>
-          </Nav>
-
+          {navPage}
           {navRight}
 
         </Navbar>

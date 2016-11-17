@@ -75,9 +75,7 @@ export function addProblem(problem) {
     dispatch(beginAddProblem(problem));
     const token = getState().user.token;
     const roomId = getState().roomsStates.room.id;
-    return axios.post('/problem/room/' + roomId + '?token=' + token, {
-      problem
-    })
+    return axios.post('/problem/room/' + roomId + '?token=' + token, problem)
       .then(res => {
         if (res.status === 200) {
           dispatch(displayNotification('success', '操作成功', '题目添加成功'));
@@ -104,11 +102,9 @@ export function editProblem(problem) {
   return (dispatch, getState) => {
     dispatch(beginEditProblem(problem));
     const token = getState().user.token;
-    const roomId = getState().roomsStates.room.id;
+    const roomId = problem.roomId;
     const problemId = problem.id;
-    return axios.put('/problem/' + problemId + '?token=' + token, {
-      problem
-    })
+    return axios.put('/problem/' + problemId + '?token=' + token, problem)
       .then(res => {
         if (res.status === 200) {
           dispatch(displayNotification('success', '操作成功', '题目修改成功'));
@@ -187,7 +183,7 @@ export function loadAllProblems(roomId) {
         }
       })
       .catch(err => {
-        dispatch(displayNotification('error', '错误', toString(err)));
+        dispatch(displayNotification('error', '错误', err.message));
       });
   };
 }

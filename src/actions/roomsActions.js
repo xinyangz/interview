@@ -1,6 +1,7 @@
 import * as types from '../constants/actionTypes';
 import axios from 'axios';
 import {displayNotification} from './notificationActions';
+import {loadAllProblems, loadAllProblemsSuccess} from './problemActions';
 
 
 export function beginDeleteRoom() {
@@ -166,12 +167,13 @@ export function loadAllRooms() {
 export function loadInterviewerRoom() {
   return (dispatch, getState) => {
     const token = getState().user.token;
+    let roomId;
     // get roomId by token
     return axios.get('/interviewer' + '?token=' + token)
       .then(res => {
         if (res.status === 200) {
           // get room info by roomId
-          const roomId = res.data.roomId;
+          roomId = res.data.roomId;
           return axios.get('/room/' + roomId + '?token=' + token);
         }
         else if (res.status === 400) {
@@ -184,6 +186,7 @@ export function loadInterviewerRoom() {
       .then(res => {
         if (res.status === 200) {
           dispatch(loadRoomSuccess(res.data));
+          dispatch(loadAllProblems(roomId));
         }
         else if (res.status === 403) {
           throw '用户无访问权限';
