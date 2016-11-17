@@ -31,7 +31,7 @@ def send_candidate_invitation(receiver, l, r):
     send_invitation(
         receiver,
         u'邀请您接受面试',
-        u'请点击链接：' + generate_invitation_url(l, r) + u'进入面试房间。'
+        u'请点击链接：' + generate_invitation_url(l, r) + u' 进入面试房间。'
     )
 
 
@@ -39,9 +39,9 @@ def send_interviewer_invitation(receiver, l, r):
     send_invitation(
         receiver,
         u'邀请您作为主考官参加面试',
-        u'请点击链接：' + generate_invitation_url(l, r) + u'进入面试房间。'
+        u'请点击链接：' + generate_invitation_url(l, r) + u' 进入面试房间。'
     )
 
 
 def generate_invitation_url(l, r):
-    return settings.SITE_URL + '/user/login?l=' + l + '&r=' + r
+    return settings.SITE_URL + '/redirect?l=' + l + '&r=' + r

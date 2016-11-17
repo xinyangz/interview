@@ -25,7 +25,7 @@ SECRET_KEY = ')%2)s!tic5&r3vj55_o-9()-mcnh%sb0en(&#*4z%)w!oqv3j)'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['testalent.tk']
 
 
 # Application definition
