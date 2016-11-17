@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {Table, Modal, Button} from 'react-bootstrap';
-import {loadAllProblems, deleteProblem} from '../../actions/problemActions';
+import {deleteProblem} from '../../actions/problemActions';
 import EditProblemModal from './EditProblemModal';
 
 const initialState = {showEditModal: false, showDeleteModal: false, selectedProblem: undefined};
@@ -16,10 +16,6 @@ class ProblemTable extends React.Component {
     this.onDeleteRoomClick = this.onDeleteRoomClick.bind(this);
     this.openEditModal = this.openEditModal.bind(this);
     this.closeEditModal = this.closeEditModal.bind(this);
-  }
-
-  componentWillMount() {
-    this.props.loadAllProblems('123');
   }
 
   openDeleteModal(id) {
@@ -112,8 +108,7 @@ class ProblemTable extends React.Component {
 ProblemTable.propTypes = {
   problems: PropTypes.arrayOf(PropTypes.object).isRequired,
   isWaiting: PropTypes.bool.isRequired,
-  deleteProblem: PropTypes.func.isRequired,
-  loadAllProblems: PropTypes.func.isRequired
+  deleteProblem: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
@@ -123,4 +118,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {loadAllProblems, deleteProblem})(ProblemTable);
+export default connect(mapStateToProps, {deleteProblem})(ProblemTable);

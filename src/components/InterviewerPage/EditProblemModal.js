@@ -210,7 +210,7 @@ export class EditProblemModal extends React.Component {
       };
     }
     const problemInfo = {
-      id: this.state.selectedProblem,
+      id: this.props.selectedProblem,
       roomId: this.props.roomId,
       type: this.state.type,
       content: problemContent
