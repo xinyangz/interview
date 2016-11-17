@@ -63,6 +63,7 @@ def root(request, room_id, **kwargs):
             )
         room = room_cursor[0]
         room['problems'].append(problem_id)
+        db.rooms.update({'id': room_id}, {'$set': {'problems': room['problems']}})
         db.problems.insert_one(problem_data)
         if '_id' in problem_data:
             del problem_data['_id']
@@ -107,7 +108,7 @@ def root(request, room_id, **kwargs):
             if len(problems_list) <= offset + limit:
                 limit = len(problems_list) - offset
             response_problem_list = []
-            for index in range(offset - 1, offset + limit):
+            for index in range(offset, offset + limit):
                 problem_cursor = db.problems.find(
                     {'id': sorted_problem_list[index]}
                 )
