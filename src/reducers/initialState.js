@@ -14,5 +14,34 @@ export default {
       annual: 0,
       threeYear: 0
     }
+  },
+  roomsStates: {
+    rooms: [],
+    room: {
+      id: undefined,
+      name: '',
+      logo: '',
+      interviewer: '',
+      candidates: [],
+      problems: []
+    },
+    isWaiting: false
+  },
+  problemStates: {
+    problems: [],
+    isWaiting: false
+  },
+  user: {
+    isLogin: false,
+    wrongPassword: false,
+    token: null,
+    type: null,
+    info: {},
+    isWaiting: false
+  },
+  candidatesStates:{
+    candidates:[],
+    isWaiting: false,
+    templateUrl: {}
   }
 };
