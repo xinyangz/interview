@@ -385,7 +385,7 @@ def batch_candidate(request, **kwargs):
             )
         for item in candidate_list:
             room_id = item['roomId']
-            if room_id is not None and db.rooms.find({'id': room_id}).count() == 0:
+            if room_id is not None and room_id != '' and db.rooms.find({'id': room_id}).count() == 0:
                 return Response(
                     {'error': "Room id doesn't exist."},
                     status.HTTP_400_BAD_REQUEST
@@ -396,9 +396,11 @@ def batch_candidate(request, **kwargs):
             while db.candidate.find({'id': tmp_id}).count() > 0:
                 tmp_id = uuid.uuid4()
             candidate_to_be_added['id'] = tmp_id
+            if 'room_id' in candidate_to_be_added and candidate_to_be_added['room_id'] == '':
+                del candidate_to_be_added['room_id']
             db.candidate.insert_one(candidate_to_be_added)
             room_id = item['roomId']
-            if room_id is not None:
+            if room_id is not None and room_id != '':
                 room_candidate_list = db.rooms.find({'id': room_id})[0]['candidates']
                 room_candidate_list.append(tmp_id)
                 db.rooms.update_one(
