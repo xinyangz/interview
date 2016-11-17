@@ -6,7 +6,7 @@ import AddCandidateModal from './candidateManager/AddCandidateModal';
 import ListCandidateModal from './candidateManager/listCandidateModal';
 import ModifyModal from './HRRoomPage/ModifyModal';
 import AddModal from './HRRoomPage/AddModal';
-import {deleteRoom} from '../actions/roomsActions';
+import {deleteRoom, sendEmail} from '../actions/roomsActions';
 
 class CandidateManagerPage extends React.Component {
   constructor(props) {
