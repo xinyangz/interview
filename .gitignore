@@ -1,3 +1,9 @@
+# Back-end
+*.pyc
+*.pkl
+*.pdf
+
+
 # Logs
 logs
 *.log*
@@ -60,3 +66,7 @@ dist
 将删除 webpack.config.prod.js
 /swagger-ui/swagger.yaml
 /swagger-ui/swagger.json
+
+# python cache
+__pycache__
+*.pyc
