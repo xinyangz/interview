@@ -240,11 +240,9 @@ def put_report(request, candidate_id):
     else:
         problems = []
     choice, blank, answer, code = [], [], [], []
-    print (problems)
     for problem_index in problems:
         try:
             problem = db.problems.find_one({'id': problem_index})
-            print (problem)
             if problem['type'] == 'choice':
                 choice.append(problem)
             elif problem['type'] == 'blank':
@@ -257,7 +255,6 @@ def put_report(request, candidate_id):
                 pass
         except:
             pass
-    print (choice, blank, answer, code)
     logo_dir = os.path.join(settings.FILE_ROOT, str(room_id))
 
     def weak_in(name, _list):

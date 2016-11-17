@@ -30,8 +30,14 @@ def root(request, room_id, **kwargs):
         # Format check
         problem_data = dict(request.data)
         try:
+            tmp_schema = swagger_schema['definitions']['Problem'].copy()
+            tmp_schema['required'] = [
+                "roomId",
+                "type",
+                "content"
+            ]
             jsonschema.validate(problem_data,
-                                swagger_schema['definitions']['Problem'])
+                                tmp_schema)
         except:
             return Response(
                 {'error': "Key error"},
