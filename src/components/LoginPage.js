@@ -20,10 +20,10 @@ class LoginPage extends React.Component {
 
   render() {
     return (
-      <div style={{width: '650px', margin: '0 auto'}}>
+      <div style={{width: '700px', margin: '0 auto'}}>
         <Panel>
           <h3>登录主考方账号</h3>
-            <div style={{width: '500px', margin: '0 auto'}}>
+            <div style={{width: '600px', margin: '0 auto'}}>
               <Form horizontal>
                 <FormGroup controlId="formHorizontalEmail">
                   <Col componentClass={ControlLabel} sm={2}>

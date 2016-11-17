@@ -16,6 +16,18 @@ const isLogin = (state = initialState.user.isLogin,
   }
 };
 
+const isWaiting = (state = initialState.user.isWaiting, action) => {
+  switch (action.type) {
+    case types.USER_LOGIN:
+      return true;
+    case types.USER_LOGIN_SUCCESS:
+    case types.USER_LOGIN_ERROR:
+      return false;
+    default:
+      return state;
+  }
+};
+
 const wrongPassword = (state = initialState.user.wrongPassword,
                        action) => {
   switch (action.type) {
@@ -69,7 +81,8 @@ const userReducer = combineReducers({
   token,
   type,
   wrongPassword,
-  info
+  info,
+  isWaiting
 });
 
 export default userReducer;

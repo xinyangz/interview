@@ -71,7 +71,7 @@ class CandidateManagerTable extends React.Component {
             <a href={candidate.record && candidate.record.report} target="_blank"><Image src="../../images/5.png" width={15} height={15} /></a>
           </td>
           <td>{this.setStatusColor(candidate.status)}</td>
-          <td><a onClick={() => this.openEditModal(candidate)}>编辑</a> | <a onClick={() => this.open(candidate.id)}>删除</a></td>
+          <td><a className="tb-link" onClick={() => this.openEditModal(candidate)}>编辑</a> | <a className="tb-link" onClick={() => this.open(candidate.id)}>删除</a></td>
         </tr>)}</tbody>);
     }
     return (<tbody><tr><td>暂无候选人</td></tr></tbody>);
@@ -142,7 +142,7 @@ class CandidateManagerTable extends React.Component {
   }
 
   open(candidate_id) {
-    this.setState({showModal: true, selectedCandidate: candidate_id});
+    this.setState({showModal: true, selectedCandidate: candidate_id, roomChange: candidate_id});
   }
 
   closeEditModal() {

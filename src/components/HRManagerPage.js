@@ -1,12 +1,13 @@
 import React, {PropTypes} from 'react';
 import {Row, Col, Tab, Nav, NavItem, NavDropdown, MenuItem, Table, Panel, Button, Modal} from 'react-bootstrap';
-import CandidateManagerTable from './candidateManager/CandidateManagerTable';
+import CandidateManagerTable from './CandidateManager/CandidateManagerTable';
 import {connect} from 'react-redux';
-import AddCandidateModal from './candidateManager/AddCandidateModal';
-import ListCandidateModal from './candidateManager/listCandidateModal';
+import AddCandidateModal from './CandidateManager/AddCandidateModal';
+import ListCandidateModal from './CandidateManager/ListCandidateModal';
 import ModifyModal from './HRRoomPage/ModifyModal';
 import AddModal from './HRRoomPage/AddModal';
 import {deleteRoom, sendEmail} from '../actions/roomsActions';
+import '../styles/hrroomtable.css';
 
 class CandidateManagerPage extends React.Component {
   constructor(props) {
@@ -97,7 +98,7 @@ class CandidateManagerPage extends React.Component {
   }
 
   checkNoRoom() {
-    if(!this.props.rooms.length) {
+    if(!this.props.rooms.length && !this.props.isWaiting) {
       return(
         <div style={{width: '800px', margin: '0 auto'}}>
           <Panel>
@@ -150,11 +151,11 @@ class CandidateManagerPage extends React.Component {
                         面试官: {room.interviewer} | {room.candidates === undefined ? 0 : room.candidates.length}人
                       </td>
                       <td>
-                        <a className="link" onClick={() => this.openModifyModal(room.id)}>编辑</a> | <a className="link"
+                        <a className="tb-link" onClick={() => this.openModifyModal(room.id)}>编辑</a> | <a className="tb-link"
                                                                                                       onClick={() => this.open(room.id)}>删除</a>
                       </td>
                       <td>
-                        <a className="link" onClick={() => this.sendEmail(room.id)}>发送邮件</a>
+                        <a className="tb-link" onClick={() => this.sendEmail(room.id)}>发送邮件</a>
                       </td>
                     </tr>)}
                   </tbody>
@@ -199,13 +200,15 @@ class CandidateManagerPage extends React.Component {
 CandidateManagerPage.propTypes = {
   candidateManager: PropTypes.arrayOf(PropTypes.object).isRequired,
   rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
-  deleteRoom: PropTypes.func
+  deleteRoom: PropTypes.func,
+  isWaiting: PropTypes.bool
 };
 
 function mapStateToProps(state) {
   return {
     candidateManager: state.candidatesStates.candidates,
-    rooms: state.roomsStates.rooms
+    rooms: state.roomsStates.rooms,
+    isWaiting: state.roomsStates.isWaiting
   };
 }
 

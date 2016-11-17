@@ -1,6 +1,7 @@
 import * as types from '../constants/actionTypes';
 import axios from 'axios';
 import {displayNotification} from './notificationActions';
+import {loadAllRooms} from './roomsActions';
 
 // token should be read from state
 const offset = '0';
@@ -122,6 +123,7 @@ export function deleteCandidate(candidateId) {
       .then(response => {
         if (response.status === 200) {
           dispatch(deleteCandidateSuccess(candidateId));
+          dispatch(loadAllRooms());
           dispatch(displayNotification('success', '操作成功', '候选人已删除'));
         }
         else {
@@ -140,6 +142,7 @@ export function editCandidate(candidate) {
       .then(response => {
         if (response.status === 200) {
           dispatch(loadAllCandidates());
+          dispatch(loadAllRooms());
           dispatch(displayNotification('success', '操作成功', '候选人信息已修改'));
         }
         else {
@@ -158,6 +161,7 @@ export function addCandidate(candidate) {
       .then(response => {
         if (response.status === 200) {
           dispatch(loadAllCandidates());
+          dispatch(loadAllRooms());
           dispatch(displayNotification('success', '操作成功', '候选人已添加'));
         }
         else {

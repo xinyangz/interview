@@ -36,7 +36,8 @@ export default {
     wrongPassword: false,
     token: null,
     type: null,
-    info: {}
+    info: {},
+    isWaiting: false
   },
   candidatesStates:{
     candidates:[],

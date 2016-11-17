@@ -20,6 +20,13 @@ export function loginSuccess(data) {
   };
 }
 
+export function loginError(error) {
+  return {
+    type: types.USER_LOGIN_ERROR,
+    error
+  };
+}
+
 export function logoutSuccess() {
   return {
     type: types.USER_LOGOUT_SUCCESS
@@ -59,14 +66,16 @@ export function login(data, type) {
           }
         }
         else if (response.status === 400) {
+          dispatch(loginError(response.data));
           dispatch(displayNotification('error', '错误', '用户名或密码错误'));
         }
         else {
+          dispatch(loginError(response.data));
           dispatch(displayNotification('error', '错误', toString(response.data)));
         }
       })
       .catch(error=> {
-        console.log(error);
+        dispatch(loginError(error));
         return dispatch(displayNotification('error', '错误', '登录失败，请检查您的用户名和密码'));
       });
   };
