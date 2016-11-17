@@ -242,9 +242,8 @@ export function addRoom(data) {
     return axios.post('/room' + '?token=' + token, room)
       .then(response => {
         if(response.status === 200) {
+          const room_id = response.data.id;
           dispatch(loadAllRooms());
-          const roomNum = getState().roomsStates.rooms.length;
-          const room_id = getState().roomsStates.rooms[roomNum - 1].id;
           dispatch(beginUploadImage());
           return axios.put('/room/' + room_id + '/logo' + '?token=' + token, image);
         }
