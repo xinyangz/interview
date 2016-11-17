@@ -76,8 +76,8 @@ class ProblemTable extends React.Component {
                       {this.mapProblemType(problem.type)}
                     </td>
                     <td className="aln-right">
-                      <a className="link" onClick={() => {this.openEditModal(problem.id);}}>编辑</a> | <a
-                      className="link" onClick={() => {this.openDeleteModal(problem.id);}}>删除</a>
+                      <a className="tb-link" onClick={() => {this.openEditModal(problem.id);}}>编辑</a> | <a
+                      className="tb-link" onClick={() => {this.openDeleteModal(problem.id);}}>删除</a>
                     </td>
                   </tr>)
                 :
