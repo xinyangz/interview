@@ -77,7 +77,8 @@ def root(request, room_id, **kwargs):
         db = client[settings.DB_NAME]
         offset = request.GET.get('offset')
         limit = request.GET.get('limit')
-
+        _offset = offset
+        _limit = limit
         # Check query parameters
         if offset is None or offset == '':
             offset = 0
@@ -123,7 +124,11 @@ def root(request, room_id, **kwargs):
                     del update_problem['_id']
                 response_problem_list.append(update_problem)
             return Response(
-                response_problem_list,
+                {
+                    'offset': _offset,
+                    'limit': _limit,
+                    'problems': response_problem_list,
+                },
                 status.HTTP_200_OK
             )
     else:
