@@ -66,6 +66,15 @@ class CandidateTestCase(APISimpleTestCase):
         'last_login': datetime.datetime.now()
     }
 
+    room_data = {
+        'id': 2301,
+        'name': "A room",
+        'logo': '',
+        'interviewer': '',
+        'candidates': [],
+        'problems': []
+    }
+
     # In user collection, user name is unique.
     # In applicant collection, id is unique and the reference to name
     #     in user collection('unique_username')
@@ -198,6 +207,9 @@ class CandidateTestCase(APISimpleTestCase):
 
     def test_add_success(self):
         self.init_Wallace()
+        room_data_tmp = self.room_data.copy()
+        room_data_tmp['candidates'] = [0]
+        self.db.rooms.insert_one(room_data_tmp)
         elder_data = self.candidate_data.copy()
         self.db.users.delete_one({'type': 'candidate'})
         self.db.candidate.delete_one({'name': 'elder'})
@@ -311,6 +323,7 @@ class CandidateTestCase(APISimpleTestCase):
     def test_file_parse_success(self):
         self.init_Elder()
         self.init_Wallace()
+        # TODO: ROOMID
         response = self.post_file_response(
             'file_example/example2.csv', 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_200_OK)

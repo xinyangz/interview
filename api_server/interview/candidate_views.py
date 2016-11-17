@@ -74,7 +74,6 @@ def get_set_candidate(request, **kwargs):
         }
         if 'phone' in candidate_data:
             user_part['contact'] = candidate_data['phone']
-        db.users.insert_one(user_part)
 
         # Generate unique id
         candidate_id = sequences.get_next_sequence('candidate_id')
@@ -82,6 +81,21 @@ def get_set_candidate(request, **kwargs):
         candidate_part = candidate_data.copy()
         candidate_part['unique_username'] = temp_username
         candidate_part['id'] = candidate_id
+
+        room_id = candidate_data['roomId']
+        room_cursor = db.rooms.find({'id': room_id})
+        if room_cursor.count() == 0:
+            return Response(
+                {'error': "Room doesn't exist"},
+                status.HTTP_400_BAD_REQUEST
+            )
+        room_data = room_cursor[0]['candidates']
+        room_data.append(candidate_id)
+        db.rooms.update_one(
+            {'id': room_id},
+            {'$set': {'candidates': room_data}}
+        )
+        db.users.insert_one(user_part)
         db.candidate.insert_one(candidate_part)
         ret_candidate_part = candidate_data.copy()
         ret_candidate_part['id'] = candidate_id
@@ -174,6 +188,7 @@ def workon_candidate(request, candidate_id, **kwargs):
             )
     elif request.method == 'PUT':
         # Put data
+        original_data = data[0]
         input_data = request.data
 
         try:
@@ -200,6 +215,28 @@ def workon_candidate(request, candidate_id, **kwargs):
                     )
         temp_data = {
             k: v for k, v in input_data.items() if k in candidate_keys}
+
+        if original_data['roomId'] != input_data['roomId']:
+            original_room_cursor = db.rooms.find({'id': original_data['roomId']})
+            new_room_data_cursor = db.rooms.find({'id': input_data['roomID']})
+            if original_room_cursor.count() == 0 or new_room_data_cursor.count() == 0:
+                return Response(
+                    {'error': "Room id doesn't exist."},
+                    status.HTTP_400_BAD_REQUEST
+                )
+            original_candidate_list = original_room_cursor[0]['candidates']
+            original_candidate_list.remove(candidate_id)
+            new_candidate_list = new_room_data_cursor[0]['candidates']
+            new_candidate_list.append(candidate_id)
+            db.rooms.update_one(
+                {'id': original_data['roomId']},
+                {'$set': {'candidates': original_candidate_list}}
+            )
+            db.rooms.update_one(
+                {'id': input_data['roomId']},
+                {'$set': {'candidates': new_candidate_list}}
+            )
+
         db.candidate.update_one(
             {'id': candidate_id},
             {
@@ -213,6 +250,18 @@ def workon_candidate(request, candidate_id, **kwargs):
 
     elif request.method == 'DELETE':
         # Delete data
+        original_data = data[0]
+        original_room_cursor = db.rooms.find({'id': original_data['roomId']})
+        if original_room_cursor.count() == 0:
+            pass
+        else:
+            original_candidate_list = original_room_cursor[0]['candidates']
+            original_candidate_list.remove(candidate_id)
+            db.rooms.update_one(
+                {'id': original_data['roomId']},
+                {'$set': {'candidates': original_candidate_list}}
+            )
+
         db.candidate.delete_one({'id': candidate_id})
         return Response(status=status.HTTP_200_OK)
 
@@ -322,12 +371,26 @@ def batch_candidate(request, **kwargs):
                 status.HTTP_400_BAD_REQUEST
             )
         for item in candidate_list:
+            room_id = item['roomId']
+            if db.rooms.find({'id': room_id}).count() == 0:
+                return Response(
+                    {'error': "Room id doesn't exist."},
+                    status.HTTP_400_BAD_REQUEST
+                )
+        for item in candidate_list:
             candidate_to_be_added = item.copy()
             tmp_id = uuid.uuid4()
             while db.candidate.find({'id': tmp_id}).count() > 0:
                 tmp_id = uuid.uuid4()
             candidate_to_be_added['id'] = tmp_id
             db.candidate.insert_one(candidate_to_be_added)
+            room_id = item['roomId']
+            room_candidate_list = db.rooms.find({'id': room_id})[0]['candidates']
+            room_candidate_list.append(tmp_id)
+            db.rooms.update_one(
+                {'id': room_id},
+                {'$set': {'candidates': room_candidate_list}}
+            )
 
         return Response(
             status.HTTP_200_OK

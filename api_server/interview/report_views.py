@@ -265,6 +265,7 @@ def put_report(request, candidate_id):
 
     if weak_in('logo.pdf', os.listdir(logo_dir)):
         import img2pdf
+        print (os.path.join(logo_dir, 'logo.jpg'))
         pdf_bytes = img2pdf.convert(os.path.join(logo_dir, 'logo.jpg'))
         with open(os.path.join(logo_dir, 'logo.pdf'), 'wb') as f:
             f.write(pdf_bytes)
