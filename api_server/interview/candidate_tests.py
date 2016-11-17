@@ -323,7 +323,7 @@ class CandidateTestCase(APISimpleTestCase):
     def test_file_parse_success(self):
         self.init_Elder()
         self.init_Wallace()
-        # TODO: ROOMID
+        # TODO: ROOMI
         response = self.post_file_response(
             'file_example/example2.csv', 'exampletoken')
         self.assertEqual(response.status_code, status.HTTP_200_OK)

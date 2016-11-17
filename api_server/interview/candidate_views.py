@@ -218,7 +218,7 @@ def workon_candidate(request, candidate_id, **kwargs):
 
         if original_data['roomId'] != input_data['roomId']:
             original_room_cursor = db.rooms.find({'id': original_data['roomId']})
-            new_room_data_cursor = db.rooms.find({'id': input_data['roomID']})
+            new_room_data_cursor = db.rooms.find({'id': input_data['roomId']})
             if original_room_cursor.count() == 0 or new_room_data_cursor.count() == 0:
                 return Response(
                     {'error': "Room id doesn't exist."},
