@@ -1,6 +1,7 @@
 #! -*- coding: utf-8 -*-
 
 from openpyxl import load_workbook
+import chardet
 
 
 def file_parser(ext_name, content):
@@ -10,7 +11,9 @@ def file_parser(ext_name, content):
     '''
     candidate_list = []
     if ext_name == 'csv':
-        text = content.read().decode('utf-8')
+        text = content.read()
+        adchar = chardet.detect(text)
+        text = text.decode(adchar['encoding'])
         spamreader = '\n'.join(text.split('\r\n')).split('\n')
         line_counter = 0
         for raw_row in spamreader:
