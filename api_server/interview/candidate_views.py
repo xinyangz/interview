@@ -33,7 +33,7 @@ def get_set_candidate(request, **kwargs):
     '''
 
     # Check user permission
-    if permissions.check(request, ('hr', 'interviewer')) != permissions.PASS:
+    if permissions.check(request, ['hr']) != permissions.PASS:
         return Response(
             {
                 'error': 'Access denied.'
