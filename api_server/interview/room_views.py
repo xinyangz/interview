@@ -221,8 +221,17 @@ def logo(request, room_id, **kwargs):
     del room_data['_id']
 
     # Save logo
-    img_file = request.data['image']
-    _, extension = os.path.splitext(img_file.name)
+    try:
+        img_file = request.data['image']
+        _, extension = os.path.splitext(img_file.name)
+    except:
+        return Response(
+            {
+                'error': 'Invalid image file'
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
+
     file_path = os.path.join(settings.FILE_ROOT, str(room_id),
                              'logo' + extension)
     if not os.path.exists(os.path.dirname(file_path)):
