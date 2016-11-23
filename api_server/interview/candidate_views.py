@@ -392,9 +392,7 @@ def batch_candidate(request, **kwargs):
                 )
         for item in candidate_list:
             candidate_to_be_added = item.copy()
-            tmp_id = uuid.uuid4()
-            while db.candidate.find({'id': tmp_id}).count() > 0:
-                tmp_id = uuid.uuid4()
+            tmp_id = sequences.get_next_sequence('candidate_id')
             candidate_to_be_added['id'] = tmp_id
             if 'room_id' in candidate_to_be_added and candidate_to_be_added['room_id'] == '':
                 del candidate_to_be_added['room_id']
