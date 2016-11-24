@@ -73,7 +73,7 @@ def get_set_candidate(request, **kwargs):
             'organization': 'Candidate Group',
         }
         if 'phone' in candidate_data:
-            user_part['contact'] = candidate_data['phone']
+            user_part['contact'] = str(candidate_data['phone'])
 
         # Generate unique id
         candidate_id = sequences.get_next_sequence('candidate_id')

@@ -31,7 +31,7 @@ def file_parser(ext_name, content):
                 'id': '',
                 'name': row[0],
                 'email': row[1],
-                'phone': row[2],
+                'phone': str(row[2]),
                 'status': u'未面试',
                 'roomId': '',
                 'record': {
@@ -66,7 +66,7 @@ def file_parser(ext_name, content):
                 'id': '',
                 'name': line[0],
                 'email': line[1],
-                'phone': line[2],
+                'phone': str(line[2]),
                 'status': u'未面试',
                 'roomId': '',
                 'record': {
