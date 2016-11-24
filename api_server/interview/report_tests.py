@@ -109,19 +109,19 @@ class ReportTestCase(APISimpleTestCase):
         self.db = self.db_client[settings.DB_NAME]
 
     def get_put_response(self, candidate_id, data, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/report/' + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/report/' + \
             str(candidate_id) + '?token=' + token
         response = self.client.put(url, data, format='json')
         return response
 
     def get_get_response(self, candidate_id, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/report/' + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/report/' + \
             str(candidate_id) + '?token=' + token
         response = self.client.get(url)
         return response
 
     def get_del_response(self, candidate_id, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/report/' + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/report/' + \
             str(candidate_id) + '?token=' + token
         response = self.client.delete(url)
         return response

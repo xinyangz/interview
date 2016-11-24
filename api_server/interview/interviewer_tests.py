@@ -5,6 +5,7 @@ from django.conf import settings
 import pymongo
 import random
 import string
+import datetime
 
 
 class RoomTestCase(APISimpleTestCase):
@@ -37,7 +38,8 @@ class RoomTestCase(APISimpleTestCase):
         'type': 'interviewer',
         'email': 'zbh@xg.cn',
         'organization': 'Interviewer Group',
-        'token': 'tk'
+        'token': 'tk',
+        'last_login': datetime.datetime.now()
     }
 
     factory = APIRequestFactory()
@@ -68,7 +70,7 @@ class RoomTestCase(APISimpleTestCase):
         self.db.rooms.insert_one(self.test_room)
         self.db.users.insert_one(self.test_interviewer)
 
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/interviewer'
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/interviewer'
         response = self.client.get(url,
                                    {'token': self.test_interviewer['token']})
         self.assertEqual(response.status_code, status.HTTP_200_OK)

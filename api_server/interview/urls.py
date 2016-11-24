@@ -44,5 +44,5 @@ api_patterns = [
 ]
 
 urlpatterns = [
-    url(r'^api/(?P<version>(v\d+))/', include(api_patterns)),
+    url(r'^(?P<version>(v\d+))/', include(api_patterns)),
 ]

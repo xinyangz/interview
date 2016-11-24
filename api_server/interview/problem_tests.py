@@ -163,13 +163,13 @@ class ProblemTestCase(APISimpleTestCase):
         self.db = self.db_client[settings.DB_NAME]
 
     def get_room_problems(self, room_id, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/problem/room/' + str(room_id) + '?token=' + token
         response = self.client.get(url)
         return response
 
     def post_room_problems(self, room_id, data, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/problem/room/' + str(room_id) + '?token=' + token
         if '_id' in data:
             del data['_id']
@@ -177,19 +177,19 @@ class ProblemTestCase(APISimpleTestCase):
         return response
 
     def get_problem(self, problem_id, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/problem/' + str(problem_id) + '?token=' + token
         response = self.client.get(url)
         return response
 
     def put_problem(self, problem_id, data, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/problem/' + str(problem_id) + '?token=' + token
         response = self.client.put(url, data)
         return response
 
     def delete_problem(self, problem_id, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/problem/' + str(problem_id) + '?token=' + token
         response = self.client.delete(url)
         return response

@@ -403,13 +403,10 @@ def batch_candidate(request, **kwargs):
             candidate_to_be_added = item.copy()
             tmp_id = sequences.get_next_sequence('candidate_id')
             candidate_to_be_added['id'] = tmp_id
-            print (candidate_to_be_added)
             if 'roomId' in candidate_to_be_added and \
                candidate_to_be_added['roomId'] == '':
                 del candidate_to_be_added['roomId']
-            print (candidate_to_be_added)
             db.candidate.insert_one(candidate_to_be_added)
-            print (candidate_to_be_added)
             room_id = item['roomId']
             if room_id is not None and room_id != '':
                 room_candidate_list = db.rooms.find(
