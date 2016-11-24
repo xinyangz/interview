@@ -6,6 +6,7 @@ import pymongo
 import os
 import jsonschema
 import uuid
+import imghdr
 from .schemas import swagger_schema
 from . import permissions
 from . import sequences
@@ -221,6 +222,8 @@ def logo(request, room_id, **kwargs):
     try:
         img_file = request.data['image']
         _, extension = os.path.splitext(img_file.name)
+        if imghdr.what(img_file.file) is None:
+            raise Exception
     except:
         return Response(
             {
