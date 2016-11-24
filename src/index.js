@@ -13,7 +13,7 @@ import { syncHistoryWithStore } from 'react-router-redux';
 import axios from 'axios';
 
 
-axios.defaults.baseURL = 'http://localhost:8000/v1';
+axios.defaults.baseURL = 'http://localhost:8000/api/v1';
 
 const store = configureStore();
 

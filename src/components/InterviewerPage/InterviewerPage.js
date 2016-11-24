@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import RoomTitle from './RoomTitle';
 import ControlTab from './ControlTab';
 import {loadInterviewerRoom} from '../../actions/roomsActions';
+import {loadAllRoomCandidates} from '../../actions/candidateManagerActions';
 
 class InterviewerPage extends React.Component {
   constructor(props) {
@@ -35,4 +36,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {loadInterviewerRoom})(InterviewerPage);
+export default connect(mapStateToProps, {loadInterviewerRoom, loadAllRoomCandidates})(InterviewerPage);

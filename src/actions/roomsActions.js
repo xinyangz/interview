@@ -2,6 +2,7 @@ import * as types from '../constants/actionTypes';
 import axios from 'axios';
 import {displayNotification} from './notificationActions';
 import {loadAllProblems, loadAllProblemsSuccess} from './problemActions';
+import {loadAllRoomCandidates} from './candidateManagerActions';
 
 
 export function beginDeleteRoom() {
@@ -187,6 +188,7 @@ export function loadInterviewerRoom() {
         if (res.status === 200) {
           dispatch(loadRoomSuccess(res.data));
           dispatch(loadAllProblems(roomId));
+          dispatch(loadAllRoomCandidates(roomId));
         }
         else if (res.status === 403) {
           throw '用户无访问权限';

@@ -207,6 +207,23 @@ export function loadAllCandidates() {
   };
 }
 
+export function loadAllRoomCandidates(roomId) {
+  return (dispatch, getState) => {
+    const token = getState().user.token;
+    console.log(getState().roomsStates);
+    return axios.get('/candidate/room/' + roomId + '?token=' + token + '&offset=' + offset + '&limit=' + limit)
+      .then(response => {
+        if (response.status === 200) {
+          dispatch(loadAllCandidatesSuccess(response.data.candidates));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', toString(response.data.error)));
+        }
+      })
+      .catch(error => dispatch(displayNotification('error', '错误', toString(error))));
+    };
+}
+
 export function loadTemplate() {
   return (dispatch, getState) => {
     const token = getState().user.token;
