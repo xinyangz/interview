@@ -40,6 +40,17 @@ class CandidateManagerTable extends React.Component {
 
     this.getEmailValState = this.getEmailValState.bind(this);
     this.getPhoneValState = this.getPhoneValState.bind(this);
+
+    this.getRoomOriginOption = this.getRoomOriginOption.bind(this);
+  }
+
+  getRoomOriginOption() {
+    if(this.props.rooms.find(room => room.id === this.state.selectedEditCandidate.roomId)) {
+      return this.props.rooms.find(room => room.id === this.state.selectedEditCandidate.roomId).name;
+    }
+    else {
+      return "请选择房间";
+    }
   }
 
   setStatusColor(status) {
@@ -245,7 +256,8 @@ class CandidateManagerTable extends React.Component {
                   <FormGroup controlId="candidateRoom" >
                     <Col componentClass={ControlLabel} sm={3}>候选人房间</Col>
                     <Col sm={9}>
-                      <FormControl componentClass="select" placeholder="select"  onChange={this.changeRoom}>
+                      <FormControl componentClass="select" onChange={this.changeRoom} value={this.getRoomOriginOption()}>
+                        <option key="selection">请选择房间</option>
                         {this.props.rooms.map(room =>
                           <option key={room.id}>{room.name}</option>)}
                       </FormControl>
