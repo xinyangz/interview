@@ -90,10 +90,9 @@ export function beginModifyRoom() {
   };
 }
 
-export function modifyRoomSuccess(room) {
+export function modifyRoomSuccess() {
   return {
-    type: types.MODIFY_ROOM_SUCCESS,
-    room
+    type: types.MODIFY_ROOM_SUCCESS
   };
 }
 
@@ -210,29 +209,49 @@ export function modifyRoom(data) {
     const room_id = data.room_id;
     const room = data.newRoom;
     let image = data.image;
+    let logoOrNot = data.logoOrNot;
     const token = getState().user.token;
-    return axios.put('/room/' + room_id +'?token=' + token, room)
-      .then(response => {
-        if(response.status === 200) {
-          dispatch(loadAllRooms());
-          dispatch(beginUploadImage());
-          return axios.put('/room/' + room_id + '/logo' + '?token=' + token, image);
-        }
-        else {
-          throw (response.data);
-        }
-      })
-      .then(response => {
-        if(response.status === 200) {
-          dispatch(uploadImageSuccess());
-        }
-        else {
-          throw (response.data);
-        }
-      })
-      .catch(error => {
-        dispatch(displayNotification('error', '错误', error.message));
-      });
+
+    if(logoOrNot === 1) {
+      return axios.put('/room/' + room_id + '?token=' + token, room)
+        .then(response => {
+          if (response.status === 200) {
+            dispatch(loadAllRooms());
+            dispatch(beginUploadImage());
+            return axios.put('/room/' + room_id + '/logo' + '?token=' + token, image);
+          }
+          else {
+            throw (response.data);
+          }
+        })
+        .then(response => {
+          if (response.status === 200) {
+            dispatch(displayNotification('success', '操作成功', '修改房间信息成功'));
+            dispatch(uploadImageSuccess());
+          }
+          else {
+            throw (response.data);
+          }
+        })
+        .catch(error => {
+          dispatch(displayNotification('error', '错误', error.message));
+        });
+    }
+    else {
+      return axios.put('/room/' + room_id +'?token=' + token, room)
+        .then(response => {
+          if(response.status === 200) {
+            dispatch(displayNotification('success', '操作成功', '修改房间信息成功'));
+            dispatch(loadAllRooms());
+          }
+          else {
+            dispatch(displayNotification('error', '错误', response.data.error));
+          }
+        })
+        .catch(error => {
+          dispatch(displayNotification('error', '错误', error.message));
+        });
+    }
   };
 }
 
@@ -241,30 +260,50 @@ export function addRoom(data) {
     dispatch(beginAddRoom());
     const room = data.newRoom;
     let image = data.image;
+    let logoOrNot = data.logoOrNot;
     const token = getState().user.token;
-    return axios.post('/room' + '?token=' + token, room)
-      .then(response => {
-        if(response.status === 200) {
-          const room_id = response.data.id;
-          dispatch(loadAllRooms());
-          dispatch(beginUploadImage());
-          return axios.put('/room/' + room_id + '/logo' + '?token=' + token, image);
-        }
-        else {
-          throw (response.data);
-        }
-      })
-      .then(response => {
-        if(response.status === 200) {
-          dispatch(uploadImageSuccess());
-        }
-        else {
-          throw (response.data);
-        }
-      })
-      .catch(error => {
-        dispatch(displayNotification('error', '错误', error.message));
-      });
+
+    if(logoOrNot === 0) {
+      return axios.post('/room' + '?token=' + token, room)
+        .then(response => {
+          if(response.status === 200) {
+            dispatch(displayNotification('success', '操作成功', '添加房间成功'));
+            dispatch(loadAllRooms());
+          }
+          else {
+            dispatch(displayNotification('error', '错误', response.data.error));
+          }
+        })
+        .catch(error => {
+          dispatch(displayNotification('error', '错误', error.message));
+        });
+    }
+    else {
+      return axios.post('/room' + '?token=' + token, room)
+        .then(response => {
+          if (response.status === 200) {
+            const room_id = response.data.id;
+            dispatch(loadAllRooms());
+            dispatch(beginUploadImage());
+            return axios.put('/room/' + room_id + '/logo' + '?token=' + token, image);
+          }
+          else {
+            throw (response.data);
+          }
+        })
+        .then(response => {
+          if (response.status === 200) {
+            dispatch(displayNotification('success', '操作成功', '添加房间成功'));
+            dispatch(uploadImageSuccess());
+          }
+          else {
+            throw (response.data);
+          }
+        })
+        .catch(error => {
+          dispatch(displayNotification('error', '错误', error.message));
+        });
+    }
   };
 }
 
