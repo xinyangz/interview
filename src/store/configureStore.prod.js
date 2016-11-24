@@ -3,8 +3,10 @@ import thunkMiddleware from 'redux-thunk';
 import rootReducer from '../reducers';
 import {routerMiddleware} from 'react-router-redux';
 import {browserHistory} from 'react-router';
+import {loadState, saveState} from './localStorage';
+import throttle from 'lodash/throttle';
 
-export default function configureStore(initialState) {
+export default function configureStore() {
   const middewares = [
     // Add other middleware on this line...
 
@@ -14,8 +16,16 @@ export default function configureStore(initialState) {
     routerMiddleware(browserHistory)
   ];
 
-  return createStore(rootReducer, initialState, compose(
+  const persistedState = loadState();
+
+  const store = createStore(rootReducer, persistedState, compose(
     applyMiddleware(...middewares)
     )
   );
+
+  store.subscribe(throttle(() => {
+    saveState(store.getState());
+  }, 2000));
+
+  return store;
 }
