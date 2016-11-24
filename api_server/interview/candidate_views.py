@@ -216,7 +216,7 @@ def workon_candidate(request, candidate_id, **kwargs):
         temp_data = {
             k: v for k, v in input_data.items() if k in candidate_keys}
 
-        if 'roomId' not in original_data:
+        if 'roomId' not in original_data and 'roomId' in input_data:
             new_room_data_cursor = db.rooms.find({'id': input_data['roomId']})
             if new_room_data_cursor.count() == 0:
                 return Response(
@@ -229,7 +229,7 @@ def workon_candidate(request, candidate_id, **kwargs):
                 {'id': input_data['roomId']},
                 {'$set': {'candidates': new_candidate_list}}
             )
-        elif original_data['roomId'] != input_data['roomId']:
+        elif 'roomId' in original_data and 'roomId' in input_data and original_data['roomId'] != input_data['roomId']:
             original_room_cursor = db.rooms.find({'id': original_data['roomId']})
             new_room_data_cursor = db.rooms.find({'id': input_data['roomId']})
             if original_room_cursor.count() == 0 or new_room_data_cursor.count() == 0:
@@ -264,16 +264,17 @@ def workon_candidate(request, candidate_id, **kwargs):
     elif request.method == 'DELETE':
         # Delete data
         original_data = data[0]
-        original_room_cursor = db.rooms.find({'id': original_data['roomId']})
-        if original_room_cursor.count() == 0:
-            pass
-        else:
-            original_candidate_list = original_room_cursor[0]['candidates']
-            original_candidate_list.remove(candidate_id)
-            db.rooms.update_one(
-                {'id': original_data['roomId']},
-                {'$set': {'candidates': original_candidate_list}}
-            )
+        if 'roomId' in original_data:
+            original_room_cursor = db.rooms.find({'id': original_data['roomId']})
+            if original_room_cursor.count() == 0:
+                pass
+            else:
+                original_candidate_list = original_room_cursor[0]['candidates']
+                original_candidate_list.remove(candidate_id)
+                db.rooms.update_one(
+                    {'id': original_data['roomId']},
+                    {'$set': {'candidates': original_candidate_list}}
+                )
 
         db.candidate.delete_one({'id': candidate_id})
         return Response(status=status.HTTP_200_OK)
@@ -393,9 +394,12 @@ def batch_candidate(request, **kwargs):
             candidate_to_be_added = item.copy()
             tmp_id = sequences.get_next_sequence('candidate_id')
             candidate_to_be_added['id'] = tmp_id
-            if 'room_id' in candidate_to_be_added and candidate_to_be_added['room_id'] == '':
-                del candidate_to_be_added['room_id']
+            print candidate_to_be_added
+            if 'roomId' in candidate_to_be_added and candidate_to_be_added['roomId'] == '':
+                del candidate_to_be_added['roomId']
+            print candidate_to_be_added
             db.candidate.insert_one(candidate_to_be_added)
+            print candidate_to_be_added
             room_id = item['roomId']
             if room_id is not None and room_id != '':
                 room_candidate_list = db.rooms.find({'id': room_id})[0]['candidates']
