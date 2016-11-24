@@ -3,6 +3,8 @@ import axios from 'axios';
 import {displayNotification} from './notificationActions';
 import {loadAllProblems, loadAllProblemsSuccess} from './problemActions';
 import {loadAllRoomCandidates} from './candidateManagerActions';
+import {push} from 'react-router-redux';
+import {logout} from './userActions';
 
 
 export function beginDeleteRoom() {
@@ -138,7 +140,16 @@ export function deleteRoom(roomId) {
           dispatch(displayNotification('error', '错误', toString(response.data.error)));
         }
       })
-      .catch(error => dispatch(displayNotification('error', '错误', toString(error.response.data.error || error))));
+      .catch(error => {
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
+      });
   };
 }
 
@@ -161,7 +172,16 @@ export function loadAllRooms() {
           dispatch(displayNotification('error', '错误', response.data.error));
         }
       })
-      .catch(error => dispatch(displayNotification('error', '错误', error.message)));
+      .catch(error => {
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
+      });
   };
 }
 
@@ -190,9 +210,6 @@ export function loadInterviewerRoom() {
           dispatch(loadAllProblems(roomId));
           dispatch(loadAllRoomCandidates(roomId));
         }
-        else if (res.status === 403) {
-          throw '用户无访问权限';
-        }
         else if (res.status === 404) {
           throw '房间不存在';
         }
@@ -200,8 +217,15 @@ export function loadInterviewerRoom() {
           throw res.data;
         }
       })
-      .catch(err => {
-        dispatch(displayNotification('error', '错误', err.message));
+      .catch(error => {
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
       });
   };
 }
@@ -233,7 +257,14 @@ export function modifyRoom(data) {
         }
       })
       .catch(error => {
-        dispatch(displayNotification('error', '错误', error.message));
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
       });
   };
 }
@@ -265,7 +296,14 @@ export function addRoom(data) {
         }
       })
       .catch(error => {
-        dispatch(displayNotification('error', '错误', error.message));
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
       });
   };
 }
@@ -283,7 +321,14 @@ export function sendEmail(roomId) {
         }
       })
       .catch(error => {
-        dispatch(displayNotification('error', '错误', error.message));
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
       });
   }
 }

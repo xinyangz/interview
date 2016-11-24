@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {Table, Modal, Button} from 'react-bootstrap';
 import {deleteProblem} from '../../actions/problemActions';
 import EditProblemModal from './EditProblemModal';
+import {push} from 'react-router-redux';
 
 const initialState = {showEditModal: false, showDeleteModal: false, selectedProblem: undefined};
 

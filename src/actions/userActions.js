@@ -91,7 +91,6 @@ export function logout() {
       .then(response => {
         if (response.status === 200) {
           dispatch(logoutSuccess());
-          dispatch(displayNotification('success', '退出成功', '感谢使用本系统'));
           dispatch(push('/'));
         }
         else {

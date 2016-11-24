@@ -2,6 +2,8 @@ import * as types from '../constants/actionTypes';
 import axios from 'axios';
 import {displayNotification} from './notificationActions';
 import {loadAllRooms} from './roomsActions';
+import {logout} from './userActions';
+import {push} from 'react-router-redux';
 
 // token should be read from state
 const offset = '0';
@@ -126,11 +128,18 @@ export function deleteCandidate(candidateId) {
           dispatch(loadAllRooms());
           dispatch(displayNotification('success', '操作成功', '候选人已删除'));
         }
-        else {
-          dispatch(displayNotification('error', '错误', toString(response.data.error)));
-        }
       })
-      .catch(error => dispatch(displayNotification('error', '错误', toString(error))));
+      .catch(error => {
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
+      }
+      );
   };
 }
 
@@ -149,7 +158,16 @@ export function editCandidate(candidate) {
           dispatch(editCandidateError(response.data.error));
         }
       })
-      .catch(error => dispatch(editCandidateError(error)));
+      .catch(error => {
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
+      });
   };
 }
 
@@ -168,7 +186,16 @@ export function addCandidate(candidate) {
           dispatch(displayNotification('error', '错误', toString(response.data.error)));
         }
       })
-      .catch(error => dispatch(displayNotification('error', '错误', toString(error))));
+      .catch(error => {
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
+      });
   };
 }
 
@@ -186,7 +213,16 @@ export function listCandidate(fileContent) {
           dispatch(displayNotification('error', '错误', toString(response.data.error)));
         }
       })
-      .catch(error => dispatch(displayNotification('error', '错误', '候选人列表添加失败，请导入正确的文件')));
+      .catch(error => {
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
+      });
   };
 }
 
@@ -203,7 +239,16 @@ export function loadAllCandidates() {
           dispatch(displayNotification('error', '错误', toString(response.data.error)));
         }
       })
-      .catch(error => dispatch(displayNotification('error', '错误', toString(error))));
+      .catch(error => {
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
+      });
   };
 }
 
@@ -220,7 +265,16 @@ export function loadAllRoomCandidates(roomId) {
           dispatch(displayNotification('error', '错误', toString(response.data.error)));
         }
       })
-      .catch(error => dispatch(displayNotification('error', '错误', toString(error))));
+      .catch(error => {
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
+      });
     };
 }
 
@@ -237,7 +291,14 @@ export function loadTemplate() {
         }
       })
       .catch(error => {
-        dispatch(displayNotification('error', '错误', '不能读取批量添加候选人样例文件'));
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
       });
   };
 }
