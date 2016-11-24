@@ -45,9 +45,6 @@ def root(request, **kwargs):
         db = client[settings.DB_NAME]
 
         # Create user for interviewer
-        # TODO: interview field is email
-        # TODO: send email button
-        # TODO: put change email
         temp_username = "Interviewer_" + \
             str(sequences.get_next_sequence('interviewer'))
         while db.users.find({'username': temp_username}).count() > 0:

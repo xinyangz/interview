@@ -12,6 +12,7 @@
     pip install pymongo
     pip install django-cors-headers
     pip install jsonschema
+    pip install chardet
     ```
 
 ## Run

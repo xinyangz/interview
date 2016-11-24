@@ -347,7 +347,6 @@ def batch_candidate(request, **kwargs):
     if permissions.check(request, ('hr', 'interviewer')) != permissions.PASS:
         return Response(
             {
-                'status': '30',
                 'error': 'Access denied.'
             },
             status.HTTP_403_FORBIDDEN
@@ -426,3 +425,88 @@ def batch_candidate(request, **kwargs):
             },
             status.HTTP_400_BAD_REQUEST
         )
+
+
+@api_view(['GET'])
+def get_room_candidate(request, room_id, **kwargs):
+    if permissions.check(request, ('hr', 'interviewer')) != permissions.PASS:
+        return Response(
+            {
+                'error': 'Access denied.'
+            },
+            status.HTTP_403_FORBIDDEN
+        )
+
+    client = pymongo.MongoClient()
+    db = client[settings.DB_NAME]
+
+    # Check room existence
+    room_id = int(room_id)
+    room_cursor = db.rooms.find({'id': room_id})
+    if room_cursor.count() == 0:
+        return Response(
+            {
+                'error': 'Room not found.'
+            },
+            status.HTTP_404_NOT_FOUND
+        )
+    elif room_cursor.count() > 1:
+        return Response(
+            {
+                'error': 'Room id duplicated'
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
+
+    # Get candidates in the room
+    candidate_ids = room_cursor[0]['candidates']
+
+    # Get offset and limit
+    offset = request.GET.get('offset')
+    limit = request.GET.get('limit')
+    if offset is None or offset == '':
+        offset = 0
+    else:
+        offset = int(offset)
+
+    if limit is None or limit == '':
+        limit = 1
+    else:
+        limit = int(limit)
+
+    # Calculate count
+    candidate_num = len(candidate_ids)
+    count = candidate_num if candidate_num <= limit else limit
+
+    candidates = []
+    for i in range(count):
+        candidate_id = candidate_ids[i]
+        candidate_cursor = db.candidate.find({'id': candidate_id})
+        if candidate_cursor.count() == 0:
+            return Response(
+                {
+                    'error': 'Candidate not found.'
+                },
+                status.HTTP_404_NOT_FOUND
+            )
+        elif room_cursor.count() > 1:
+            return Response(
+                {
+                    'error': 'Candidate id duplicated'
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+        ret_data = {
+            k: v for k, v in dict(candidate_cursor[0]).items() if k in candidate_keys
+        }
+        candidates.append(ret_data)
+
+    return Response(
+        {
+            'offset': offset,
+            'limit': limit,
+            'count': count,
+            'candidates': candidates
+        },
+        status.HTTP_200_OK
+    )

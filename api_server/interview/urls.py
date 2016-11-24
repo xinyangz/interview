@@ -21,6 +21,8 @@ api_patterns = [
         candidate_views.workon_candidate, name='workon-candidate'),
     url(r'^candidate/(?P<candidate_id>([0-9]+))/status$',
         candidate_views.change_status_candidate, name='status-candidate'),
+    url(r'^candidate/room/(?P<candidate_id>([0-9]+))$',
+        candidate_views.get_room_candidate, name='room-candidate'),
     url(r'^candidate/file$',
         candidate_views.batch_candidate, name='batch-candidate'),
     url(r'^report/(?P<candidate_id>([0-9]+))$',
