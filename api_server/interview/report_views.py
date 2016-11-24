@@ -263,7 +263,7 @@ def put_report(request, candidate_id):
                 return True
         return False
 
-    if weak_in('logo.pdf', os.listdir(logo_dir)):
+    if weak_in('logo.jpg', os.listdir(logo_dir)):
         import img2pdf
         print (os.path.join(logo_dir, 'logo.jpg'))
         pdf_bytes = img2pdf.convert(os.path.join(logo_dir, 'logo.jpg'))
@@ -275,12 +275,13 @@ def put_report(request, candidate_id):
         logo = settings.TEX_PATH + "logo/iitmlogo.pdf"
 
     # Write report
+    import json
 
-    template_file = json.load(open(settings.TEX_PATH + 'header/template.json'), 'r')
-    header = open('serrings.TEX_PATH + header/header.tex', 'r').read()
+    template_file = json.load(open(settings.TEX_PATH + 'header/template.json', 'r'))
+    header = open(settings.TEX_PATH + 'header/header.tex', 'r').read()
     lines = template_file['template']
-    reshading_macro_prefix = template_file['prefix']
-    reshading_macro_suffix = template_file['suffix']
+    reshading_macro_prefix = template_file['reshading_macro_prefix']
+    reshading_macro_suffix = template_file['reshading_macro_suffix']
     record_item = ''
     choice_items = ''
     blank_items = ''
@@ -288,20 +289,20 @@ def put_report(request, candidate_id):
     answer_items = ''
 
 
-    def replace_token(token, content, target=lines):
-        target = [content if x == token else x for x in target]
+    def replace_token(token, content, source):
+        return [content if x == token else x for x in source]
 
-    replace_token('[REPLACE_HEADER]', header)
-    replace_token('[REPLACE_LOGO]', logo)
-    replace_token('[REPLACE_CANDIDATE_NAME]', candidate_name)
-    replace_token('[REPLACE_CANDIDATE_ID]', candidate_id)
-    replace_token('[REPLACE_CANDIDATE_ORGANIZATION]', candidate_organization)
-    replace_token('[REPLACE_CANDIDATE_PHONE]', candidate_phone)
-    replace_token('[REPLACE_CANDIDATE_EMAIL]', candidate_email)
-    replace_token('[REPLACE_CANDIDATE_CONTACT]', candidate_contact)
-    replace_token('[REPLACE_CANDIDATE_STATUS]', candidate_status)
-    replace_token('[REPLACE_INTERVIEWER_NAME]', interviewer_name)
-    replace_token('[REPLACE_REPORT_DATA]', report_data)
+    lines = replace_token('[REPLACE_HEADER]', header, lines)
+    lines = replace_token('[REPLACE_LOGO]', logo, lines)
+    lines = replace_token('[REPLACE_CANDIDATE_NAME]', candidate_name, lines)
+    lines = replace_token('[REPLACE_CANDIDATE_ID]', candidate_id, lines)
+    lines = replace_token('[REPLACE_CANDIDATE_ORGANIZATION]', candidate_organization, lines)
+    lines = replace_token('[REPLACE_CANDIDATE_PHONE]', candidate_phone, lines)
+    lines = replace_token('[REPLACE_CANDIDATE_EMAIL]', candidate_email, lines)
+    lines = replace_token('[REPLACE_CANDIDATE_CONTACT]', candidate_contact, lines)
+    lines = replace_token('[REPLACE_CANDIDATE_STATUS]', candidate_status, lines)
+    lines = replace_token('[REPLACE_INTERVIEWER_NAME]', interviewer_name, lines)
+    lines = replace_token('[REPLACE_REPORT_DATA]', report_data, lines)
 
     if len(choice) + len(blank) + len(code) + len(answer) > 0:
         record_item = template_file['record']
@@ -311,47 +312,63 @@ def put_report(request, candidate_id):
             tmp = ''
             for item_choice in choice:
                 content = item_choice['content']
-                title = content['title']
+                title = str(content['title'])
                 tmp += "        \\resitem{" + title + "}\n"
-            replace_token('[REPLACE_CHOICE_ITEMS]', tmp, choice_items)
-            replace_token('[REPLACE_CHOICE]', ''.join(choice_items), record_item)
+            choice_items = replace_token('[REPLACE_CHOICE_ITEMS]', tmp, choice_items)
+        else:
+            choice_items = ['']
+        record_item = replace_token('[REPLACE_CHOICE]', ''.join(choice_items), record_item)
 
         if len(blank) > 0:
             blank_items = template_file['record_blank']
             tmp = ''
             for item_blank in blank:
                 content = item_blank['content']
-                title = content['title']
+                title = str(content['title'])
                 tmp += "        \\resitem{" + title + "}\n"
-            replace_token('[REPLACE_BLANK_ITEMS]', tmp, blank_items)
-            replace_token('[REPLACE_BLANK]', ''.join(blank_items), record_item)
+            blank_items = replace_token('[REPLACE_BLANK_ITEMS]', tmp, blank_items)
+        else:
+            blank_items = ['']
+        record_item = replace_token('[REPLACE_BLANK]', ''.join(blank_items), record_item)
 
         if len(code) > 0:
             code_items = template_file['record_code']
             tmp = ''
             for item_code in code:
                 content = item_code['content']
-                title = content['title']
+                title = str(content['title'])
                 tmp += "        \\resitem{" + title + "}\n"
-            replace_token('[REPLACE_CODE_ITEMS]', tmp, code_items)
-            replace_token('[REPLACE_CODE]', ''.join(code_items), record_item)
+            code_items = replace_token('[REPLACE_CODE_ITEMS]', tmp, code_items)
+        else:
+            code_items = ['']
+        record_item = replace_token('[REPLACE_CODE]', ''.join(code_items), record_item)
 
         if len(answer) > 0:
             answer_items = template_file['record_answer']
             tmp = ''
             for item_answer in answer:
                 content = item_blank['content']
-                title = content['title']
+                title = str(content['title'])
                 tmp += "        \\resitem{" + title + "}\n"
-            replace_token('[REPLACE_ANSWER_ITEMS]', tmp, answer_items)
-            replace_token('[REPLACE_ANSWER]', ''.join(answer_items), record_item)
+            answer_items = replace_token('[REPLACE_ANSWER_ITEMS]', tmp, answer_items)
+        else:
+            answer_items = ['']
+        record_item = replace_token('[REPLACE_ANSWER]', ''.join(answer_items), record_item)
+        record_item = replace_token('[RESHADING_MACRO_PREFIX]', reshading_macro_prefix, record_item)
+        record_item = replace_token('[RESHADING_MACRO_SUFFIX]', reshading_macro_suffix, record_item)
+    else:
+        record_item = ['']
 
-    replace_token('[REPLACE_RECORD]', ''.join(record_item))
+    lines = replace_token('[REPLACE_RECORD]', ''.join(record_item), lines)
 
-    replace_token('[RESHADING_MACRO_PREFIX]', reshading_macro_prefix)
-    replace_token('[RESHADING_MACRO_SUFFIX]', reshading_macro_suffix)
+    lines = replace_token('[REPLACE_CANDIDATE_BOARD]', candidate_board, lines)
+    lines = replace_token('[REPLACE_CANDIDATE_VIDEO]', candidate_video, lines)
 
-    lines = map(lambda x: x.encode('utf-8'), lines)
+    lines = replace_token('[RESHADING_MACRO_PREFIX]', reshading_macro_prefix, lines)
+    lines = replace_token('[RESHADING_MACRO_SUFFIX]', reshading_macro_suffix, lines)
+
+    print (lines)
+    lines = map(lambda x: str(x).encode('utf-8'), lines)
 
     tex_path = settings.TEX_PATH + str(report_id) + ".tex"
     with open(settings.TEX_PATH + str(report_id) + ".tex", 'wb') as f:

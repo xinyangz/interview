@@ -78,30 +78,31 @@
   	"[REPLACE_CHOICE]",
   	"[REPLACE_BLANK]",
   	"[REPLACE_CODE]",
-  	"[REPLACE_ANSWER]"
+  	"[REPLACE_ANSWER]",
+    "\\end{itemize}\n"
   ],
   "record_choice": [
   	"    \\ressubheading{选择题}{}{Multiple choice}{}\n",
   	"    \\begin{itemize}\n",
-  	"    [REPLACE_CHOICE_ITEMS]",
+  	"[REPLACE_CHOICE_ITEMS]",
   	"    \\end{itemize}\n"
   ],
   "record_blank": [
   	"    \\ressubheading{填空题}{}{Fill in the blank}{}\n",
   	"    \\begin{itemize}\n",
-  	"    [REPLACE_BLANK_ITEMS]",
+  	"[REPLACE_BLANK_ITEMS]",
   	"    \\end{itemize}\n"
   ],
   "record_code": [
   	"    \\ressubheading{编程题}{}{Coding}{}\n",
   	"    \\begin{itemize}\n",
-  	"    [REPLACE_CODE_ITEMS]",
+  	"[REPLACE_CODE_ITEMS]",
   	"    \\end{itemize}\n"
   ],
   "record_answer": [
   	"    \\ressubheading{简答题}{}{Answer questions}{}\n",
   	"    \\begin{itemize}\n",
-  	"    [REPLACE_ANSWER_ITEMS]",
+  	"[REPLACE_ANSWER_ITEMS]",
   	"    \\end{itemize}\n"
   ]
 }
