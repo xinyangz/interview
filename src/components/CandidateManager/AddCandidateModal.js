@@ -29,6 +29,7 @@ class AddCandidateModal extends React.Component {
 
     this.getEmailHelpBlock = this.getEmailHelpBlock.bind(this);
     this.getPhoneHelpBlock = this.getPhoneHelpBlock.bind(this);
+    this.getNameHelpBlock = this.getNameHelpBlock.bind(this);
 
     this.getStatusValState = this.getStatusValState.bind(this);
     this.getRoomValState = this.getRoomValState.bind(this);
@@ -45,6 +46,13 @@ class AddCandidateModal extends React.Component {
     this.props.onHideCandidateModal();
   }
 
+  getNameHelpBlock() {
+    if(this.getNameValState() == 'error' || this.getNameValState() == 'warning') {
+      return (<Col smOffset={3}><HelpBlock style={{"padding-left" : "16px"}}>候选人姓名必须小于20位</HelpBlock></Col>);
+    }
+    return undefined;
+  }
+
   getEmailHelpBlock() {
     if(this.getEmailValState() == 'error') {
       return (<Col smOffset={3}><HelpBlock style={{"padding-left" : "16px"}}>请输入正确的邮箱</HelpBlock></Col>);
@@ -53,6 +61,9 @@ class AddCandidateModal extends React.Component {
   }
 
   getPhoneHelpBlock() {
+    if(this.getPhoneValState() == 'warning') {
+      return (<Col smOffset={3}><HelpBlock style={{"padding-left" : "16px"}}>电话号码必须小于50位</HelpBlock></Col>);
+    }
     if(this.getPhoneValState() == 'error') {
       return (<Col smOffset={3}><HelpBlock style={{"padding-left" : "16px"}}>请输入正确的电话</HelpBlock></Col>);
     }
@@ -61,12 +72,13 @@ class AddCandidateModal extends React.Component {
 
   getNameValState(){
     const length = this.state.nameChange.length;
+    if(length > 20) return 'warning';
     if (length > 0) return 'success';
   }
 
   getRoomValState(){
-    if (this.state.roomChange !== '请选择') return 'success';
-  }
+  if (this.state.roomChange !== '请选择') return 'success';
+}
 
   getStatusValState(){
     if (this.state.statusChange !== '请选择') return 'success';
@@ -86,9 +98,12 @@ class AddCandidateModal extends React.Component {
 
   getPhoneValState(){
     const length = this.state.phoneChange.length;
+    if(length > 50) {
+      return 'warning';
+    }
     if (length > 0)
     {
-      const pattern = /^([0-9])+/;
+      const pattern = /^(\+([0-9])+ )*([0-9])+/;
       if(pattern.test(this.state.phoneChange)) {
         return 'success';
       }
@@ -117,7 +132,8 @@ class AddCandidateModal extends React.Component {
   }
 
   onAddCandidateClick() {
-    if(this.getEmailValState() == 'success' && this.getNameValState() == 'success' && this.getPhoneValState() == 'success') {
+    if(this.getEmailValState() == 'success' && this.getNameValState() == 'success' && this.getStatusValState() == 'success'
+    && this.getPhoneValState() == 'success' && this.getRoomValState() == 'success' ) {
       let termCandidate = {
         "name" : this.state.nameChange,
         "email" : this.state.emailChange,
@@ -144,6 +160,7 @@ class AddCandidateModal extends React.Component {
             <FormGroup controlId="candidateName" validationState={this.getNameValState()}>
               <Col componentClass={ControlLabel} sm={3}>候选人姓名</Col>
               <Col sm={9}><FormControl type="text" placeholder="请输入候选人姓名（必填）" onChange={this.changeName}/></Col>
+              {this.getNameHelpBlock()}
             </FormGroup>
 
             <FormGroup controlId="candidateEmail" validationState={this.getEmailValState()}>
