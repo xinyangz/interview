@@ -1,6 +1,8 @@
 import * as types from '../constants/actionTypes';
 import axios from 'axios';
 import {displayNotification} from './notificationActions';
+import {push} from 'react-router-redux';
+import {logout} from './userActions';
 
 export function beginLoadAllProblems() {
   return {
@@ -81,9 +83,6 @@ export function addProblem(problem) {
           dispatch(displayNotification('success', '操作成功', '题目添加成功'));
           dispatch(loadAllProblems(roomId));
         }
-        else if (res.status === 403) {
-          dispatch(displayNotification('error', '错误', '您无访问权限'));
-        }
         else if (res.status === 404) {
           dispatch(displayNotification('error', '错误', '题目不存在'));
         }
@@ -91,8 +90,15 @@ export function addProblem(problem) {
           dispatch(displayNotification('error', '错误', toString(res.data)));
         }
       })
-      .catch(err => {
-          dispatch(displayNotification('error', '错误', toString(err)));
+      .catch(error => {
+          if (error.response.status === 403) {
+            dispatch(displayNotification('error', '错误', '您已下线'));
+            dispatch(logout());
+            dispatch(push('/login'));
+          }
+          else {
+            dispatch(displayNotification('error', '错误', error.message));
+          }
         }
       );
   };
@@ -120,8 +126,15 @@ export function editProblem(problem) {
           dispatch(displayNotification('error', '错误', toString(res.data)));
         }
       })
-      .catch(err => {
-        dispatch(displayNotification('error', '错误', toString(err)));
+      .catch(error => {
+          if (error.response.status === 403) {
+            dispatch(displayNotification('error', '错误', '您已下线'));
+            dispatch(logout());
+            dispatch(push('/login'));
+          }
+          else {
+            dispatch(displayNotification('error', '错误', error.message));
+          }
         }
       );
   };
@@ -141,18 +154,23 @@ export function deleteProblem(problemId) {
           dispatch(displayNotification('success', '操作成功', '题目删除成功'));
           dispatch(deleteProblemSuccess(problemId));
         }
-        else if (res.status === 403) {
-          dispatch(displayNotification('error', '错误', '您无访问权限'));
-        }
-        else if (res.status === 404) {
-          dispatch(displayNotification('error', '错误', '题目不存在'));
-        }
+
         else {
           dispatch(displayNotification('error', '错误', toString(res.data)));
         }
       })
-      .catch(err => {
-        dispatch(displayNotification('error', '错误', toString(err)));
+      .catch(error => {
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else if (error.response.status === 404) {
+          dispatch(displayNotification('error', '错误', '题目不存在'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
       });
   };
 }
@@ -182,8 +200,15 @@ export function loadAllProblems(roomId) {
           dispatch(displayNotification('error', '错误', toString(res.data)));
         }
       })
-      .catch(err => {
-        dispatch(displayNotification('error', '错误', err.message));
+      .catch(error => {
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
       });
   };
 }
