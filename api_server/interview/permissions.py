@@ -1,12 +1,13 @@
 import pymongo
 from django.conf import settings
-
+from datetime import datetime, timedelta
 
 PASS = 0
 NO_TOKEN = 1
 INVALID_TOKEN = 2
 NO_PERMISSION = 3
 DUPLICATE_TOKEN = 4
+EXPIRED_TOKEN = 5
 
 
 def check(request, permitted_user_types=None, room_id=None):
@@ -36,6 +37,9 @@ def check(request, permitted_user_types=None, room_id=None):
 
     if cursor.count() > 1:
         return DUPLICATE_TOKEN
+
+    if datetime.now() >= cursor[0]['last_login'] + timedelta(hours=6):
+        return EXPIRED_TOKEN
 
     user_type = cursor[0]['type']
 

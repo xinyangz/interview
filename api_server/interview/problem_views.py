@@ -63,7 +63,9 @@ def root(request, room_id, **kwargs):
             )
         room = room_cursor[0]
         room['problems'].append(problem_id)
-        db.rooms.update_one({'id': room_id}, {'$set': {'problems': room['problems']}})
+        db.rooms.update_one(
+            {'id': room_id}, {'$set': {'problems': room['problems']}}
+        )
         db.problems.insert_one(problem_data)
         if '_id' in problem_data:
             del problem_data['_id']

@@ -286,7 +286,9 @@ def manage(request, room_id, **kwargs):
     if request.method == 'DELETE':
         candidate_ids = room_cursor[0]['candidates']
         for candidate_id in candidate_ids:
-            db.candidate.update({'id': candidate_id}, {'$unset': {'roomId': 1}})
+            db.candidate.update(
+                {'id': candidate_id}, {'$unset': {'roomId': 1}}
+            )
         db.rooms.delete_one({'id': room_id})
         return Response(status=status.HTTP_200_OK)
 

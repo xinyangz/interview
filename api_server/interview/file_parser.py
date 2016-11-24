@@ -28,25 +28,23 @@ def file_parser(ext_name, content):
             if row[0] == '' or row[0] is None:
                 continue
             candidate_data = {
-                    'id': '',
-                    'name': row[0],
-                    'email': row[1],
-                    'phone': row[2],
-                    'status': u'未面试',
-                    'roomId': '',
-                    'record': {
-                        'video': 0,
-                        'board': 0,
-                        'chat': 0,
-                        'code': 0,
-                        'report': 9
-                    }
+                'id': '',
+                'name': row[0],
+                'email': row[1],
+                'phone': row[2],
+                'status': u'未面试',
+                'roomId': '',
+                'record': {
+                    'video': 0,
+                    'board': 0,
+                    'chat': 0,
+                    'code': 0,
+                    'report': 9
                 }
+            }
             candidate_list.append(candidate_data)
-            # print (candidate_list)
     elif ext_name == 'xlsx':
         wb = load_workbook(content)
-        # wb = load_workbook(filename=r'example1.xlsx')
         sheets = wb.get_sheet_names()
         sheet0 = sheets[0]
         ws = wb.get_sheet_by_name(sheet0)
@@ -84,6 +82,8 @@ def file_parser(ext_name, content):
         print ("Unknown file format.")
         return None
     return candidate_list
+
+# Usage example
 
 if __name__ == "__main__":
     file_parser('example1.xlsx')

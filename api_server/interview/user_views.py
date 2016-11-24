@@ -112,7 +112,7 @@ def user_logout(request, **kwargs):
             },
             status.HTTP_403_FORBIDDEN
         )
-    elif perm_result == permissions.INVALID_TOKEN:
+    elif perm_result in [permissions.INVALID_TOKEN, permissions.EXPIRED_TOKEN]:
         return Response(
             status=status.HTTP_200_OK
         )
@@ -226,6 +226,7 @@ def user_manage(request, **kwargs):
         user_data = cursor[0]
         del user_data['_id']
         del user_data['token']
+        del user_data['last_login']
         return Response(user_data, status.HTTP_200_OK)
 
     if request.method == 'PUT':
@@ -250,4 +251,5 @@ def user_manage(request, **kwargs):
         user_data = db.users.find({'username': username})[0]
         del user_data['_id']
         del user_data['token']
+        del user_data['last_login']
         return Response(user_data, status.HTTP_200_OK)

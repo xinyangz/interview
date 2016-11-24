@@ -229,10 +229,16 @@ def workon_candidate(request, candidate_id, **kwargs):
                 {'id': input_data['roomId']},
                 {'$set': {'candidates': new_candidate_list}}
             )
-        elif 'roomId' in original_data and 'roomId' in input_data and original_data['roomId'] != input_data['roomId']:
-            original_room_cursor = db.rooms.find({'id': original_data['roomId']})
-            new_room_data_cursor = db.rooms.find({'id': input_data['roomId']})
-            if original_room_cursor.count() == 0 or new_room_data_cursor.count() == 0:
+        elif 'roomId' in original_data and 'roomId' in input_data \
+             and original_data['roomId'] != input_data['roomId']:
+            original_room_cursor = db.rooms.find(
+                {'id': original_data['roomId']}
+            )
+            new_room_data_cursor = db.rooms.find(
+                {'id': input_data['roomId']}
+            )
+            if original_room_cursor.count() == 0 or \
+               new_room_data_cursor.count() == 0:
                 return Response(
                     {'error': "Room id doesn't exist."},
                     status.HTTP_400_BAD_REQUEST
@@ -265,7 +271,9 @@ def workon_candidate(request, candidate_id, **kwargs):
         # Delete data
         original_data = data[0]
         if 'roomId' in original_data:
-            original_room_cursor = db.rooms.find({'id': original_data['roomId']})
+            original_room_cursor = db.rooms.find(
+                {'id': original_data['roomId']}
+            )
             if original_room_cursor.count() == 0:
                 pass
             else:
@@ -385,7 +393,8 @@ def batch_candidate(request, **kwargs):
             )
         for item in candidate_list:
             room_id = item['roomId']
-            if room_id is not None and room_id != '' and db.rooms.find({'id': room_id}).count() == 0:
+            if room_id is not None and room_id != '' and \
+               db.rooms.find({'id': room_id}).count() == 0:
                 return Response(
                     {'error': "Room id doesn't exist."},
                     status.HTTP_400_BAD_REQUEST
@@ -394,15 +403,18 @@ def batch_candidate(request, **kwargs):
             candidate_to_be_added = item.copy()
             tmp_id = sequences.get_next_sequence('candidate_id')
             candidate_to_be_added['id'] = tmp_id
-            print candidate_to_be_added
-            if 'roomId' in candidate_to_be_added and candidate_to_be_added['roomId'] == '':
+            print (candidate_to_be_added)
+            if 'roomId' in candidate_to_be_added and \
+               candidate_to_be_added['roomId'] == '':
                 del candidate_to_be_added['roomId']
-            print candidate_to_be_added
+            print (candidate_to_be_added)
             db.candidate.insert_one(candidate_to_be_added)
-            print candidate_to_be_added
+            print (candidate_to_be_added)
             room_id = item['roomId']
             if room_id is not None and room_id != '':
-                room_candidate_list = db.rooms.find({'id': room_id})[0]['candidates']
+                room_candidate_list = db.rooms.find(
+                    {'id': room_id}
+                )[0]['candidates']
                 room_candidate_list.append(tmp_id)
                 db.rooms.update_one(
                     {'id': room_id},
@@ -501,7 +513,8 @@ def get_room_candidate(request, room_id, **kwargs):
                 status.HTTP_400_BAD_REQUEST
             )
         ret_data = {
-            k: v for k, v in dict(candidate_cursor[0]).items() if k in candidate_keys
+            k: v for k, v in
+            dict(candidate_cursor[0]).items() if k in candidate_keys
         }
         candidates.append(ret_data)
 
