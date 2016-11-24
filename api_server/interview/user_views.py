@@ -126,10 +126,7 @@ def user_logout(request, **kwargs):
 
     if cursor.count() == 0:
         return Response(
-            {
-                'error': 'User has not logged in.'
-            },
-            status.HTTP_403_FORBIDDEN
+            status=status.HTTP_200_OK
         )
     else:
         for item in cursor:

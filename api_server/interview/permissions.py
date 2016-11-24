@@ -38,6 +38,9 @@ def check(request, permitted_user_types=None, room_id=None):
     if cursor.count() > 1:
         return DUPLICATE_TOKEN
 
+    if 'last_login' not in cursor[0]:
+        return INVALID_TOKEN
+
     if datetime.now() >= cursor[0]['last_login'] + timedelta(hours=6):
         return EXPIRED_TOKEN
 

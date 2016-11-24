@@ -67,7 +67,7 @@ class UserLoginTestCase(APISimpleTestCase):
             self.db.users.insert_one(self.database_error_template)
 
     def get_get_response(self, data):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/user/login'
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/user/login'
         response = self.client.get(url, data)
         return response
 
@@ -174,7 +174,7 @@ class UserLogoutTestCase(APISimpleTestCase):
         db_client.drop_database(settings.DB_NAME)
 
     def get_get_response(self, data):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/user/logout'
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/user/logout'
         response = self.client.get(url, data)
         return response
 
@@ -198,14 +198,6 @@ class UserLogoutTestCase(APISimpleTestCase):
         response = self.get_get_response(post_data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.data['error'], 'Permission denied')
-
-    def test_not_login(self):
-        self.init_token()
-        post_data = self.post_data_template.copy()
-        post_data['token'] = "thatsabigmistake"
-        response = self.get_get_response(post_data)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(response.data['error'], 'User has not logged in.')
 
     def test_success(self):
         self.init_token()
@@ -248,7 +240,7 @@ class UserRegisterTestCase(APISimpleTestCase):
         db_client.drop_database(settings.DB_NAME)
 
     def get_post_response(self, data):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/user/register'
         response = self.client.post(url, data, format='json')
         return response
@@ -310,7 +302,8 @@ class UserManageTestCase(APISimpleTestCase):
         'email': 'plusonesec@pla301.cn',
         'organization': 'CCP',
         'contact': 'Beijing PLA 301 Hospital',
-        'token': 'naive'
+        'token': 'naive',
+        'last_login': datetime.datetime.now()
     }
 
     test_candidate_data = {
@@ -320,7 +313,8 @@ class UserManageTestCase(APISimpleTestCase):
         'email': 'basiclaw@CCP.cn',
         'organization': 'CCP',
         'contact': 'Hawaii',
-        'token': 'simple'
+        'token': 'simple',
+        'last_login': datetime.datetime.now()
     }
 
     db_client = None
@@ -351,7 +345,7 @@ class UserManageTestCase(APISimpleTestCase):
         db_client.drop_database(settings.DB_NAME)
 
     def get_delete_response(self, username, query):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/user/' + username
         request = self.factory.get(url, query)
         url = request.get_raw_uri()
@@ -359,13 +353,13 @@ class UserManageTestCase(APISimpleTestCase):
         return response
 
     def get_get_response(self, username, query):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/user/' + username
         response = self.client.get(url, query)
         return response
 
     def get_put_response(self, username, query, data):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/user/' + username
         request = self.factory.get(url, query)
         url = request.get_raw_uri()
@@ -410,18 +404,21 @@ class UserManageTestCase(APISimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         expected = self.test_candidate_data.copy()
         del expected['token']
+        del expected['last_login']
         self.assertEqual(response.data, expected)
 
     def test_put_success(self):
         test_data = self.test_candidate_data.copy()
         test_data['organization'] = 'secret'
         del test_data['token']
+        del test_data['last_login']
         response = self.get_put_response(self.test_candidate_data['username'],
                                          {'token': self.test_hr_data['token']},
                                          test_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         expected = self.test_candidate_data.copy()
         del expected['token']
+        del expected['last_login']
         expected['organization'] = 'secret'
         self.assertEqual(response.data, expected)
 

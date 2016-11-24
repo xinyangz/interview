@@ -8,6 +8,7 @@ import string
 from PIL import Image
 import tempfile
 import os
+import datetime
 
 
 class RoomTestCase(APISimpleTestCase):
@@ -42,7 +43,8 @@ class RoomTestCase(APISimpleTestCase):
         'email': 'basiclaw@CCP.cn',
         'organization': 'CCP',
         'contact': 'Hawaii',
-        'token': 'simple'
+        'token': 'simple',
+        'last_login': datetime.datetime.now()
     }
 
     test_interviewer = {
@@ -51,7 +53,8 @@ class RoomTestCase(APISimpleTestCase):
         'type': 'interviewer',
         'email': 'zbh@hk.cn',
         'organization': 'Interviewer Group',
-        'token': 'tk'
+        'token': 'tk',
+        'last_login': datetime.datetime.now()
     }
 
     factory = APIRequestFactory()
@@ -80,7 +83,7 @@ class RoomTestCase(APISimpleTestCase):
         db_client.drop_database(settings.DB_NAME)
 
     def get_delete_response(self, room_id, query):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
             str(room_id)
         request = self.factory.get(url, query)
         url = request.get_raw_uri()
@@ -88,13 +91,13 @@ class RoomTestCase(APISimpleTestCase):
         return response
 
     def get_get_response(self, room_id, query):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
             str(room_id)
         response = self.client.get(url, query)
         return response
 
     def get_put_response(self, room_id, query, data):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
             str(room_id)
         request = self.factory.get(url, query)
         url = request.get_raw_uri()
@@ -102,7 +105,7 @@ class RoomTestCase(APISimpleTestCase):
         return response
 
     def get_put_logo_response(self, room_id, query, data):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
             str(room_id) + '/logo'
         request = self.factory.get(url, query)
         url = request.get_raw_uri()
@@ -110,14 +113,14 @@ class RoomTestCase(APISimpleTestCase):
         return response
 
     def get_post_response_root(self, query, data):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room'
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room'
         request = self.factory.get(url, query)
         url = request.get_raw_uri()
         response = self.client.post(url, data)
         return response
 
     def get_get_response_root(self, query):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room'
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room'
         response = self.client.get(url, query)
         return response
 
