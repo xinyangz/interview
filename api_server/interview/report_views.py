@@ -276,113 +276,80 @@ def put_report(request, candidate_id):
 
     # Write report
 
-    lines = []
-    reshading_macro_prefix = "\\vspace{8pt} \n\\parbox{\\textwidth}\
-                              {\\setlength{\\FrameSep}{\\outerbordwidth}\
-                              \n\\begin{shaded}\n\\setlength{\\fboxsep}{0pt}\
-                              \\framebox[\\textwidth][l]{\\setlength\
-                              {\\fboxsep}{4pt}\\fcolorbox{shadecolorB}\
-                              {shadecolorB}{\\textbf{\\sffamily{\\mbox{~}\
-                              \\makebox[6.762in][l]{"
-    reshading_macro_suffix = "} \\vphantom{p\\^{E}}}}}}\n\\end{shaded}}\n\
-                              \\vspace{-5pt}\n"
-    with open(settings.TEX_PATH + 'header/header.tex', 'r') as fheader:
-        # Warning: Dirty implementations so sad;(, fix later
-        lines.append(fheader.read())
-        lines.append("\\begin{document}\n")
-        lines.append("\\begin{tabular*}{7in}{l@{\extracolsep{\\fill}}r}\n")
-        lines.append(" & \\multirow{4}{*}{\includegraphics[scale=0.19]{" +
-                     logo + "}} \\\\\n")
-        lines.append(" & \\\\\n")
-        lines.append("\\textbf{\Large " + candidate_name + "$|$" +
-                     str(candidate_id) + "} & \\\\\n")
-        lines.append(candidate_organization + "& \\\\\n")
-        lines.append(candidate_phone + "& \\\\\n")
-        lines.append(candidate_email + "& \\\\\n")
-        lines.append(candidate_contact + "\\\\\n")
-        lines.append("\\end{tabular*} \\\\\n")
-        lines.append(reshading_macro_prefix + "\\Large{面试结果：" +
-                     candidate_status + "}" + reshading_macro_suffix)
-        lines.append("\\rule[3pt]{17.8cm}{0.05em}\n")
-        lines.append(reshading_macro_prefix + "\\large{HR与面试官信息}" +
-                     reshading_macro_suffix)
-        lines.append("\\begin{itemize}\n")
-        lines.append("\\item\n")
-        lines.append("    \\ressubheading{HR}{}{HR\\_name}{HR\\_email}\n")
-        lines.append("\\item\n")
-        lines.append(u"    \\ressubheading{面试官}{}{" +
-                     interviewer_name +
-                     "}{Interviewer\\_email}\n")
-        lines.append("\\end{itemize}\n")
-        lines.append(reshading_macro_prefix + "\\large{面试记录与面试官评价} " +
-                     reshading_macro_suffix)
-        lines.append("    \\begin{center}\n")
-        lines.append("    \\parbox{6.762in}{" + report_data + "}\n")
-        lines.append("\\end{center}\n")
+    template_file = json.load(open(settings.TEX_PATH + 'header/template.json'), 'r')
+    header = open('serrings.TEX_PATH + header/header.tex', 'r').read()
+    lines = template_file['template']
+    reshading_macro_prefix = template_file['prefix']
+    reshading_macro_suffix = template_file['suffix']
+    record_item = ''
+    choice_items = ''
+    blank_items = ''
+    code_items = ''
+    answer_items = ''
 
-        if len(choice) + len(blank) + len(code) + len(answer) > 0:
-            lines.append(reshading_macro_prefix +
-                         "\\large{面试题记录（文字部分）}" +
-                         reshading_macro_suffix)
-            lines.append("\\begin{itemize}\n")
-            lines.append("\\item\n")
-            if len(choice) > 0:
-                lines.append("    \\ressubheading{选择题}{}{Multiple choice}{}\n")
-                lines.append("    \\begin{itemize}\n")
-                for item_choice in choice:
-                    content = item_choice['content']
-                    title = content['title']
-                    lines.append("        \\resitem{" + title + "}\n")
-                lines.append("    \\end{itemize}\n")
-            if len(blank) > 0:
-                lines.append("    \\ressubheading{填空题}{}\
-                              {Fill in the blank}{}\n")
-                for item_blank in blank:
-                    content = item_blank['content']
-                    title = content['title']
-                    lines.append("        \\resitem{" + title + "}\n")
-                lines.append("    \\begin{itemize}\n")
-                lines.append("        \\resitem{title1}\n")
-                lines.append("    \\end{itemize}\n")
-            if len(code) > 0:
-                lines.append("    \\ressubheading{编程题}{}{Coding}{}\n")
-                for item_code in code:
-                    content = item_code['content']
-                    title = content['title']
-                    lines.append("        \\resitem{" + title + "}\n")
-                lines.append("    \\begin{itemize}\n")
-                lines.append("        \\resitem{title1}\n")
-                lines.append("    \\end{itemize}\n")
-            if len(answer) > 0:
-                lines.append("    \\ressubheading{简答题}{}\
-                             {Answer questions}{}\n")
-                for item_answer in answer:
-                    content = item_answer['content']
-                    title = content['title']
-                    lines.append("        \\resitem{" + title + "}\n")
-                lines.append("    \\begin{itemize}\n")
-                lines.append("        \\resitem{title1}\n")
-                lines.append("    \\end{itemize}\n")
-            lines.append("\\end{itemize}\n")
 
-        lines.append(reshading_macro_prefix +
-                     "\\large{面试题记录（视频与音频部分）}" +
-                     reshading_macro_suffix)
-        lines.append("\\begin{itemize}\n")
-        lines.append("\\item\n")
-        lines.append("    白板记录\n")
-        lines.append("    \\begin{itemize}\n")
-        lines.append("        \\resitem{{\\bf File} " +
-                     candidate_board + "}\n")
-        lines.append("    \\end{itemize}\n")
-        lines.append("\\item\n")
-        lines.append("    视频文件\n")
-        lines.append("    \\begin{itemize}\n")
-        lines.append("        \\resitem{{\\bf File} " +
-                     candidate_video + "}\n")
-        lines.append("    \\end{itemize}\n")
-        lines.append("\\end{itemize}\n")
-        lines.append("\\end{document}\n")
+    def replace_token(token, content, target=lines):
+        target = [content if x == token else x for x in target]
+
+    replace_token('[REPLACE_HEADER]', header)
+    replace_token('[REPLACE_LOGO]', logo)
+    replace_token('[REPLACE_CANDIDATE_NAME]', candidate_name)
+    replace_token('[REPLACE_CANDIDATE_ID]', candidate_id)
+    replace_token('[REPLACE_CANDIDATE_ORGANIZATION]', candidate_organization)
+    replace_token('[REPLACE_CANDIDATE_PHONE]', candidate_phone)
+    replace_token('[REPLACE_CANDIDATE_EMAIL]', candidate_email)
+    replace_token('[REPLACE_CANDIDATE_CONTACT]', candidate_contact)
+    replace_token('[REPLACE_CANDIDATE_STATUS]', candidate_status)
+    replace_token('[REPLACE_INTERVIEWER_NAME]', interviewer_name)
+    replace_token('[REPLACE_REPORT_DATA]', report_data)
+
+    if len(choice) + len(blank) + len(code) + len(answer) > 0:
+        record_item = template_file['record']
+
+        if len(choice) > 0:
+            choice_items = template_file['record_choice']
+            tmp = ''
+            for item_choice in choice:
+                content = item_choice['content']
+                title = content['title']
+                tmp += "        \\resitem{" + title + "}\n"
+            replace_token('[REPLACE_CHOICE_ITEMS]', tmp, choice_items)
+            replace_token('[REPLACE_CHOICE]', ''.join(choice_items), record_item)
+
+        if len(blank) > 0:
+            blank_items = template_file['record_blank']
+            tmp = ''
+            for item_blank in blank:
+                content = item_blank['content']
+                title = content['title']
+                tmp += "        \\resitem{" + title + "}\n"
+            replace_token('[REPLACE_BLANK_ITEMS]', tmp, blank_items)
+            replace_token('[REPLACE_BLANK]', ''.join(blank_items), record_item)
+
+        if len(code) > 0:
+            code_items = template_file['record_code']
+            tmp = ''
+            for item_code in code:
+                content = item_code['content']
+                title = content['title']
+                tmp += "        \\resitem{" + title + "}\n"
+            replace_token('[REPLACE_CODE_ITEMS]', tmp, code_items)
+            replace_token('[REPLACE_CODE]', ''.join(code_items), record_item)
+
+        if len(answer) > 0:
+            answer_items = template_file['record_answer']
+            tmp = ''
+            for item_answer in answer:
+                content = item_blank['content']
+                title = content['title']
+                tmp += "        \\resitem{" + title + "}\n"
+            replace_token('[REPLACE_ANSWER_ITEMS]', tmp, answer_items)
+            replace_token('[REPLACE_ANSWER]', ''.join(answer_items), record_item)
+
+    replace_token('[REPLACE_RECORD]', ''.join(record_item))
+
+    replace_token('[RESHADING_MACRO_PREFIX]', reshading_macro_prefix)
+    replace_token('[RESHADING_MACRO_SUFFIX]', reshading_macro_suffix)
 
     lines = map(lambda x: x.encode('utf-8'), lines)
 
