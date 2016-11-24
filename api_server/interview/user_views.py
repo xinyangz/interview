@@ -114,10 +114,7 @@ def user_logout(request, **kwargs):
         )
     elif perm_result == permissions.INVALID_TOKEN:
         return Response(
-            {
-                'error': 'User has not logged in.'
-            },
-            status.HTTP_403_FORBIDDEN
+            status=status.HTTP_200_OK
         )
 
     user_data = request.GET
