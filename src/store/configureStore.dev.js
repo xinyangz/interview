@@ -33,8 +33,13 @@ export default function configureStore() {
   );
 
   store.subscribe(throttle(() => {
-    saveState(store.getState());
-  }, 2000));
+    saveState({
+      user: store.getState().user,
+      roomsStates: store.getState().roomsStates,
+      problemStates: store.getState().problemStates,
+      candidatesStates: store.getState().candidatesStates
+    });
+  }, 1000));
 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
