@@ -24,7 +24,12 @@ export default function configureStore() {
   );
 
   store.subscribe(throttle(() => {
-    saveState(store.getState());
+    saveState({
+      user: store.getState().user,
+      roomsStates: store.getState().roomsStates,
+      problemStates: store.getState().problemStates,
+      candidatesStates: store.getState().candidatesStates
+    });
   }, 2000));
 
   return store;
