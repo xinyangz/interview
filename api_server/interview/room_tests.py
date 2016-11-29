@@ -223,7 +223,7 @@ class RoomTestCase(APISimpleTestCase):
         image.save(tmp_file, 'jpeg')
 
         response = self.get_put_logo_response(
-            1, {'token': self.test_hr['token']}, {'image': tmp_file})
+            1, {'token': self.test_hr['token']}, {'image': tempfile})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # print(response.data['logo'])

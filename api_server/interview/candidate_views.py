@@ -400,12 +400,29 @@ def batch_candidate(request, **kwargs):
                     status.HTTP_400_BAD_REQUEST
                 )
         for item in candidate_list:
+            # Create user for each candidate
+            temp_username = "User_" + str(uuid.uuid4())[:8]
+            while db.users.find({'username': temp_username}).count() > 0:
+                temp_username = "User_" + str(uuid.uuid4())[:8]
+            temp_password = str(uuid.uuid4())
+            user_part = {
+              'username': temp_username,
+              'type': 'candidate',
+              'email': item['email'],
+              'password': temp_password,
+              'organization': 'Candidate Group',
+            }
+            if 'phone' in item:
+                user_part['contact'] = str(item['phone'])
+            db.users.insert_one(user_part)
+
             candidate_to_be_added = item.copy()
             tmp_id = sequences.get_next_sequence('candidate_id')
             candidate_to_be_added['id'] = tmp_id
             if 'roomId' in candidate_to_be_added and \
                candidate_to_be_added['roomId'] == '':
                 del candidate_to_be_added['roomId']
+            candidate_to_be_added['unique_username'] = temp_username
             db.candidate.insert_one(candidate_to_be_added)
             room_id = item['roomId']
             if room_id is not None and room_id != '':
