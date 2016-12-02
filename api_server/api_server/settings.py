@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'django_nose',
 ]
 
 MIDDLEWARE = [
@@ -137,6 +138,15 @@ CORS_ORIGIN_WHITELIST = (
     '127.0.0.1:3000',
     'localhost:3000',
 )
+
+# Coverage
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=foo.bar',
+]
 
 # File storage
 
