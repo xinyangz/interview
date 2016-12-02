@@ -186,7 +186,7 @@ class ReportTestCase(APISimpleTestCase):
         response = self.get_del_response(301, 'houbuhouwa')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # subprocess.call("sh clear_tex.sh", shell=True)
+        subprocess.call("sh clear_tex.sh", shell=True)
         self.clear_database()
 
     def test_get_failure(self):

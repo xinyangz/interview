@@ -141,11 +141,11 @@ class CandidateTestCase(APISimpleTestCase):
         response = self.client.get(url)
         return response
 
-    # def get_post_response(self, data):
-        # url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
-            # '/candidate/' + data['id']
-        # response = self.client.post(url, data, format='json')
-        # return response
+    def get_post_response(self, data):
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+              '/candidate/' + data['id']
+        response = self.client.post(url, data, format='json')
+        return response
 
     def post_file_response(self, filepath, token):
         url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
