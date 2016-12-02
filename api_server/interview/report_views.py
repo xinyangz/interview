@@ -8,6 +8,7 @@ import pymongo
 import uuid
 import subprocess
 import os
+from . import permissions
 
 
 @api_view(['GET', 'DELETE', 'PUT'])
@@ -18,42 +19,23 @@ def all_report(request, candidate_id, **kwargs):
         return get_report(request, candidate_id)
     elif method == 'DELETE':
         return delete_report(request, candidate_id)
-    elif method == 'PUT':
-        return put_report(request, candidate_id)
     else:
-        return Response(
-            {
-                'error': 'Method error'
-            },
-            status.HTTP_400_BAD_REQUEST
-        )
-
+        return put_report(request, candidate_id)
 
 def get_report(request, candidate_id):
     candidate_id = int(candidate_id)
-    token = request.GET.get('token')
-    client = pymongo.MongoClient()
-    db = client[settings.DB_NAME]
-
-    # Check user permission
-
-    access_denied = False
-    applicant = db.users.find({'token': token})
-    if applicant.count() == 0:
-        access_denied = True
-    else:
-        for item in applicant:
-            if item['type'] not in ['hr', 'interviewer']:
-                access_denied = True
-                break
-    if access_denied:
+    permitted_user_types = ['hr', 'interviewer']
+    if permissions.check(request, permitted_user_types) != permissions.PASS:
         return Response(
             {
-                'status': '30',
-                'error': 'Permission denied.'
+                'error': 'Permission denied'
             },
             status.HTTP_403_FORBIDDEN
         )
+
+    client = pymongo.MongoClient()
+    db = client[settings.DB_NAME]
+
     report_cursor = db.report.find({'candidate_id': candidate_id})
     if report_cursor.count() == 0:
         return Response(
@@ -80,28 +62,19 @@ def get_report(request, candidate_id):
 
 def delete_report(request, candidate_id):
     candidate_id = int(candidate_id)
-    token = request.GET.get('token')
-    client = pymongo.MongoClient()
-    db = client[settings.DB_NAME]
-    # Check user permission
-
-    access_denied = False
-    applicant = db.users.find({'token': token})
-    if applicant.count() == 0:
-        access_denied = True
-    else:
-        for item in applicant:
-            if item['type'] not in ['hr', 'interviewer']:
-                access_denied = True
-                break
-    if access_denied:
+    permitted_user_types = ['hr', 'interviewer']
+    if permissions.check(request, permitted_user_types) != permissions.PASS:
         return Response(
             {
-                'status': '30',
-                'error': 'Permission denied.'
+                'error': 'Permission denied'
             },
             status.HTTP_403_FORBIDDEN
         )
+
+    token = request.GET.get('token')
+    client = pymongo.MongoClient()
+    db = client[settings.DB_NAME]
+
     user_cursor = db.candidate.find({'id': candidate_id})
     if user_cursor.count() == 0:
         return Response(
@@ -153,33 +126,21 @@ def put_report(request, candidate_id):
     'roomId': '101',
     'text': 'string'
     '''
+    permitted_user_types = ['hr', 'interviewer']
+    if permissions.check(request, permitted_user_types) != permissions.PASS:
+        return Response(
+            {
+                'error': 'Permission denied'
+            },
+            status.HTTP_403_FORBIDDEN
+        )
 
     report_data = request.data
     text = report_data
     candidate_id = int(candidate_id)
-    token = request.GET.get('token')
 
     client = pymongo.MongoClient()
     db = client[settings.DB_NAME]
-
-    # Check user permission
-
-    access_denied = False
-    applicant = db.users.find({'token': token})
-    if applicant.count() == 0:
-        access_denied = True
-    else:
-        for item in applicant:
-            if item['type'] not in ['hr', 'interviewer']:
-                access_denied = True
-                break
-    if access_denied:
-        return Response(
-            {
-                'error': 'Permission denied.'
-            },
-            status.HTTP_403_FORBIDDEN
-        )
 
     # Set path record
 
@@ -269,6 +230,7 @@ def put_report(request, candidate_id):
         pdf_bytes = img2pdf.convert(os.path.join(logo_dir, 'logo.jpg'))
         with open(os.path.join(logo_dir, 'logo.pdf'), 'wb') as f:
             f.write(pdf_bytes)
+
     if weak_in('logo.pdf', os.listdir(logo_dir)):
         logo = os.path.join(logo_dir, 'logo.pdf')
     else:
@@ -303,6 +265,9 @@ def put_report(request, candidate_id):
     lines = replace_token('[REPLACE_CANDIDATE_STATUS]', candidate_status, lines)
     lines = replace_token('[REPLACE_INTERVIEWER_NAME]', interviewer_name, lines)
     lines = replace_token('[REPLACE_REPORT_DATA]', report_data, lines)
+
+    # print ("LENGTH TABLE: CHOICE = {choice}, BLANK = {blank}, ANSWER = {answer}, CODE = {code}".format(
+    #        choice=len(choice), blank=len(blank), answer=len(answer), code=len(code)))
 
     if len(choice) + len(blank) + len(code) + len(answer) > 0:
         record_item = template_file['record']

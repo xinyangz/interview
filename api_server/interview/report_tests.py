@@ -55,11 +55,11 @@ class ReportTestCase(APISimpleTestCase):
         'candidates': [
             '301'
         ],
-        'problems': [1],
+        'problems': [1, 2, 3, 4],
         'interviewer': 'Sharon'
     }
 
-    problem_template = {
+    problem_choice_template = {
       "id": 1,
       "roomId": 301,
       "type": "choice",
@@ -77,6 +77,38 @@ class ReportTestCase(APISimpleTestCase):
               ],
           "sampleInput": "1 2",
           "sampleOutput": "-1"
+        }
+    }
+
+    problem_blank_template = {
+      "id": 2,
+      "roomId": 301,
+      "type": "blank",
+      "content": {
+          "title": "A blank filling example",
+          "description": "here is description",
+        }
+    }
+
+    problem_coding_template = {
+      "id": 3,
+      "roomId": 301,
+      "type": "code",
+      "content": {
+          "title": "Implement A+B problem with SA on quantum computers",
+          "description": "here is description",
+          "sampleInput": "1 2",
+          "sampleOutput": "3"
+        }
+    }
+
+    problem_answer_template = {
+      "id": 4,
+      "roomId": 301,
+      "type": "answer",
+      "content": {
+          "title": "Who's the 3rd in the 1926 Life Champion?",
+          "description": "here is description",
         }
     }
 
@@ -105,7 +137,6 @@ class ReportTestCase(APISimpleTestCase):
     def init_db(self):
         if self.db_client is None:
             self.db_client = pymongo.MongoClient(port=settings.DB_PORT)
-
         self.db = self.db_client[settings.DB_NAME]
 
     def get_put_response(self, candidate_id, data, token):
@@ -126,13 +157,25 @@ class ReportTestCase(APISimpleTestCase):
         response = self.client.delete(url)
         return response
 
-    def test_report_success(self):
-        self.init_db()
+    def init_info(self):
         self.db.users.insert_one(self.user_data_template)
         self.db.users.insert_one(self.interviewer_data_template)
         self.db.candidate.insert_one(self.candidate_data_template)
         self.db.room.insert_one(self.room_template)
-        self.db.problems.insert_one(self.problem_template)
+        self.db.problems.insert_one(self.problem_choice_template)
+        self.db.problems.insert_one(self.problem_blank_template)
+        self.db.problems.insert_one(self.problem_coding_template)
+        self.db.problems.insert_one(self.problem_answer_template)
+
+    def clear_database(self):
+        self.db.users.delete_many({})
+        self.db.candidate.delete_many({})
+        self.db.room.delete_many({})
+        self.db.problems.delete_many({})
+
+    def test_report_success(self):
+        self.init_db()
+        self.init_info()
         response = self.get_put_response(
             301, "His English is very poor", 'houbuhouwa')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -143,4 +186,28 @@ class ReportTestCase(APISimpleTestCase):
         response = self.get_del_response(301, 'houbuhouwa')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        subprocess.call("sh clear_tex.sh", shell=True)
+        # subprocess.call("sh clear_tex.sh", shell=True)
+        self.clear_database()
+
+    def test_get_failure(self):
+        self.init_db()
+        self.init_info()
+        # Permission denied
+        response = self.get_get_response(301, 'yingdiandeyisi')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        # Candidate not found
+        response = self.get_get_response(1301, 'houbuhouwa')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.clear_database()
+
+    def test_delete_failure(self):
+        self.init_db()
+        self.init_info()
+        # Permission denied
+        response = self.get_del_response(301, 'yingdiandeyisi')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        # Candidate not found
+        response = self.get_del_response(1301, 'houbuhouwa')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.clear_database()
+

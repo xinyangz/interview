@@ -49,11 +49,11 @@ def root(request, room_id, **kwargs):
         problem_data['id'] = problem_id
 
         # Validation. Should never happen.
-        if room_id != problem_data['roomId']:
-            return Response(
-                {'error': 'Unknown error'},
-                status.HTTP_400_BAD_REQUEST
-            )
+        # if room_id != problem_data['roomId']:
+        #    return Response(
+        #        {'error': 'Unknown error'},
+        #        status.HTTP_400_BAD_REQUEST
+        #    )
         # Check existance
         room_cursor = db.rooms.find({'id': room_id})
         if room_cursor.count() == 0:
@@ -82,14 +82,8 @@ def root(request, room_id, **kwargs):
         _offset = offset
         _limit = limit
         # Check query parameters
-        if offset is None or offset == '':
-            offset = 0
-        else:
-            offset = int(offset)
-        if limit is None or limit == '':
-            limit = 1
-        else:
-            limit = int(limit)
+        offset = 0 if offset is None or offset == ' ' else int(offset)
+        limit = 1 if limit is None or limit == '' else int(limit)
 
         # Check room existance
         room_cursor = db.rooms.find({'id': room_id})

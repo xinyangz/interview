@@ -1,6 +1,5 @@
 from rest_framework import status
 from rest_framework.test import APISimpleTestCase, APIRequestFactory
-from rest_framework.test import APIRequestFactory
 from django.conf import settings
 import pymongo
 import random
@@ -180,6 +179,14 @@ class RoomTestCase(APISimpleTestCase):
         self.assertEqual(response.data, self.test_room)
         self.db.rooms.delete_many({})
 
+    def test_get_failure(self):
+        tmp_room = self.test_room.copy()
+        self.db.rooms.insert_one(tmp_room)
+        response = self.get_get_response(
+            1, {'token': 'anerrortoken'})
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.db.rooms.delete_many({})
+
     def test_put_success_same_interviewer(self):
         self.db.users.insert_one(self.test_interviewer)
         tmp_room = self.test_room.copy()
@@ -225,8 +232,6 @@ class RoomTestCase(APISimpleTestCase):
         response = self.get_put_logo_response(
             1, {'token': self.test_hr['token']}, {'image': tempfile})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        # print(response.data['logo'])
 
         # Delete file
         file_path = os.path.join(settings.FILE_ROOT, str(1), 'logo.jpg')

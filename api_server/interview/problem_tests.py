@@ -6,7 +6,6 @@ import pymongo
 import random
 import string
 import datetime
-import copy
 
 
 class ProblemTestCase(APISimpleTestCase):
@@ -160,7 +159,7 @@ class ProblemTestCase(APISimpleTestCase):
     def init_db(self):
         if self.db_client is None:
             self.db_client = pymongo.MongoClient(port=settings.DB_PORT)
-        self.db = self.db_client[settings.DB_NAME]
+            self.db = self.db_client[settings.DB_NAME]
 
     def get_room_problems(self, room_id, token):
         url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
@@ -195,9 +194,9 @@ class ProblemTestCase(APISimpleTestCase):
         return response
 
     def clear_database(self):
-        self.db.drop_collection('users')
-        self.db.drop_collection('rooms')
-        self.db.drop_collection('problems')
+        self.db.users.delete_many({})
+        self.db.rooms.delete_many({})
+        self.db.problems.delete_many({})
 
     def test_get_room_problems_success(self):
         self.init_db()
@@ -213,12 +212,10 @@ class ProblemTestCase(APISimpleTestCase):
 
     def test_post_room_problems_success(self):
         self.init_db()
-        if self.db.users.find({'username': 'Sharon'}).count() == 0:
-            tmp1 =  self.interviewer_data_template.copy()
-            self.db.users.insert_one(tmp1)
-        if self.db.rooms.find({'id': 302}).count() == 0:
-            tmp2 = self.empty_room_template.copy()
-            self.db.rooms.insert_one(tmp2)
+        tmp1 = self.interviewer_data_template.copy()
+        self.db.users.insert_one(tmp1)
+        tmp2 = self.empty_room_template.copy()
+        self.db.rooms.insert_one(tmp2)
         response = self.post_room_problems(
             302, self.new_problem_template, 'houbuhouwa')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
