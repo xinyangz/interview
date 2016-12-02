@@ -141,11 +141,11 @@ class CandidateTestCase(APISimpleTestCase):
         response = self.client.get(url)
         return response
 
-    def get_post_response(self, data):
-        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
-            '/candidate/' + data['id']
-        response = self.client.post(url, data, format='json')
-        return response
+    # def get_post_response(self, data):
+        # url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            # '/candidate/' + data['id']
+        # response = self.client.post(url, data, format='json')
+        # return response
 
     def post_file_response(self, filepath, token):
         url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
@@ -194,16 +194,6 @@ class CandidateTestCase(APISimpleTestCase):
             candidate_data_tmp['unique_username'] = temp_username
             candidate_data_tmp['id'] = 0
             self.db.candidate.insert_one(candidate_data_tmp)
-
-    def get_life_status(self):
-        print()
-        print("Candidate:")
-        for item in self.db.candidate.find({}):
-            print(item)
-        print()
-        print("User:")
-        for item in self.db.users.find({}):
-            print(item)
 
     def test_add_success(self):
         self.init_Wallace()

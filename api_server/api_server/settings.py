@@ -141,12 +141,15 @@ CORS_ORIGIN_WHITELIST = (
 
 # Coverage
 
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+# TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
-NOSE_ARGS = [
-    '--with-coverage',
-    '--cover-package=foo.bar',
-]
+# NOSE_ARGS = [
+    # '-v',
+    # '--with-coverage',
+    # '--cover-package=highlight',
+    # '--with-doctest',
+    # '--cover-erase',
+# ]
 
 # File storage
 
