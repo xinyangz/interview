@@ -22,6 +22,7 @@ def all_report(request, candidate_id, **kwargs):
     else:
         return put_report(request, candidate_id)
 
+
 def get_report(request, candidate_id):
     candidate_id = int(candidate_id)
     permitted_user_types = ['hr', 'interviewer']
@@ -239,7 +240,7 @@ def put_report(request, candidate_id):
     # Write report
     import json
 
-    template_file = json.load(open(settings.TEX_PATH + 'header/template.json', 'r'))
+    template_file = json.load(open(settings.TEX_PATH + 'header/template.json', 'r', encoding='utf-8'))
     header = open(settings.TEX_PATH + 'header/header.tex', 'r').read()
     lines = template_file['template']
     reshading_macro_prefix = template_file['reshading_macro_prefix']
@@ -249,7 +250,6 @@ def put_report(request, candidate_id):
     blank_items = ''
     code_items = ''
     answer_items = ''
-
 
     def replace_token(token, content, source):
         return [content if x == token else x for x in source]

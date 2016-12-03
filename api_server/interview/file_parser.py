@@ -79,7 +79,7 @@ def file_parser(ext_name, content):
             }
             candidate_list.append(candidate_data)
     else:
-        print ("Unknown file format.")
+        # print ("Unknown file format.")
         return None
     return candidate_list
 

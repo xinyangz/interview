@@ -228,9 +228,10 @@ class RoomTestCase(APISimpleTestCase):
         image = Image.new('RGB', (100, 100), "#ddd")
         tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
         image.save(tmp_file, 'jpeg')
+        f = open(tmp_file.name)
 
         response = self.get_put_logo_response(
-            1, {'token': self.test_hr['token']}, {'image': tempfile})
+            1, {'token': self.test_hr['token']}, {'image': f})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Delete file
