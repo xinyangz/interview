@@ -333,21 +333,13 @@ def put_report(request, candidate_id):
     lines = replace_token('[RESHADING_MACRO_PREFIX]', reshading_macro_prefix, lines)
     lines = replace_token('[RESHADING_MACRO_SUFFIX]', reshading_macro_suffix, lines)
 
-    # print (lines)
-
-    # Port unicode() to Python 2.x.
-    try:
-        bool(type(unicode))
-    except NameError:
-        unicode = lambda s: str(s)
-
     lines = map(lambda x: unicode(x).encode('utf-8'), lines)
 
     tex_path = settings.TEX_PATH + str(report_id) + ".tex"
     with open(settings.TEX_PATH + str(report_id) + ".tex", 'wb') as f:
         f.writelines(lines)
 
-    subprocess.call('/Library/TeX/texbin/xelatex ' + tex_path +
+    subprocess.call('xelatex ' + tex_path +
                     ' -output-directory=' + settings.REPORT_PATH +
                     ' -aux-directory=report/', shell=True)
     subprocess.call('sh clean.sh', shell=True)
