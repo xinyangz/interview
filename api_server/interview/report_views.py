@@ -8,6 +8,7 @@ import pymongo
 import uuid
 import subprocess
 import os
+import io
 from . import permissions
 
 
@@ -240,7 +241,7 @@ def put_report(request, candidate_id):
     # Write report
     import json
 
-    template_file = json.load(open(settings.TEX_PATH + 'header/template.json', 'r', encoding='utf-8'))
+    template_file = json.load(io.open(settings.TEX_PATH + 'header/template.json', 'r', encoding='utf-8'))
     header = open(settings.TEX_PATH + 'header/header.tex', 'r').read()
     lines = template_file['template']
     reshading_macro_prefix = template_file['reshading_macro_prefix']
