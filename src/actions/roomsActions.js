@@ -242,7 +242,6 @@ export function modifyRoom(data) {
       return axios.put('/room/' + room_id + '?token=' + token, room)
         .then(response => {
           if (response.status === 200) {
-            dispatch(loadAllRooms());
             dispatch(beginUploadImage());
             return axios.put('/room/' + room_id + '/logo' + '?token=' + token, image);
           }
@@ -254,6 +253,7 @@ export function modifyRoom(data) {
           if (response.status === 200) {
             dispatch(displayNotification('success', '操作成功', '修改房间信息成功'));
             dispatch(uploadImageSuccess());
+            dispatch(loadAllRooms());
           }
           else {
             throw (response.data);
@@ -330,7 +330,6 @@ export function addRoom(data) {
         .then(response => {
           if (response.status === 200) {
             const room_id = response.data.id;
-            dispatch(loadAllRooms());
             dispatch(beginUploadImage());
             return axios.put('/room/' + room_id + '/logo' + '?token=' + token, image);
           }
@@ -342,6 +341,7 @@ export function addRoom(data) {
           if (response.status === 200) {
             dispatch(displayNotification('success', '操作成功', '添加房间成功'));
             dispatch(uploadImageSuccess());
+            dispatch(loadAllRooms());
           }
           else {
             throw (response.data);
