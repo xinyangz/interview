@@ -125,12 +125,6 @@ describe('Candidates async actions', () => {
 
       const store = mockStore(init);
       sandbox.stub(axios, 'delete').returns(Promise.resolve(response));
-      store.dispatch(actions.deleteCandidate(response.data.id))
-        .then(() => {
-          //expect(store.getActions()).to.deep.equal(expectedActions);
-        })
-        .then(done)
-        .catch(done);
     });
 
     it('should dispatch DELETE_CANDIDATE_ERROR when server return status is not 200', () => {
