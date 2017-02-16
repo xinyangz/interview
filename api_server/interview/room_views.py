@@ -6,6 +6,7 @@ import pymongo
 import os
 import jsonschema
 import uuid
+import imghdr
 from .schemas import swagger_schema
 from . import permissions
 from . import sequences
@@ -45,9 +46,6 @@ def root(request, **kwargs):
         db = client[settings.DB_NAME]
 
         # Create user for interviewer
-        # TODO: interview field is email
-        # TODO: send email button
-        # TODO: put change email
         temp_username = "Interviewer_" + \
             str(sequences.get_next_sequence('interviewer'))
         while db.users.find({'username': temp_username}).count() > 0:
@@ -221,8 +219,19 @@ def logo(request, room_id, **kwargs):
     del room_data['_id']
 
     # Save logo
-    img_file = request.data['image']
-    _, extension = os.path.splitext(img_file.name)
+    try:
+        img_file = request.data['image']
+        _, extension = os.path.splitext(img_file.name)
+        if imghdr.what(img_file.file) is None:
+            raise Exception
+    except:
+        return Response(
+            {
+                'error': 'Invalid image file'
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
+
     file_path = os.path.join(settings.FILE_ROOT, str(room_id),
                              'logo' + extension)
     if not os.path.exists(os.path.dirname(file_path)):
@@ -280,7 +289,9 @@ def manage(request, room_id, **kwargs):
     if request.method == 'DELETE':
         candidate_ids = room_cursor[0]['candidates']
         for candidate_id in candidate_ids:
-            db.candidate.update({'id': candidate_id}, {'$unset': {'roomId': 1}})
+            db.candidate.update(
+                {'id': candidate_id}, {'$unset': {'roomId': 1}}
+            )
         db.rooms.delete_one({'id': room_id})
         return Response(status=status.HTTP_200_OK)
 

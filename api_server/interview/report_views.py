@@ -8,6 +8,8 @@ import pymongo
 import uuid
 import subprocess
 import os
+import io
+from . import permissions
 
 
 @api_view(['GET', 'DELETE', 'PUT'])
@@ -18,42 +20,24 @@ def all_report(request, candidate_id, **kwargs):
         return get_report(request, candidate_id)
     elif method == 'DELETE':
         return delete_report(request, candidate_id)
-    elif method == 'PUT':
-        return put_report(request, candidate_id)
     else:
-        return Response(
-            {
-                'error': 'Method error'
-            },
-            status.HTTP_400_BAD_REQUEST
-        )
+        return put_report(request, candidate_id)
 
 
 def get_report(request, candidate_id):
     candidate_id = int(candidate_id)
-    token = request.GET.get('token')
-    client = pymongo.MongoClient()
-    db = client[settings.DB_NAME]
-
-    # Check user permission
-
-    access_denied = False
-    applicant = db.users.find({'token': token})
-    if applicant.count() == 0:
-        access_denied = True
-    else:
-        for item in applicant:
-            if item['type'] not in ['hr', 'interviewer']:
-                access_denied = True
-                break
-    if access_denied:
+    permitted_user_types = ['hr', 'interviewer']
+    if permissions.check(request, permitted_user_types) != permissions.PASS:
         return Response(
             {
-                'status': '30',
-                'error': 'Permission denied.'
+                'error': 'Permission denied'
             },
             status.HTTP_403_FORBIDDEN
         )
+
+    client = pymongo.MongoClient()
+    db = client[settings.DB_NAME]
+
     report_cursor = db.report.find({'candidate_id': candidate_id})
     if report_cursor.count() == 0:
         return Response(
@@ -80,28 +64,19 @@ def get_report(request, candidate_id):
 
 def delete_report(request, candidate_id):
     candidate_id = int(candidate_id)
-    token = request.GET.get('token')
-    client = pymongo.MongoClient()
-    db = client[settings.DB_NAME]
-    # Check user permission
-
-    access_denied = False
-    applicant = db.users.find({'token': token})
-    if applicant.count() == 0:
-        access_denied = True
-    else:
-        for item in applicant:
-            if item['type'] not in ['hr', 'interviewer']:
-                access_denied = True
-                break
-    if access_denied:
+    permitted_user_types = ['hr', 'interviewer']
+    if permissions.check(request, permitted_user_types) != permissions.PASS:
         return Response(
             {
-                'status': '30',
-                'error': 'Permission denied.'
+                'error': 'Permission denied'
             },
             status.HTTP_403_FORBIDDEN
         )
+
+    token = request.GET.get('token')
+    client = pymongo.MongoClient()
+    db = client[settings.DB_NAME]
+
     user_cursor = db.candidate.find({'id': candidate_id})
     if user_cursor.count() == 0:
         return Response(
@@ -153,33 +128,21 @@ def put_report(request, candidate_id):
     'roomId': '101',
     'text': 'string'
     '''
+    permitted_user_types = ['hr', 'interviewer']
+    if permissions.check(request, permitted_user_types) != permissions.PASS:
+        return Response(
+            {
+                'error': 'Permission denied'
+            },
+            status.HTTP_403_FORBIDDEN
+        )
 
     report_data = request.data
     text = report_data
     candidate_id = int(candidate_id)
-    token = request.GET.get('token')
 
     client = pymongo.MongoClient()
     db = client[settings.DB_NAME]
-
-    # Check user permission
-
-    access_denied = False
-    applicant = db.users.find({'token': token})
-    if applicant.count() == 0:
-        access_denied = True
-    else:
-        for item in applicant:
-            if item['type'] not in ['hr', 'interviewer']:
-                access_denied = True
-                break
-    if access_denied:
-        return Response(
-            {
-                'error': 'Permission denied.'
-            },
-            status.HTTP_403_FORBIDDEN
-        )
 
     # Set path record
 
@@ -263,134 +226,120 @@ def put_report(request, candidate_id):
                 return True
         return False
 
-    if weak_in('logo.pdf', os.listdir(logo_dir)):
+    if weak_in('logo.jpg', os.listdir(logo_dir)):
         import img2pdf
         print (os.path.join(logo_dir, 'logo.jpg'))
         pdf_bytes = img2pdf.convert(os.path.join(logo_dir, 'logo.jpg'))
         with open(os.path.join(logo_dir, 'logo.pdf'), 'wb') as f:
             f.write(pdf_bytes)
+
     if weak_in('logo.pdf', os.listdir(logo_dir)):
         logo = os.path.join(logo_dir, 'logo.pdf')
     else:
         logo = settings.TEX_PATH + "logo/iitmlogo.pdf"
 
     # Write report
+    import json
 
-    lines = []
-    reshading_macro_prefix = "\\vspace{8pt} \n\\parbox{\\textwidth}\
-                              {\\setlength{\\FrameSep}{\\outerbordwidth}\
-                              \n\\begin{shaded}\n\\setlength{\\fboxsep}{0pt}\
-                              \\framebox[\\textwidth][l]{\\setlength\
-                              {\\fboxsep}{4pt}\\fcolorbox{shadecolorB}\
-                              {shadecolorB}{\\textbf{\\sffamily{\\mbox{~}\
-                              \\makebox[6.762in][l]{"
-    reshading_macro_suffix = "} \\vphantom{p\\^{E}}}}}}\n\\end{shaded}}\n\
-                              \\vspace{-5pt}\n"
-    with open(settings.TEX_PATH + 'header/header.tex', 'r') as fheader:
-        # Warning: Dirty implementations so sad;(, fix later
-        lines.append(fheader.read())
-        lines.append("\\begin{document}\n")
-        lines.append("\\begin{tabular*}{7in}{l@{\extracolsep{\\fill}}r}\n")
-        lines.append(" & \\multirow{4}{*}{\includegraphics[scale=0.19]{" +
-                     logo + "}} \\\\\n")
-        lines.append(" & \\\\\n")
-        lines.append("\\textbf{\Large " + candidate_name + "$|$" +
-                     str(candidate_id) + "} & \\\\\n")
-        lines.append(candidate_organization + "& \\\\\n")
-        lines.append(candidate_phone + "& \\\\\n")
-        lines.append(candidate_email + "& \\\\\n")
-        lines.append(candidate_contact + "\\\\\n")
-        lines.append("\\end{tabular*} \\\\\n")
-        lines.append(reshading_macro_prefix + "\\Large{面试结果：" +
-                     candidate_status + "}" + reshading_macro_suffix)
-        lines.append("\\rule[3pt]{17.8cm}{0.05em}\n")
-        lines.append(reshading_macro_prefix + "\\large{HR与面试官信息}" +
-                     reshading_macro_suffix)
-        lines.append("\\begin{itemize}\n")
-        lines.append("\\item\n")
-        lines.append("    \\ressubheading{HR}{}{HR\\_name}{HR\\_email}\n")
-        lines.append("\\item\n")
-        lines.append(u"    \\ressubheading{面试官}{}{" +
-                     interviewer_name +
-                     "}{Interviewer\\_email}\n")
-        lines.append("\\end{itemize}\n")
-        lines.append(reshading_macro_prefix + "\\large{面试记录与面试官评价} " +
-                     reshading_macro_suffix)
-        lines.append("    \\begin{center}\n")
-        lines.append("    \\parbox{6.762in}{" + report_data + "}\n")
-        lines.append("\\end{center}\n")
+    template_file = json.load(io.open(settings.TEX_PATH + 'header/template.json', 'r', encoding='utf-8'))
+    header = open(settings.TEX_PATH + 'header/header.tex', 'r').read()
+    lines = template_file['template']
+    reshading_macro_prefix = template_file['reshading_macro_prefix']
+    reshading_macro_suffix = template_file['reshading_macro_suffix']
+    record_item = ''
+    choice_items = ''
+    blank_items = ''
+    code_items = ''
+    answer_items = ''
 
-        if len(choice) + len(blank) + len(code) + len(answer) > 0:
-            lines.append(reshading_macro_prefix +
-                         "\\large{面试题记录（文字部分）}" +
-                         reshading_macro_suffix)
-            lines.append("\\begin{itemize}\n")
-            lines.append("\\item\n")
-            if len(choice) > 0:
-                lines.append("    \\ressubheading{选择题}{}{Multiple choice}{}\n")
-                lines.append("    \\begin{itemize}\n")
-                for item_choice in choice:
-                    content = item_choice['content']
-                    title = content['title']
-                    lines.append("        \\resitem{" + title + "}\n")
-                lines.append("    \\end{itemize}\n")
-            if len(blank) > 0:
-                lines.append("    \\ressubheading{填空题}{}\
-                              {Fill in the blank}{}\n")
-                for item_blank in blank:
-                    content = item_blank['content']
-                    title = content['title']
-                    lines.append("        \\resitem{" + title + "}\n")
-                lines.append("    \\begin{itemize}\n")
-                lines.append("        \\resitem{title1}\n")
-                lines.append("    \\end{itemize}\n")
-            if len(code) > 0:
-                lines.append("    \\ressubheading{编程题}{}{Coding}{}\n")
-                for item_code in code:
-                    content = item_code['content']
-                    title = content['title']
-                    lines.append("        \\resitem{" + title + "}\n")
-                lines.append("    \\begin{itemize}\n")
-                lines.append("        \\resitem{title1}\n")
-                lines.append("    \\end{itemize}\n")
-            if len(answer) > 0:
-                lines.append("    \\ressubheading{简答题}{}\
-                             {Answer questions}{}\n")
-                for item_answer in answer:
-                    content = item_answer['content']
-                    title = content['title']
-                    lines.append("        \\resitem{" + title + "}\n")
-                lines.append("    \\begin{itemize}\n")
-                lines.append("        \\resitem{title1}\n")
-                lines.append("    \\end{itemize}\n")
-            lines.append("\\end{itemize}\n")
+    def replace_token(token, content, source):
+        return [content if x == token else x for x in source]
 
-        lines.append(reshading_macro_prefix +
-                     "\\large{面试题记录（视频与音频部分）}" +
-                     reshading_macro_suffix)
-        lines.append("\\begin{itemize}\n")
-        lines.append("\\item\n")
-        lines.append("    白板记录\n")
-        lines.append("    \\begin{itemize}\n")
-        lines.append("        \\resitem{{\\bf File} " +
-                     candidate_board + "}\n")
-        lines.append("    \\end{itemize}\n")
-        lines.append("\\item\n")
-        lines.append("    视频文件\n")
-        lines.append("    \\begin{itemize}\n")
-        lines.append("        \\resitem{{\\bf File} " +
-                     candidate_video + "}\n")
-        lines.append("    \\end{itemize}\n")
-        lines.append("\\end{itemize}\n")
-        lines.append("\\end{document}\n")
+    lines = replace_token('[REPLACE_HEADER]', header, lines)
+    lines = replace_token('[REPLACE_LOGO]', logo, lines)
+    lines = replace_token('[REPLACE_CANDIDATE_NAME]', candidate_name, lines)
+    lines = replace_token('[REPLACE_CANDIDATE_ID]', candidate_id, lines)
+    lines = replace_token('[REPLACE_CANDIDATE_ORGANIZATION]', candidate_organization, lines)
+    lines = replace_token('[REPLACE_CANDIDATE_PHONE]', candidate_phone, lines)
+    lines = replace_token('[REPLACE_CANDIDATE_EMAIL]', candidate_email, lines)
+    lines = replace_token('[REPLACE_CANDIDATE_CONTACT]', candidate_contact, lines)
+    lines = replace_token('[REPLACE_CANDIDATE_STATUS]', candidate_status, lines)
+    lines = replace_token('[REPLACE_INTERVIEWER_NAME]', interviewer_name, lines)
+    lines = replace_token('[REPLACE_REPORT_DATA]', report_data, lines)
 
-    lines = map(lambda x: x.encode('utf-8'), lines)
+    # print ("LENGTH TABLE: CHOICE = {choice}, BLANK = {blank}, ANSWER = {answer}, CODE = {code}".format(
+    #        choice=len(choice), blank=len(blank), answer=len(answer), code=len(code)))
+
+    if len(choice) + len(blank) + len(code) + len(answer) > 0:
+        record_item = template_file['record']
+
+        if len(choice) > 0:
+            choice_items = template_file['record_choice']
+            tmp = ''
+            for item_choice in choice:
+                content = item_choice['content']
+                title = str(content['title'])
+                tmp += "        \\resitem{" + title + "}\n"
+            choice_items = replace_token('[REPLACE_CHOICE_ITEMS]', tmp, choice_items)
+        else:
+            choice_items = ['']
+        record_item = replace_token('[REPLACE_CHOICE]', ''.join(choice_items), record_item)
+
+        if len(blank) > 0:
+            blank_items = template_file['record_blank']
+            tmp = ''
+            for item_blank in blank:
+                content = item_blank['content']
+                title = str(content['title'])
+                tmp += "        \\resitem{" + title + "}\n"
+            blank_items = replace_token('[REPLACE_BLANK_ITEMS]', tmp, blank_items)
+        else:
+            blank_items = ['']
+        record_item = replace_token('[REPLACE_BLANK]', ''.join(blank_items), record_item)
+
+        if len(code) > 0:
+            code_items = template_file['record_code']
+            tmp = ''
+            for item_code in code:
+                content = item_code['content']
+                title = str(content['title'])
+                tmp += "        \\resitem{" + title + "}\n"
+            code_items = replace_token('[REPLACE_CODE_ITEMS]', tmp, code_items)
+        else:
+            code_items = ['']
+        record_item = replace_token('[REPLACE_CODE]', ''.join(code_items), record_item)
+
+        if len(answer) > 0:
+            answer_items = template_file['record_answer']
+            tmp = ''
+            for item_answer in answer:
+                content = item_blank['content']
+                title = str(content['title'])
+                tmp += "        \\resitem{" + title + "}\n"
+            answer_items = replace_token('[REPLACE_ANSWER_ITEMS]', tmp, answer_items)
+        else:
+            answer_items = ['']
+        record_item = replace_token('[REPLACE_ANSWER]', ''.join(answer_items), record_item)
+        record_item = replace_token('[RESHADING_MACRO_PREFIX]', reshading_macro_prefix, record_item)
+        record_item = replace_token('[RESHADING_MACRO_SUFFIX]', reshading_macro_suffix, record_item)
+    else:
+        record_item = ['']
+
+    lines = replace_token('[REPLACE_RECORD]', ''.join(record_item), lines)
+
+    lines = replace_token('[REPLACE_CANDIDATE_BOARD]', candidate_board, lines)
+    lines = replace_token('[REPLACE_CANDIDATE_VIDEO]', candidate_video, lines)
+
+    lines = replace_token('[RESHADING_MACRO_PREFIX]', reshading_macro_prefix, lines)
+    lines = replace_token('[RESHADING_MACRO_SUFFIX]', reshading_macro_suffix, lines)
+
+    lines = map(lambda x: unicode(x).encode('utf-8'), lines)
 
     tex_path = settings.TEX_PATH + str(report_id) + ".tex"
     with open(settings.TEX_PATH + str(report_id) + ".tex", 'wb') as f:
         f.writelines(lines)
 
-    subprocess.call('/Library/TeX/texbin/xelatex ' + tex_path +
+    subprocess.call('xelatex ' + tex_path +
                     ' -output-directory=' + settings.REPORT_PATH +
                     ' -aux-directory=report/', shell=True)
     subprocess.call('sh clean.sh', shell=True)

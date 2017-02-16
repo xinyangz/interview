@@ -1,6 +1,5 @@
 from rest_framework import status
 from rest_framework.test import APISimpleTestCase, APIRequestFactory
-from rest_framework.test import APIRequestFactory
 from django.conf import settings
 import pymongo
 import random
@@ -8,6 +7,7 @@ import string
 from PIL import Image
 import tempfile
 import os
+import datetime
 
 
 class RoomTestCase(APISimpleTestCase):
@@ -42,7 +42,8 @@ class RoomTestCase(APISimpleTestCase):
         'email': 'basiclaw@CCP.cn',
         'organization': 'CCP',
         'contact': 'Hawaii',
-        'token': 'simple'
+        'token': 'simple',
+        'last_login': datetime.datetime.now()
     }
 
     test_interviewer = {
@@ -51,7 +52,8 @@ class RoomTestCase(APISimpleTestCase):
         'type': 'interviewer',
         'email': 'zbh@hk.cn',
         'organization': 'Interviewer Group',
-        'token': 'tk'
+        'token': 'tk',
+        'last_login': datetime.datetime.now()
     }
 
     factory = APIRequestFactory()
@@ -80,7 +82,7 @@ class RoomTestCase(APISimpleTestCase):
         db_client.drop_database(settings.DB_NAME)
 
     def get_delete_response(self, room_id, query):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
             str(room_id)
         request = self.factory.get(url, query)
         url = request.get_raw_uri()
@@ -88,13 +90,13 @@ class RoomTestCase(APISimpleTestCase):
         return response
 
     def get_get_response(self, room_id, query):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
             str(room_id)
         response = self.client.get(url, query)
         return response
 
     def get_put_response(self, room_id, query, data):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
             str(room_id)
         request = self.factory.get(url, query)
         url = request.get_raw_uri()
@@ -102,7 +104,7 @@ class RoomTestCase(APISimpleTestCase):
         return response
 
     def get_put_logo_response(self, room_id, query, data):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room/' + \
             str(room_id) + '/logo'
         request = self.factory.get(url, query)
         url = request.get_raw_uri()
@@ -110,14 +112,14 @@ class RoomTestCase(APISimpleTestCase):
         return response
 
     def get_post_response_root(self, query, data):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room'
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room'
         request = self.factory.get(url, query)
         url = request.get_raw_uri()
         response = self.client.post(url, data)
         return response
 
     def get_get_response_root(self, query):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room'
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/room'
         response = self.client.get(url, query)
         return response
 
@@ -177,6 +179,14 @@ class RoomTestCase(APISimpleTestCase):
         self.assertEqual(response.data, self.test_room)
         self.db.rooms.delete_many({})
 
+    def test_get_failure(self):
+        tmp_room = self.test_room.copy()
+        self.db.rooms.insert_one(tmp_room)
+        response = self.get_get_response(
+            1, {'token': 'anerrortoken'})
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.db.rooms.delete_many({})
+
     def test_put_success_same_interviewer(self):
         self.db.users.insert_one(self.test_interviewer)
         tmp_room = self.test_room.copy()
@@ -218,12 +228,11 @@ class RoomTestCase(APISimpleTestCase):
         image = Image.new('RGB', (100, 100), "#ddd")
         tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
         image.save(tmp_file, 'jpeg')
+        f = open(tmp_file.name)
 
         response = self.get_put_logo_response(
-            1, {'token': self.test_hr['token']}, {'image': tmp_file})
+            1, {'token': self.test_hr['token']}, {'image': f})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        # print(response.data['logo'])
 
         # Delete file
         file_path = os.path.join(settings.FILE_ROOT, str(1), 'logo.jpg')

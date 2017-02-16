@@ -6,7 +6,6 @@ import pymongo
 import random
 import string
 import datetime
-import copy
 
 
 class ProblemTestCase(APISimpleTestCase):
@@ -125,7 +124,7 @@ class ProblemTestCase(APISimpleTestCase):
                         "correct": True
                     },
                     {
-                        "content": "Xi Jinping",
+                        "content": "Trump",
                         "correct": False
                     }
               ],
@@ -160,16 +159,16 @@ class ProblemTestCase(APISimpleTestCase):
     def init_db(self):
         if self.db_client is None:
             self.db_client = pymongo.MongoClient(port=settings.DB_PORT)
-        self.db = self.db_client[settings.DB_NAME]
+            self.db = self.db_client[settings.DB_NAME]
 
     def get_room_problems(self, room_id, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/problem/room/' + str(room_id) + '?token=' + token
         response = self.client.get(url)
         return response
 
     def post_room_problems(self, room_id, data, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/problem/room/' + str(room_id) + '?token=' + token
         if '_id' in data:
             del data['_id']
@@ -177,32 +176,34 @@ class ProblemTestCase(APISimpleTestCase):
         return response
 
     def get_problem(self, problem_id, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/problem/' + str(problem_id) + '?token=' + token
         response = self.client.get(url)
         return response
 
     def put_problem(self, problem_id, data, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/problem/' + str(problem_id) + '?token=' + token
         response = self.client.put(url, data)
         return response
 
     def delete_problem(self, problem_id, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/problem/' + str(problem_id) + '?token=' + token
         response = self.client.delete(url)
         return response
 
     def clear_database(self):
-        self.db.drop_collection('users')
-        self.db.drop_collection('rooms')
-        self.db.drop_collection('problems')
+        self.db.users.delete_many({})
+        self.db.rooms.delete_many({})
+        self.db.problems.delete_many({})
 
     def test_get_room_problems_success(self):
         self.init_db()
-        self.db.users.insert_one(self.interviewer_data_template)
-        self.db.rooms.insert_one(self.room_template)
+        tmp1 = self.interviewer_data_template.copy()
+        tmp2 = self.room_template.copy()
+        self.db.users.insert_one(tmp1)
+        self.db.rooms.insert_one(tmp2)
         for item in self.problems_template:
             self.db.problems.insert_one(item)
         response = self.get_room_problems(301, 'houbuhouwa')
@@ -211,10 +212,10 @@ class ProblemTestCase(APISimpleTestCase):
 
     def test_post_room_problems_success(self):
         self.init_db()
-        if self.db.users.find({'username': 'Sharon'}).count() == 0:
-            self.db.users.insert_one(self.interviewer_data_template)
-        if self.db.rooms.find({'id': 302}).count() == 0:
-            self.db.rooms.insert_one(self.empty_room_template)
+        tmp1 = self.interviewer_data_template.copy()
+        self.db.users.insert_one(tmp1)
+        tmp2 = self.empty_room_template.copy()
+        self.db.rooms.insert_one(tmp2)
         response = self.post_room_problems(
             302, self.new_problem_template, 'houbuhouwa')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -222,8 +223,10 @@ class ProblemTestCase(APISimpleTestCase):
 
     def test_get_problems_success(self):
         self.init_db()
-        self.db.users.insert_one(self.interviewer_data_template)
-        self.db.rooms.insert_one(self.room_template)
+        tmp1 = self.interviewer_data_template.copy()
+        tmp2 = self.room_template.copy()
+        self.db.users.insert_one(tmp1)
+        self.db.rooms.insert_one(tmp2)
         for item in self.problems_template:
             self.db.problems.insert_one(item)
         response = self.get_problem(1, 'houbuhouwa')
@@ -232,8 +235,10 @@ class ProblemTestCase(APISimpleTestCase):
 
     def test_put_problems_success(self):
         self.init_db()
-        self.db.users.insert_one(self.interviewer_data_template)
-        self.db.rooms.insert_one(self.room_template)
+        tmp1 = self.interviewer_data_template.copy()
+        tmp2 = self.room_template.copy()
+        self.db.users.insert_one(tmp1)
+        self.db.rooms.insert_one(tmp2)
         for item in self.problems_template:
             self.db.problems.insert_one(item)
         updated_problem = self.problems_template[0]
@@ -245,8 +250,10 @@ class ProblemTestCase(APISimpleTestCase):
 
     def test_delete_problems_success(self):
         self.init_db()
-        self.db.users.insert_one(self.interviewer_data_template)
-        self.db.rooms.insert_one(self.room_template)
+        tmp1 = self.interviewer_data_template.copy()
+        tmp2 = self.room_template.copy()
+        self.db.users.insert_one(tmp1)
+        self.db.rooms.insert_one(tmp2)
         for item in self.problems_template:
             self.db.problems.insert_one(item)
         response = self.delete_problem(1, 'houbuhouwa')
@@ -255,8 +262,10 @@ class ProblemTestCase(APISimpleTestCase):
 
     def test_get_room_problems_failures(self):
         self.init_db()
-        self.db.users.insert_one(self.interviewer_data_template)
-        self.db.rooms.insert_one(self.room_template)
+        tmp1 = self.interviewer_data_template.copy()
+        tmp2 = self.room_template.copy()
+        self.db.users.insert_one(tmp1)
+        self.db.rooms.insert_one(tmp2)
         # Permission check
         response = self.get_room_problems(301, 'zhongyangyezicitama')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -267,8 +276,10 @@ class ProblemTestCase(APISimpleTestCase):
 
     def test_post_room_problems_failures(self):
         self.init_db()
-        self.db.users.insert_one(self.interviewer_data_template)
-        self.db.rooms.insert_one(self.room_template)
+        tmp1 = self.interviewer_data_template.copy()
+        tmp2 = self.room_template.copy()
+        self.db.users.insert_one(tmp1)
+        self.db.rooms.insert_one(tmp2)
         weak_problem = self.new_problem_template.copy()
         # Permission check
         response = self.post_room_problems(
@@ -286,8 +297,10 @@ class ProblemTestCase(APISimpleTestCase):
 
     def test_get_problems_failures(self):
         self.init_db()
-        self.db.users.insert_one(self.interviewer_data_template)
-        self.db.rooms.insert_one(self.room_template)
+        tmp1 = self.interviewer_data_template.copy()
+        tmp2 = self.room_template.copy()
+        self.db.users.insert_one(tmp1)
+        self.db.rooms.insert_one(tmp2)
         for item in self.problems_template:
             self.db.problems.insert_one(item)
         # Permission check
@@ -300,8 +313,10 @@ class ProblemTestCase(APISimpleTestCase):
 
     def test_put_problems_failures(self):
         self.init_db()
-        self.db.users.insert_one(self.interviewer_data_template)
-        self.db.rooms.insert_one(self.room_template)
+        tmp1 = self.interviewer_data_template.copy()
+        tmp2 = self.room_template.copy()
+        self.db.users.insert_one(tmp1)
+        self.db.rooms.insert_one(tmp2)
         for item in self.problems_template:
             self.db.problems.insert_one(item)
         # Permission check
@@ -323,8 +338,10 @@ class ProblemTestCase(APISimpleTestCase):
 
     def test_delete_problems_failures(self):
         self.init_db()
-        self.db.users.insert_one(self.interviewer_data_template)
-        self.db.rooms.insert_one(self.room_template)
+        tmp1 = self.interviewer_data_template.copy()
+        tmp2 = self.room_template.copy()
+        self.db.users.insert_one(tmp1)
+        self.db.rooms.insert_one(tmp2)
         for item in self.problems_template:
             self.db.problems.insert_one(item)
         # Permission check

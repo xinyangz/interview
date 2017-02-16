@@ -1852,23 +1852,23 @@ swagger_schema = {
                     "properties": {
                         "video": {
                             "description": "视频记录",
-                            "type": "string"
+                            "type": "integer"
                         },
                         "board": {
                             "description": "白板",
-                            "type": "string"
+                            "type": "integer"
                         },
                         "chat": {
                             "description": "聊天文件",
-                            "type": "string"
+                            "type": "integer"
                         },
                         "code": {
                             "description": "代码",
-                            "type": "string"
+                            "type": "integer"
                         },
                         "report": {
                             "description": "报告",
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 }

@@ -1,6 +1,7 @@
 #! -*- coding: utf-8 -*-
 
 from openpyxl import load_workbook
+import chardet
 
 
 def file_parser(ext_name, content):
@@ -10,40 +11,40 @@ def file_parser(ext_name, content):
     '''
     candidate_list = []
     if ext_name == 'csv':
-        text = content.read().decode('utf-8')
+        text = content.read()
+        adchar = chardet.detect(text)
+        text = text.decode(adchar['encoding'])
         spamreader = '\n'.join(text.split('\r\n')).split('\n')
         line_counter = 0
         for raw_row in spamreader:
             line_counter += 1
             if line_counter <= 1:
                 row = raw_row.split(',')
-                if len(row) < 3 or row[0] != r'姓名' or \
-                        row[1] != r'邮箱' or row[2] != r'手机号':
+                if len(row) < 3 or row[0] != u'姓名' or \
+                        row[1] != u'邮箱' or row[2] != u'手机号':
                     return None
                 continue
             row = raw_row.split(',')
             if row[0] == '' or row[0] is None:
                 continue
             candidate_data = {
-                    'id': '',
-                    'name': row[0],
-                    'email': row[1],
-                    'phone': row[2],
-                    'status': '未面试',
-                    'roomId': '',
-                    'record': {
-                        'video': 0,
-                        'board': 0,
-                        'chat': 0,
-                        'code': 0,
-                        'report': 9
-                    }
+                'id': '',
+                'name': row[0],
+                'email': row[1],
+                'phone': str(row[2]),
+                'status': u'未面试',
+                'roomId': '',
+                'record': {
+                    'video': 0,
+                    'board': 0,
+                    'chat': 0,
+                    'code': 0,
+                    'report': 9
                 }
+            }
             candidate_list.append(candidate_data)
-            # print (candidate_list)
     elif ext_name == 'xlsx':
         wb = load_workbook(content)
-        # wb = load_workbook(filename=r'example1.xlsx')
         sheets = wb.get_sheet_names()
         sheet0 = sheets[0]
         ws = wb.get_sheet_by_name(sheet0)
@@ -65,8 +66,8 @@ def file_parser(ext_name, content):
                 'id': '',
                 'name': line[0],
                 'email': line[1],
-                'phone': line[2],
-                'status': '未面试',
+                'phone': str(line[2]),
+                'status': u'未面试',
                 'roomId': '',
                 'record': {
                     'video': 0,
@@ -78,9 +79,11 @@ def file_parser(ext_name, content):
             }
             candidate_list.append(candidate_data)
     else:
-        print ("Unknown file format.")
+        # print ("Unknown file format.")
         return None
     return candidate_list
+
+# Usage example
 
 if __name__ == "__main__":
     file_parser('example1.xlsx')

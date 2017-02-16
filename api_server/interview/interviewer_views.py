@@ -22,14 +22,6 @@ def root(request, **kwargs):
     token = request.GET.get('token')
     cursor = db.users.find({'token': token})
 
-    if cursor.count() == 0:
-        return Response(
-            {
-                'error': 'User has not logged in.'
-            },
-            status.HTTP_403_FORBIDDEN
-        )
-
     room_cursor = db.rooms.find({'interviewer': cursor[0]['username']})
 
     if room_cursor.count() == 0:

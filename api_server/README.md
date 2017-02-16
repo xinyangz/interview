@@ -2,7 +2,7 @@
 
 ## Setup
 
-1. Install Python 3.5, MongoDB.
+1. Install Python 2.7.x, MongoDB.
 
 2. Install Django, Django REST Framework and PyMongo.
 
@@ -12,6 +12,9 @@
     pip install pymongo
     pip install django-cors-headers
     pip install jsonschema
+    pip install chardet
+    pip install django-nose
+    pip install coverage
     ```
 
 ## Run

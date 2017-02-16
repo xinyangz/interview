@@ -1,10 +1,10 @@
 from rest_framework import status
 from rest_framework.test import APISimpleTestCase, APIRequestFactory
-from rest_framework.test import APIRequestFactory
 from django.conf import settings
 import pymongo
 import random
 import string
+import datetime
 
 
 class RoomTestCase(APISimpleTestCase):
@@ -37,7 +37,18 @@ class RoomTestCase(APISimpleTestCase):
         'type': 'interviewer',
         'email': 'zbh@xg.cn',
         'organization': 'Interviewer Group',
-        'token': 'tk'
+        'token': 'tk',
+        'last_login': datetime.datetime.now()
+    }
+
+    test_user = {
+        'username': 'zbh2',
+        'password': 'hbhw',
+        'type': 'candidate',
+        'email': 'zbh@xg.cn',
+        'organization': 'Interviewer Group',
+        'token': 'BasicLaw',
+        'last_login': datetime.datetime.now()
     }
 
     factory = APIRequestFactory()
@@ -68,11 +79,32 @@ class RoomTestCase(APISimpleTestCase):
         self.db.rooms.insert_one(self.test_room)
         self.db.users.insert_one(self.test_interviewer)
 
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + '/interviewer'
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/interviewer'
         response = self.client.get(url,
                                    {'token': self.test_interviewer['token']})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['roomId'], self.test_room['id'])
 
         self.db.rooms.delete_many({})
+        self.db.users.delete_many({})
+
+    def test_get_roomId_permission_denied(self):
+        self.db.rooms.insert_one(self.test_room)
+        self.db.users.insert_one(self.test_interviewer)
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/interviewer'
+        response = self.client.get(url,
+                                   {'token': self.test_user['token']})
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.db.rooms.delete_many({})
+        self.db.users.delete_many({})
+
+    def test_get_roomId_room_not_found(self):
+        self.db.users.insert_one(self.test_interviewer)
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+            '/interviewer'
+        response = self.client.get(url,
+                                   {'token': self.test_interviewer['token']})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.db.users.delete_many({})

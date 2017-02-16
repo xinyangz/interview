@@ -112,12 +112,9 @@ def user_logout(request, **kwargs):
             },
             status.HTTP_403_FORBIDDEN
         )
-    elif perm_result == permissions.INVALID_TOKEN:
+    elif perm_result in [permissions.INVALID_TOKEN, permissions.EXPIRED_TOKEN]:
         return Response(
-            {
-                'error': 'User has not logged in.'
-            },
-            status.HTTP_403_FORBIDDEN
+            status=status.HTTP_200_OK
         )
 
     user_data = request.GET
@@ -129,10 +126,7 @@ def user_logout(request, **kwargs):
 
     if cursor.count() == 0:
         return Response(
-            {
-                'error': 'User has not logged in.'
-            },
-            status.HTTP_403_FORBIDDEN
+            status=status.HTTP_200_OK
         )
     else:
         for item in cursor:
@@ -229,6 +223,7 @@ def user_manage(request, **kwargs):
         user_data = cursor[0]
         del user_data['_id']
         del user_data['token']
+        del user_data['last_login']
         return Response(user_data, status.HTTP_200_OK)
 
     if request.method == 'PUT':
@@ -253,4 +248,5 @@ def user_manage(request, **kwargs):
         user_data = db.users.find({'username': username})[0]
         del user_data['_id']
         del user_data['token']
+        del user_data['last_login']
         return Response(user_data, status.HTTP_200_OK)

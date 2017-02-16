@@ -104,51 +104,51 @@ class CandidateTestCase(APISimpleTestCase):
         db_client.drop_database(settings.DB_NAME)
 
     def get_put_response_change(self, candidate_id, status, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/candidate/' + str(candidate_id) + '/status?status=' + \
             str(status) + '&token=' + token
         response = self.client.put(url)
         return response
 
     def get_delete_response_delete(self, candidate_id, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/candidate/' + str(candidate_id) + '?token=' + token
         response = self.client.delete(url)
         return response
 
     def get_put_response_put(self, candidate_id, data, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/candidate/' + str(candidate_id) + '?token=' + token
         response = self.client.put(url, data)
         return response
 
     def get_post_response_add(self, data, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/candidate?token=' + token
         response = self.client.post(url, data, format='json')
         return response
 
     def get_get_response_get_all(self, offset, limit, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/candidate?offset=' + str(offset) + '&limit' + str(limit) + \
             '&token=' + token
         response = self.client.get(url)
         return response
 
     def get_get_response_get(self, candidate_id, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/candidate/' + str(candidate_id) + '?token=' + token
         response = self.client.get(url)
         return response
 
     def get_post_response(self, data):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
-            '/candidate/' + data['id']
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+              '/candidate/' + data['id']
         response = self.client.post(url, data, format='json')
         return response
 
     def post_file_response(self, filepath, token):
-        url = '/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
+        url = '/api/' + settings.REST_FRAMEWORK['DEFAULT_VERSION'] + \
             '/candidate/file' + '?token=' + token
         with open(filepath, 'rb') as data:
             response = self.client.post(
@@ -194,16 +194,6 @@ class CandidateTestCase(APISimpleTestCase):
             candidate_data_tmp['unique_username'] = temp_username
             candidate_data_tmp['id'] = 0
             self.db.candidate.insert_one(candidate_data_tmp)
-
-    def get_life_status(self):
-        print()
-        print("Candidate:")
-        for item in self.db.candidate.find({}):
-            print(item)
-        print()
-        print("User:")
-        for item in self.db.users.find({}):
-            print(item)
 
     def test_add_success(self):
         self.init_Wallace()

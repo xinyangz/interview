@@ -252,7 +252,7 @@ def workon_candidate(request, candidate_id, **kwargs):
             status.HTTP_200_OK
         )
 
-    else:
+    elif request.method == 'DELETE':
         # Delete data
         original_data = data[0]
         if 'roomId' in original_data:
@@ -271,6 +271,15 @@ def workon_candidate(request, candidate_id, **kwargs):
 
         db.candidate.delete_one({'id': candidate_id})
         return Response(status=status.HTTP_200_OK)
+
+    else:
+        return Response(
+            {
+                'error': 'Unknown request method'
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
+
 
 @api_view(['PUT'])
 def change_status_candidate(request, candidate_id, **kwargs):
@@ -310,7 +319,7 @@ def change_status_candidate(request, candidate_id, **kwargs):
         for item in candidate:
             db.candidate.update_one(
                 {'id': candidate_id},
-                {'$set': {'status': new_status}}
+                {'$set':{'status': new_status}}
             )
             response_dict = {
                 k: v for k, v in dict(item).items() if k in candidate_keys}
