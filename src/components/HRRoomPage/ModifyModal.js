@@ -73,6 +73,14 @@ export class ModifyModal extends React.Component {
     const logo = ReactDOM.findDOMNode(this.refs.logo).files[0];
     const room_id = this.props.roomId;
 
+    let logoOrNot;
+    if(logo === undefined) {
+      logoOrNot = 0;
+    }
+    else {
+      logoOrNot = 1;
+    }
+
     function clone(obj) {
       // Handle the 2 simple types, and null or undefined
       if (null == obj || "object" != typeof obj) return obj;
@@ -103,7 +111,7 @@ export class ModifyModal extends React.Component {
     let image = new FormData();
     image.append('image', logo);
 
-    this.props.modifyRoom({newRoom,room_id,image});
+    this.props.modifyRoom({newRoom,room_id,image,logoOrNot});
     this.props.onHide();
     this.setState({files:[]});
   }
@@ -118,20 +126,20 @@ export class ModifyModal extends React.Component {
         <Modal.Body>
           <Form horizontal encType="multipart/form-data" method="put" name="roomInfo">
             <FormGroup controlId="formHorizontalRoomName">
-              <Col componentClass={ControlLabel} sm={2}>
+              <Col componentClass={ControlLabel} sm={3}>
                 房间名
               </Col>
-              <Col sm={10}>
+              <Col sm={8}>
                 <FormControl type="text" ref="name"
                              placeholder={this.props.rooms.find(room => room.id === this.props.roomId) && this.props.rooms.find(room => room.id === this.props.roomId).name}/>
               </Col>
             </FormGroup>
 
             <FormGroup controlId="formHorizontalInterviewer">
-              <Col componentClass={ControlLabel} sm={2}>
-                面试官
+              <Col componentClass={ControlLabel} sm={3}>
+                面试官邮箱
               </Col>
-              <Col sm={10}>
+              <Col sm={8}>
                 <FormControl type="email" ref="interviewer"
                              placeholder={this.props.rooms.find(room => room.id === this.props.roomId) && this.props.rooms.find(room => room.id === this.props.roomId).interviewer}
                              disabled/>
@@ -139,10 +147,10 @@ export class ModifyModal extends React.Component {
             </FormGroup>
 
             <FormGroup controlId="formHorizontalImage">
-              <Col componentClass={ControlLabel} sm={2}>
+              <Col componentClass={ControlLabel} sm={3}>
                 LOGO
               </Col>
-              <Col sm={10}>
+              <Col sm={8}>
                 <input
                   onChange={(v)=>this.handleChange(v)}
                   type="file"

@@ -2,8 +2,6 @@ import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 
 import App from './components/App';
-import FuelSavingsPage from './containers/FuelSavingsPage'; // eslint-disable-line import/no-named-as-default
-import AboutPage from './components/AboutPage.js';
 import NotFoundPage from './components/NotFoundPage.js';
 import InterviewerPage from './components/InterviewerPage/InterviewerPage';
 import WelcomePage from './components/WelcomePage';
@@ -15,9 +13,15 @@ import RegisterPage from './components/RegisterPage/RegisterPage';
 const routes = (store) => {
   const requireHR = (nextState, replace, callback) => {
     const {user} = store.getState();
-    if (user == undefined || !user.isLogin || user.type !== 'hr') {
+    if (user === undefined || !user.isLogin) {
       replace({
         pathname: '/not-found',
+        state: {nextPathname: nextState.location.pathname}
+      });
+    }
+    else if (user !== undefined && user.isLogin && user.type === 'interviewer') {
+      replace({
+        pathname: '/interviewer',
         state: {nextPathname: nextState.location.pathname}
       });
     }
@@ -26,9 +30,32 @@ const routes = (store) => {
 
   const requireInterviewer = (nextState, replace, callback) => {
     const {user} = store.getState();
-    if (user == undefined || !user.isLogin || user.type !== 'interviewer') {
+    if (user === undefined || !user.isLogin) {
       replace({
         pathname: '/not-found',
+        state: {nextPathname: nextState.location.pathname}
+      });
+    }
+    else if (user !== undefined && user.isLogin && user.type === 'hr') {
+      replace({
+        pathname: '/hr',
+        state: {nextPathname: nextState.location.pathname}
+      });
+    }
+    callback();
+  };
+
+  const redirectHome = (nextState, replace, callback) => {
+    const {user} = store.getState();
+    if (user !== undefined && user.isLogin && user.type === 'hr') {
+      replace({
+        pathname: '/hr',
+        state: {nextPathname: nextState.location.pathname}
+      });
+    }
+    else if (user !== undefined && user.isLogin && user.type === 'interviewer') {
+      replace({
+        pathname: '/interviewer',
         state: {nextPathname: nextState.location.pathname}
       });
     }
@@ -37,12 +64,11 @@ const routes = (store) => {
 
   return (
     <Route path="/" component={App}>
-      <IndexRoute component={WelcomePage}/>
-      <Route path="hr" component={HRManagerPage} />
-      <Route path="about" component={AboutPage} onEnter={requireHR}/>
+      <IndexRoute component={WelcomePage} onEnter={redirectHome}/>
+      <Route path="hr" component={HRManagerPage} onEnter={requireHR}/>
       <Route path="interviewer" component={InterviewerPage} onEnter={requireInterviewer} />
       <Route path="not-found" component={NotFoundPage} />
-      <Route path="login" component={LoginPage} />
+      <Route path="login" component={LoginPage}/>
       <Route path="register" component={RegisterPage}/>
       <Route path="redirect" component={RedirectPage} />
       <Route path="*" component={NotFoundPage}/>

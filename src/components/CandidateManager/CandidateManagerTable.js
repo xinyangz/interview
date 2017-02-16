@@ -16,7 +16,6 @@ class CandidateManagerTable extends React.Component {
       emailChange: "",
       phoneChange: "",
       roomChange: "",
-      statusChange: "",
     };
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
@@ -28,18 +27,20 @@ class CandidateManagerTable extends React.Component {
 
     this.getPhoneHelpBlock = this.getPhoneHelpBlock.bind(this);
     this.getEmailHelpBlock = this.getEmailHelpBlock.bind(this);
+      this.getNameHelpBlock = this.getNameHelpBlock.bind(this);
 
     this.changeName = this.changeName.bind(this);
     this.changeEmail = this.changeEmail.bind(this);
     this.changeRoom = this.changeRoom.bind(this);
     this.changePhone = this.changePhone.bind(this);
-    this.changeStatus = this.changeStatus.bind(this);
 
     this.checkNull = this.checkNull.bind(this);
     this.setStatusColor = this.setStatusColor.bind(this);
 
-    this.getEmailValState = this.getEmailValState.bind(this);
-    this.getPhoneValState = this.getPhoneValState.bind(this);
+      this.getNameValState = this.getNameValState.bind(this);
+      this.getEmailValState = this.getEmailValState.bind(this);
+      this.getPhoneValState = this.getPhoneValState.bind(this);
+      this.getRoomValState = this.getRoomValState.bind(this);
   }
 
   setStatusColor(status) {
@@ -84,12 +85,32 @@ class CandidateManagerTable extends React.Component {
     return undefined;
   }
 
-  getPhoneHelpBlock() {
-    if(this.getPhoneValState() == 'error') {
-      return (<Col smOffset={3}><HelpBlock style={{"padding-left" : "16px"}}>请输入正确的电话</HelpBlock></Col>);
+    getPhoneHelpBlock() {
+        if(this.getPhoneValState() == 'warning') {
+            return (<Col smOffset={3}><HelpBlock style={{"padding-left" : "16px"}}>电话号码必须小于50位</HelpBlock></Col>);
+        }
+        if(this.getPhoneValState() == 'error') {
+            return (<Col smOffset={3}><HelpBlock style={{"padding-left" : "16px"}}>请输入正确的电话</HelpBlock></Col>);
+        }
+        return undefined;
     }
-    return undefined;
-  }
+
+    getNameHelpBlock() {
+        if(this.getNameValState() == 'error' || this.getNameValState() == 'warning') {
+            return (<Col smOffset={3}><HelpBlock style={{"padding-left" : "16px"}}>候选人姓名必须小于20位</HelpBlock></Col>);
+        }
+        return undefined;
+    }
+
+    getNameValState(){
+        const length = this.state.nameChange.length;
+        if(length > 20) return 'warning';
+        if (length > 0) return 'success';
+    }
+
+    getRoomValState(){
+        if (this.state.roomChange !== "请选择房间") return 'success';
+    }
 
   getEmailValState(){
     const length = this.state.emailChange.length;
@@ -104,37 +125,50 @@ class CandidateManagerTable extends React.Component {
     return 'success';
   }
 
-  getPhoneValState(){
-    const length = this.state.phoneChange.length;
-    if (length > 0)
-    {
-      const pattern = /^([0-9])+/;
-      if(pattern.test(this.state.phoneChange)) {
-        return 'success';
-      }
-      return 'error';
+    getPhoneValState(){
+        const length = this.state.phoneChange.length;
+        if(length > 50) {
+            return 'warning';
+        }
+        if (length > 0)
+        {
+            const pattern = /^(\+([0-9])+ )*([0-9])+/;
+            if(pattern.test(this.state.phoneChange)) {
+                return 'success';
+            }
+            return 'error';
+        }
     }
-    return 'success';
-  }
-
-  changeStatus(e) {
-    this.setState({statueChange: e.target.value});
-  }
 
   changeName(e) {
-    this.setState({nameChange: e.target.value});
+      if(!e.target.value.length) {
+          this.setState({nameChange:this.state.selectedEditCandidate.name});
+      }
+      else {
+          this.setState({nameChange: e.target.value});
+      }
   }
 
   changeEmail(e) {
-    this.setState({emailChange: e.target.value});
+      if(!e.target.value.length) {
+          this.setState({emailChange:this.state.selectedEditCandidate.email});
+      }
+      else {
+          this.setState({emailChange: e.target.value});
+      }
   }
 
   changeRoom(e) {
-    this.setState({roomChange: this.props.rooms.find(room => room.name === e.target.value).id});
+      this.setState({roomChange: e.target.value});
   }
 
   changePhone(e) {
-    this.setState({phoneChange: e.target.value});
+      if(!e.target.value.length) {
+          this.setState({phoneChange:this.state.selectedEditCandidate.phone});
+      }
+      else {
+          this.setState({phoneChange: e.target.value});
+      }
   }
 
   close() {
@@ -156,7 +190,13 @@ class CandidateManagerTable extends React.Component {
 
   openEditModal(candidate) {
     this.setState({showEditModal: true, selectedEditCandidate: candidate,
-                    nameChange:candidate.name, emailChange:candidate.email, phoneChange:candidate.phone, roomChange:candidate.roomId});
+                    nameChange:candidate.name, emailChange:candidate.email, phoneChange:candidate.phone});
+      if(this.props.rooms.find(room => room.id === candidate.roomId)) {
+          this.setState({roomChange: this.props.rooms.find(room => room.id === candidate.roomId).name});
+      }
+      else {
+          this.setState({roomChange: "请选择房间"});
+      }
   }
 
   onDeleteCandidateClick() {
@@ -165,21 +205,13 @@ class CandidateManagerTable extends React.Component {
   }
 
   onEditCandidateClick() {
-    if(this.getEmailValState() == 'success' &&  this.getPhoneValState() == 'success') {
-      if(!this.state.nameChange.length) {
-        this.setState({nameChange:this.state.selectedEditCandidate.name});
-      }
-      if(!this.state.emailChange.length) {
-        this.setState({emailChange:this.state.selectedEditCandidate.email});
-      }
-      if(!this.state.phoneChange.length) {
-        this.setState({phoneChange:this.state.selectedEditCandidate.phone});
-      }
+    if(this.getEmailValState() == 'success' &&  this.getPhoneValState() == 'success'
+        && this.getNameValState() == 'success' && this.getRoomValState() == 'success') {
       let termCandidate = {
         "id": this.state.selectedEditCandidate.id,
         "name": this.state.nameChange,
         "email": this.state.emailChange,
-        "roomId": this.state.roomChange,
+        "roomId": this.props.rooms.find(room => room.name === this.state.roomChange).id,
         "phone": this.state.phoneChange,
         "record": this.state.selectedEditCandidate.record,
         "status": this.state.selectedEditCandidate.status,
@@ -228,6 +260,7 @@ class CandidateManagerTable extends React.Component {
                   <FormGroup controlId="candidateName" >
                     <Col componentClass={ControlLabel} sm={3}>候选人姓名</Col>
                     <Col sm={9}><FormControl type="text" placeholder={this.state.selectedEditCandidate.name} onChange={this.changeName}/></Col>
+                      {this.getNameHelpBlock()}
                   </FormGroup>
 
                   <FormGroup controlId="candidateEmail" >
@@ -245,7 +278,8 @@ class CandidateManagerTable extends React.Component {
                   <FormGroup controlId="candidateRoom" >
                     <Col componentClass={ControlLabel} sm={3}>候选人房间</Col>
                     <Col sm={9}>
-                      <FormControl componentClass="select" placeholder="select"  onChange={this.changeRoom}>
+                      <FormControl componentClass="select" onChange={this.changeRoom} value={this.state.roomChange}>
+                        <option key="selection">请选择房间</option>
                         {this.props.rooms.map(room =>
                           <option key={room.id}>{room.name}</option>)}
                       </FormControl>

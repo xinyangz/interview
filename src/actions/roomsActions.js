@@ -2,6 +2,9 @@ import * as types from '../constants/actionTypes';
 import axios from 'axios';
 import {displayNotification} from './notificationActions';
 import {loadAllProblems, loadAllProblemsSuccess} from './problemActions';
+import {loadAllRoomCandidates} from './candidateManagerActions';
+import {push} from 'react-router-redux';
+import {logout} from './userActions';
 
 
 export function beginDeleteRoom() {
@@ -90,10 +93,9 @@ export function beginModifyRoom() {
   };
 }
 
-export function modifyRoomSuccess(room) {
+export function modifyRoomSuccess() {
   return {
-    type: types.MODIFY_ROOM_SUCCESS,
-    room
+    type: types.MODIFY_ROOM_SUCCESS
   };
 }
 
@@ -137,7 +139,16 @@ export function deleteRoom(roomId) {
           dispatch(displayNotification('error', '错误', toString(response.data.error)));
         }
       })
-      .catch(error => dispatch(displayNotification('error', '错误', toString(error.response.data.error || error))));
+      .catch(error => {
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
+      });
   };
 }
 
@@ -160,7 +171,16 @@ export function loadAllRooms() {
           dispatch(displayNotification('error', '错误', response.data.error));
         }
       })
-      .catch(error => dispatch(displayNotification('error', '错误', error.message)));
+      .catch(error => {
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
+      });
   };
 }
 
@@ -187,9 +207,7 @@ export function loadInterviewerRoom() {
         if (res.status === 200) {
           dispatch(loadRoomSuccess(res.data));
           dispatch(loadAllProblems(roomId));
-        }
-        else if (res.status === 403) {
-          throw '用户无访问权限';
+          dispatch(loadAllRoomCandidates(roomId));
         }
         else if (res.status === 404) {
           throw '房间不存在';
@@ -198,8 +216,15 @@ export function loadInterviewerRoom() {
           throw res.data;
         }
       })
-      .catch(err => {
-        dispatch(displayNotification('error', '错误', err.message));
+      .catch(error => {
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
       });
   };
 }
@@ -210,29 +235,63 @@ export function modifyRoom(data) {
     const room_id = data.room_id;
     const room = data.newRoom;
     let image = data.image;
+    let logoOrNot = data.logoOrNot;
     const token = getState().user.token;
-    return axios.put('/room/' + room_id +'?token=' + token, room)
-      .then(response => {
-        if(response.status === 200) {
-          dispatch(loadAllRooms());
-          dispatch(beginUploadImage());
-          return axios.put('/room/' + room_id + '/logo' + '?token=' + token, image);
-        }
-        else {
-          throw (response.data);
-        }
-      })
-      .then(response => {
-        if(response.status === 200) {
-          dispatch(uploadImageSuccess());
-        }
-        else {
-          throw (response.data);
-        }
-      })
-      .catch(error => {
-        dispatch(displayNotification('error', '错误', error.message));
-      });
+
+    if(logoOrNot === 1) {
+      return axios.put('/room/' + room_id + '?token=' + token, room)
+        .then(response => {
+          if (response.status === 200) {
+            dispatch(beginUploadImage());
+            return axios.put('/room/' + room_id + '/logo' + '?token=' + token, image);
+          }
+          else {
+            throw (response.data);
+          }
+        })
+        .then(response => {
+          if (response.status === 200) {
+            dispatch(displayNotification('success', '操作成功', '修改房间信息成功'));
+            dispatch(uploadImageSuccess());
+            dispatch(loadAllRooms());
+          }
+          else {
+            throw (response.data);
+          }
+        })
+        .catch(error => {
+          if (error.response.status === 403) {
+            dispatch(displayNotification('error', '错误', '您已下线'));
+            dispatch(logout());
+            dispatch(push('/login'));
+          }
+          else {
+            dispatch(displayNotification('error', '错误', error.message));
+          }
+        });
+    }
+    else {
+      return axios.put('/room/' + room_id +'?token=' + token, room)
+        .then(response => {
+          if(response.status === 200) {
+            dispatch(displayNotification('success', '操作成功', '修改房间信息成功'));
+            dispatch(loadAllRooms());
+          }
+          else {
+            dispatch(displayNotification('error', '错误', response.data.error));
+          }
+        })
+        .catch(error => {
+          if (error.response.status === 403) {
+            dispatch(displayNotification('error', '错误', '您已下线'));
+            dispatch(logout());
+            dispatch(push('/login'));
+          }
+          else {
+            dispatch(displayNotification('error', '错误', error.message));
+          }
+        });
+    }
   };
 }
 
@@ -241,30 +300,64 @@ export function addRoom(data) {
     dispatch(beginAddRoom());
     const room = data.newRoom;
     let image = data.image;
+    let logoOrNot = data.logoOrNot;
     const token = getState().user.token;
-    return axios.post('/room' + '?token=' + token, room)
-      .then(response => {
-        if(response.status === 200) {
-          const room_id = response.data.id;
-          dispatch(loadAllRooms());
-          dispatch(beginUploadImage());
-          return axios.put('/room/' + room_id + '/logo' + '?token=' + token, image);
-        }
-        else {
-          throw (response.data);
-        }
-      })
-      .then(response => {
-        if(response.status === 200) {
-          dispatch(uploadImageSuccess());
-        }
-        else {
-          throw (response.data);
-        }
-      })
-      .catch(error => {
-        dispatch(displayNotification('error', '错误', error.message));
-      });
+
+    if(logoOrNot === 0) {
+      return axios.post('/room' + '?token=' + token, room)
+        .then(response => {
+          if(response.status === 200) {
+            dispatch(displayNotification('success', '操作成功', '添加房间成功'));
+            dispatch(loadAllRooms());
+          }
+          else {
+            dispatch(displayNotification('error', '错误', response.data.error));
+          }
+        })
+        .catch(error => {
+          if (error.response.status === 403) {
+            dispatch(displayNotification('error', '错误', '您已下线'));
+            dispatch(logout());
+            dispatch(push('/login'));
+          }
+          else {
+            dispatch(displayNotification('error', '错误', error.message));
+          }
+        });
+    }
+    else {
+      return axios.post('/room' + '?token=' + token, room)
+        .then(response => {
+          if (response.status === 200) {
+            const room_id = response.data.id;
+            dispatch(beginUploadImage());
+            return axios.put('/room/' + room_id + '/logo' + '?token=' + token, image);
+          }
+          else {
+            throw (response.data);
+          }
+        })
+        .then(response => {
+          if (response.status === 200) {
+            dispatch(displayNotification('success', '操作成功', '添加房间成功'));
+            dispatch(uploadImageSuccess());
+            dispatch(loadAllRooms());
+          }
+          else {
+            throw (response.data);
+          }
+        })
+        .catch(error => {
+          if (error.response.status === 403) {
+            dispatch(displayNotification('error', '错误', '您已下线'));
+            dispatch(logout());
+            dispatch(push('/login'));
+          }
+          else {
+            dispatch(displayNotification('error', '错误', error.message));
+          }
+        });
+    }
   };
 }
 
@@ -281,7 +374,14 @@ export function sendEmail(roomId) {
         }
       })
       .catch(error => {
-        dispatch(displayNotification('error', '错误', error.message));
+        if (error.response.status === 403) {
+          dispatch(displayNotification('error', '错误', '您已下线'));
+          dispatch(logout());
+          dispatch(push('/login'));
+        }
+        else {
+          dispatch(displayNotification('error', '错误', error.message));
+        }
       });
   }
 }

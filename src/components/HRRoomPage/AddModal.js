@@ -61,10 +61,18 @@ export class AddModal extends React.Component {
     let logo = ReactDOM.findDOMNode(this.refs.logo).files[0];
     let newRoom = {"name": name, "interviewer": interviewer, "candidates":[]};
 
+    let logoOrNot;
+    if(logo === undefined) {
+      logoOrNot = 0;
+    }
+    else {
+      logoOrNot = 1;
+    }
+
     let image = new FormData();
     image.append('image', logo);
 
-    this.props.addRoom({newRoom,image});
+    this.props.addRoom({newRoom,image,logoOrNot});
     this.props.onHide();
     this.setState({files:[]});
   }
@@ -79,28 +87,28 @@ export class AddModal extends React.Component {
         <Modal.Body>
           <Form horizontal encType="multipart/form-data" method="put" name="roomInfo">
             <FormGroup controlId="formHorizontalRoomName">
-              <Col componentClass={ControlLabel} sm={2}>
+              <Col componentClass={ControlLabel} sm={3}>
                 房间名
               </Col>
-              <Col sm={10}>
+              <Col sm={8}>
                 <FormControl type="text" ref="name" placeholder="请输入面试房间名称"/>
               </Col>
             </FormGroup>
 
             <FormGroup controlId="formHorizontalInterviewer">
-              <Col componentClass={ControlLabel} sm={2}>
-                面试官
+              <Col componentClass={ControlLabel} sm={3}>
+                面试官邮箱
               </Col>
-              <Col sm={10}>
+              <Col sm={8}>
                 <FormControl type="email" ref="interviewer" placeholder="请输入面试官的邮箱地址"/>
               </Col>
             </FormGroup>
 
             <FormGroup controlId="formHorizontalImage">
-              <Col componentClass={ControlLabel} sm={2}>
+              <Col componentClass={ControlLabel} sm={3}>
                 LOGO
               </Col>
-              <Col sm={10}>
+              <Col sm={8}>
                 <input
                   onChange={(v)=>this.handleChange(v)}
                   type="file"
